@@ -1,0 +1,84 @@
+{% extends "suh_base.html" %}
+{% block extracss %}	
+	
+<style>
+.clipwrapper {
+    position:relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.clip{
+  position:absolute;
+  clip:rect(0px 220px 200px 0px);
+}
+
+.blackcaption {
+  position: relative;
+  left: 0;
+  bottom: 60px;
+  width: 200px;
+  padding: 10px 10px;  
+  height: 40px;
+  background-color: rgba(0, 0, 0, 0.6);  
+}
+  
+.blackcaption p {
+  color: white;
+  font-size: 12px;
+  text-decoration: none;
+  outline: none;
+  font-family:georgia;
+}
+
+.wrapper{
+  width:220px;
+  height: 200px;
+  clear:both;
+}
+
+.bs-docs-sidenav {
+  text-align: left;
+  width: 228px;
+  margin: 30px 0 0;
+  padding: 0;
+  background-color: #fff;
+  -webkit-border-radius: 6px;
+     -moz-border-radius: 6px;
+          border-radius: 6px;
+  -webkit-box-shadow: 0 1px 4px rgba(0,0,0,.065);
+     -moz-box-shadow: 0 1px 4px rgba(0,0,0,.065);
+          box-shadow: 0 1px 4px rgba(0,0,0,.065);
+}
+.bs-docs-sidenav > li > a {
+  display: block;
+  width: 190px \9;
+  margin: 0 0 -1px;
+  padding: 8px 14px;
+  border: 1px solid #e5e5e5;
+}
+</style>
+{% endblock %}
+	
+{% block javascript %}
+<script type="text/javascript">
+	{% if request.user.employer %}
+    	set_menu_activate('4');
+  	{% endif %}
+  	$('.img-modal').click(function(event) {
+    var imgurl = $(this).data('imgurl');
+    var headline = $(this).data('headline');
+    var desc = $(this).data('description');
+    var pub = $(this).data('published');
+    var url = $(this).data('url');
+    $("#img-in-modal").attr("src",imgurl);
+    //$("#feedtitle").text('<a href='+url+'>'+headline+'</a>');
+    $("#feedurl").attr("href",url);
+    $("#feedurl").text(headline);
+    $("#feedpublished").text(pub);
+    $("#feeddescription").text(desc);
+    $("#feedmore").attr("href",url);
+    $('#myModal').modal('show');
+  });
+</script>
+{% endblock %}

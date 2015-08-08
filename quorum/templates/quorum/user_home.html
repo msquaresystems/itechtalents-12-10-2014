@@ -1,0 +1,49 @@
+{% extends "quorum/base_quorum.html" %}
+{% load q_extras %}
+{% block content %}
+<div class="container">
+	<h1>{{ userview.first_name }}</h1>
+<div class="tabbable" style="margin-bottom: 18px;">
+  <ul class="nav nav-tabs">
+    <li class="active"><a href="#tab1" data-toggle="tab">Topics Following</a></li>
+    <li><a href="#tab2" data-toggle="tab">Favourite Questions</a></li>
+    {% if user.is_active %}
+    <li><a href="#tab3" data-toggle="tab">My Account Information</a></li>
+    {% endif %}
+  </ul>
+  <div class="tab-content" style="padding-bottom: 9px; border-bottom: 1px solid #ddd;">
+    <div class="tab-pane active" id="tab1">
+    	<p>Followings.</p>
+      {% user_following_topics userview.pk %}      
+    </div>
+    <div class="tab-pane" id="tab2">
+      <p>Favouraite Questions</p>
+      {% user_favourites userview.pk %}    
+    </div>
+    {% if user.is_active %}
+    <div class="tab-pane" id="tab3">
+      <p>My Account Information.</p>
+      <p class="lead">Username: {{ user.username }}</p>
+      <div class="row">
+
+      	<div class="span2 offset2">
+      		<p>First Name:</p>
+	      	<p>Last Name :</p>
+	      	<p>Email     :</p>
+      	</div>
+      	<div class="span8">
+      		<p>{{ user.first_name }}</p>
+      		<p>{{ user.last_name }}</p>
+      		<p>{{ user.email }}</p>
+      	</div>
+      </div>
+
+      
+
+      
+    </div>
+    {% endif %}
+  </div>
+</div> <!-- /tabbable -->
+</div>
+{% endblock %}

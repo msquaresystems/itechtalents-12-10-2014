@@ -1,0 +1,132 @@
+<script type="text/javascript">
+	
+	$(function()
+		{
+			$('#upres,input:radio[name=res_act_title]').click(function()
+				{
+					if ($(this).is(':checked'))
+						{
+							$("#upres").attr('checked', true);
+							$('.upresfile').attr('disabled',false);
+							$('.txtresfile').attr('disabled',true);
+						}
+				});
+
+			$('#txtres,#txtRes').click(function()
+				{
+					if ($(this).is(':checked'))
+						{
+							$("#txtres").attr('checked', true);
+							$('.upresfile').attr('disabled',true);
+							$('.txtresfile').attr('disabled',false);
+						}
+				});
+
+			var selOpt='{{ restitle }}';
+			var selTOpt='{{ restxttitle }}'
+			$("input:radio[name=res_act_title]").each(function(){
+				if ($(this).val()==selOpt){
+					$(this).attr('checked', true);
+					$("#upres").attr('checked', true);
+					$("#txtRes").attr('disabled',true);
+					return false;
+            	}
+
+			});
+
+			$("input:radio[name=acttext_resume]").each(function(){
+				if ($(this).val()==selTOpt){
+					$(this).attr('checked', true);
+					$("#txtres").attr('checked', true);
+					$("input:radio[name=res_act_title]").attr('disabled',true);
+					return false;
+            	}
+
+			});
+			
+
+      	});
+
+</script>
+	<div>
+		<div>
+		{% if profile_detail and textresume %}
+		<form action="/accounts/resume_activation/" method="post" enctype="multipart/form-data" name="resumeActivationform" onsubmit="return actresval();">{% csrf_token %}
+					<p><h3>Resume Activation</h3></p>
+					<input type="hidden" value="{{user.id}}" name="userid" >
+			<table cellpadding="10">
+				<tr>
+					{% for detail in profile_detail %}
+						{% if forloop.first %}
+							{% if detail.resumeTitle or detail.resumeFile %}
+								<th>
+									<input type="radio" name="resumeActivate" value="uploadres" id="upres">Uploaded Resume
+								</th>
+							{% endif %}
+						{% endif %}
+					{% endfor %}
+				</tr>
+				
+					{% for detail in profile_detail %}
+							{% if detail.resumeTitle or detail.resumeFile %}
+							<tr>
+								<td></td>
+								<td>
+									<input type="radio" class="upresfile" name="res_act_title" id="urf" value="{{ detail.id }}" required>{{ detail.resumeTitle }} <br/>
+									<input type="hidden"  name="res_act_file1" value="{{ detail.resumeFile }}">
+									{% else %}
+									<p>You does'nt upload any resume file</p>
+								</td>
+							</tr>
+							{% endif %}
+					{% endfor %}
+				
+				{% for a in textresume %}
+						{% if a.resumeTitle or a.resumeFile %}
+				<tr>
+					<th style="text-align:left;">
+						<input type="radio" name="resumeActivate" value="textres" onchange="disablefield();" id="txtres" required>Text Resume
+					</th>
+				</tr>
+				<tr>
+					<td></td>
+					<td>
+						<input type='radio' name="acttext_resume" value="{{ a.resumeTitle }}" class="txtresfile" id ="txtRes" required > {{ a.resumeTitle }} <br>
+						{% else %}
+						<p>You does'nt add TextResume</p>
+						{% endif %}
+				{% endfor %}
+					</td>
+				</tr>
+				{% for a in textresume %}
+				{% for detail in profile_detail %}
+				{% if forloop.first %}
+				{% if a.resumeTitle or a.resumeFile or detail.resumeTitle or detail.resumeFile %}
+
+				<tr>
+					<td colspan="2" style="text-align:center;">
+						<p>
+							<input type="submit" value="SUBMIT">&emsp;
+							<input type="reset" value="Reset">
+						</p>
+					</td>
+				</tr>
+				{% else %}
+				<tr><td>
+				<p style="text-align:center;">Please add any resume details</p>
+				</td></tr>
+				{% endif %}
+				{% endif %}
+				{% endfor %}
+				{% endfor %}
+		</table>
+	</form>
+	{% else %}
+	<p style="text-align:center;">You are not adding any resumes so for..</p>
+	<p style="text-align:center;">Please add your details <a href="/accounts/ProfileDetails/"> here</a></p>
+
+	{% endif %}
+	</div>
+</div>
+
+

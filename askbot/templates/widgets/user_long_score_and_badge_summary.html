@@ -1,0 +1,25 @@
+
+{% set have_badges = user.gold or user.silver or user.bronze %}
+{%- if user.is_read_only() -%}
+    {% trans %}read only access{% endtrans %}
+{%- else -%}
+    {%- if point_mode != 'hidden' -%}
+   <span class="badge">{{user.reputation}}</span>
+   
+    {%- endif -%}
+    {%- if badges_mode == 'public' and have_badges -%}
+         {% if user.gold %}
+          <span class='badge1'>&#9679;</span>
+          <span class="badgecount">{{user.gold}}</span>
+          {% endif %}
+          {% if user.silver %}
+          <span class='badge2'>&#9679;</span>
+          <span class="badgecount">{{user.silver}}</span>
+          {% endif %}
+          {% if user.bronze %}
+          <span class='badge3'>&#9679;</span>
+          <span class="badgecount">{{user.bronze}}</span>
+          {%- endif -%}
+     
+    {%- endif -%}
+{%- endif -%}

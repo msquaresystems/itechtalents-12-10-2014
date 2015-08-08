@@ -1,0 +1,413 @@
+{% extends "jsprofile/base.html" %}
+{% block extrahead %} 
+<link rel="stylesheet" href="{{ STATIC_URL }}js/datepicker/datepicker.css" />
+<link href="{{STATIC_URL}}jsprofile_static/xeditable/bootstrap-editable.css" rel="stylesheet"/>  
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-wysihtml5.css"></link>
+<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/daterangepicker-bs2.css" />
+<style>
+.editable form{
+    background-color: #F8F8F8;
+    border: 1px solid #EAD9CE;
+    ursor: default;
+    margin: 0;
+    padding: 13px;
+}
+.item_tittle h1 span{
+    background: none repeat scroll 0 0 #74767A;
+    border-radius: 3px 3px 3px 3px;
+    color: #ffffff;
+    float: right;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 7px 0 0;
+    padding: 0 5px;
+    margin-right: 0;
+}
+.item_tittle h2 {
+    font-size: 18px;
+    font-weight:normal;
+    text-align: left;
+    color:#000;
+}
+.item_tittle h3{
+    font-size: 14px;
+    font-weight:normal;
+    text-align: right;
+    color:#000;
+}
+.bs-sidebar.affix {
+    position: static;
+}
+.sideheading{
+    background-color: #e0e0e0;
+    background-image: -moz-linear-gradient(#fafafa, #e0e0e0);
+    background-image: -webkit-linear-gradient(#fafafa, #e0e0e0);
+    background-image: linear-gradient(#fafafa, #e0e0e0);
+    background-repeat: repeat-x;
+    display: block;
+    padding: 10px 10px;
+    border-bottom: 1px solid #ccc;
+    color: #222;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 20px;
+    border-left: 0 none;<script src="{{STATIC_URL}}js/bootbox.min.js" ></script> 
+
+}
+.bs-sidenav {
+    padding-top:    10px;
+    padding-bottom: 10px;
+    background-color: #fafafa;
+    border-radius: 5px;
+    border:1px solid #CCC;
+}
+.bs-sidebar .nav > li > a {
+    font-size: 1.2em;
+    display: block;
+    color: #716b7a;
+    padding: 10px 20px;
+    border-right: 4px solid transparent;
+}
+.bs-sidebar .nav > li > a:hover,.bs-sidebar .nav > li > a:focus{
+    text-decoration: none;
+    background-color: #fff;
+    border-right: 4px solid #dbd8e0;
+}
+.bs-sidebar .nav > .active > a,.bs-sidebar .nav > .active:hover > a,.bs-sidebar .nav > .active:focus > a {
+    font-weight: bold;
+    color: #418cd1;
+    background-color: #fff;
+    border-right: 4px solid #418cd1;
+}
+.editable form {
+    background-color: #F8F8F8;
+    border: 1px solid #EAD9CE;
+    cursor: default;
+    margin: 0;
+    padding: 13px;
+}
+.item_tittle h1 span {
+    background: none repeat scroll 0 0 #74767A;
+    border-radius: 3px 3px 3px 3px;
+    color: #ffffff;
+    float: right;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 7px 0 0;
+    padding: 0 5px;
+    margin-right: 0; 
+}
+.item_tittle h2 {
+  font-size: 18px;
+  font-weight:normal;
+  text-align: left;
+  color:#000;
+}
+.item_tittle h3{
+  font-size: 14px;
+  font-weight:normal;
+  text-align: right;
+  color:#000;
+}
+.emps{border-bottom: 2px solid #FFB812;margin-bottom: 10px;}
+</style>
+{% endblock %}
+{% block content %}
+{% load mytaghelper %}
+{% load jsprofile_extras %}
+<div class="container-fluid" style="min-height:580px;">
+    <div class="row-fluid">
+        <div class="span3">
+            <div class="bs-sidebar">
+                <ul class="nav bs-sidenav">
+                    <li class='sideheading'>{{ request.user.username }}</li>
+                    <li class="active"><a href="/js/Dashboard/">Dashboard</a></li>{% for nav in navs %}<li{% ifequal next forloop.counter %} class="active"{% endifequal %}><a class="ajaxLoad" href="/js/{% sidebar nav %}/" data-ajxurl="{{ forloop.counter }}">{{nav}}</a></li>{% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="span9">            
+			<div id="empdetails" class="xgap">
+			<h4 style="border-bottom:2px solid #FFB812;">Employment Details</h4>
+			<br>
+			<div id="empview">				
+				{% if emp %}
+					{% for l in emp %}
+					<div class="emps"><table  class="table table-borderless info" id="emp{{l.pk}}" >
+					<tr><th  colspan="4">{{ forloop.counter }})&emsp;<a href="#" class="editemp" data-type="text" data-title="Enter Company name" data-pk="{{l.pk}}" data-url="/updateemp/" data-name="employer_name" data-params="{curtable:'emptable'}">{{ l.employer_name }}</a> - <span>{% if l.empstatus == 'Current Employer' %}{{ l.empstatus }}{% else %}Previous Employer{% endif %}</span><a class="deleteemp pull-right btn btn-danger" data-empid="{{l.pk}}" href="#"><i class="icon-trash"></i></a></th></tr>
+					<tr><th style="width:25%">Duration</th><td style="width:25%"><a href="#" data-type="date" data-pk="{{l.pk}}" data-viewformat="mm-yyyy" data-format="mm-yyyy" data-title="Start date" class="editemp edt" data-url="/updateemp/" data-name="empstartdate" data-params="{curtable:'emptable'}">{{l.empstartdate}}</a> to {% ifequal l.empstatus 'Current Employer' %}Today{% else %}<a href="#" data-type="date" data-pk="{{l.pk}}" data-viewformat="mm-yyyy" data-startView="year" data-format="mm-yyyy" data-title="End date" class="editemp  edt" data-url="/updateemp/" data-name="emptodate" data-params="{curtable:'emptable'}">{{l.emptodate}}</a>{% endifequal %}</td>
+					<th style="width:25%">Designation</th><td style="width:25%"><a href="#" class="editemp" data-type="text" data-title="Enter Designation" data-pk="{{l.pk}}" data-url="/updateemp/" data-name="designation" data-params="{curtable:'emptable'}">{{l.designation}}</a></td></tr>
+					<tr id="emp{{l.pk}}"><th>Jobprofile</th><td colspan="3"><a href="#" class="editemp" data-type="text" data-title="Enter Jobprofile" data-pk="{{l.pk}}" data-url="/updateemp/" data-name="jobprofile" data-params="{curtable:'emptable'}">{{l.jobprofile|safe}}</a></td></tr>					
+					</table></div>			
+					{% endfor %}		
+				{% else %}
+
+				<div class="noitems" style="background-color:#ffa; padding:20px">
+					<strong>Please Add Employment details!!!!!!!!!!!!!!!!!!!</strong>
+				</div>
+				{% endif %}                
+			</div>
+			<div class="toggleview" style="margin-bottom:20px;"> 
+				<a class="btn btn-success toggle-button" href="javascript:void(0);" rel="emp">Add Employment Details</a>			    
+			</div>
+			<div class="editable toggleform" style="display:none;">
+				<form action="" class="form-horizontal" id="empForm">{% csrf_token %}
+					<input type="hidden" name="curform" value="empform">
+					<div class="control-group">
+						<label class="control-label">Company name</label>
+						<div class="controls">
+							<input id="employer_nameadd" maxlength="100" name="employer_name" type="text" required/>
+						</div>
+					</div>			
+					<div class="control-group">
+						<div class="controls">
+						<label class="checkbox">
+						<input type="hidden" value="None"	id="Iscurrentjob" name="Iscurrentjob">
+						{% if not curjob %}
+					    <input type="checkbox" name="empstatus" value="Current Employer" id="iscurrentjob"> Current Job{% endif %}
+					    </label>
+					    </div>
+				    </div>
+					<div class="control-group">
+						<label class="control-label">Duration</label>
+						<div class="controls">
+						 <span id='a'><input type="text" id="muldate" class="muldate" name="empstartdate" autocomplete="off" required /></span><span id='b' style="display:none;"> to Today</span>
+						</div>
+					</div>		
+					<div class="control-group">
+						<label class="control-label">Designation</label>
+						<div class="controls">
+							<input id="designation" name="designation" type="text" required/>
+						</div>
+					</div>	
+					<div class="control-group">
+						<label class="control-label">Jobprofile</label>
+						<div class="controls">
+							<textarea id="some-textarea" name="jobprofile" style="width:600px;height:100px;" ></textarea>
+						</div>
+					</div>	
+					<br>
+				    <input class="btn btn-success" type="submit" value="save" />&emsp;<input type="reset" class="btn btn-warning toggle-button" href="javascript:void(0);" value="Cancel">
+			  </form>
+				</div><!--  .editable toggle form -->
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/datepicker/bootstrap-datepicker.js"></script>
+<script src="{{STATIC_URL}}jsprofile_static/xeditable/bootstrap-editable.min.js"></script>
+<script src="{{ STATIC_URL }}js/wysihtml5-0.3.0.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-wysihtml5.js"></script>
+<script src="{{STATIC_URL}}js/bootbox.min.js" ></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/moment.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/daterangepicker.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    var d = new Date();
+    var day = d.getDate();
+    var month = d.getMonth();
+    var year = d.getFullYear();
+    var a = (month+2) + '-' + year;
+    
+                         $('.toggle-button').click(function() {
+                                    $('.toggleview').toggle();
+                                    $('.toggleform').toggle();
+                                    if ($(this).hasClass('btn-success')) {
+                                        $('.toggleform').find("input[type=text], select, file").val("");
+                                        $('textarea').val('');
+                                    }
+                                });
+    
+    $('#iscurrentjob').attr({checked: false});
+	$('.bs-sidenav li').removeClass('active');
+    $(".bs-sidenav li:nth-child(9)" ).addClass("active");
+    
+    $('body').on('click','#muldate',function(){
+        $('#muldate').daterangepicker({
+            format: 'MM-YYYY',
+            showDropdowns: true,
+            separator: ' to ',
+            maxDate: a,
+        });
+    });
+	$('#muldate').daterangepicker({
+        format: 'MM-YYYY',
+        showDropdowns: true,
+        separator: ' to ',
+        maxDate: a,
+        endDate: a,
+    });
+    $('body').on('click','#sindate',function(){
+        $('#sindate').daterangepicker({ singleDatePicker: true,format: 'MM-YYYY',showDropdowns: true,maxDate: a, endDate: a});
+    });
+    $('#some-textarea').wysihtml5();
+    $('body').on('submit', '#empForm', function(event){
+        
+        event.preventDefault();
+	
+	$(this).serialize()
+	
+        $.ajax({
+            url:'/editemp/',
+            type:"POST",
+            data:$(this).serialize(),
+	    
+            success:function(data){
+		
+            	$('.editemp').editable();           
+                window.location='/js/Employment_Details/';
+            }
+        })
+    });
+
+	$.fn.editable.defaults.mode = 'popup';
+    $.fn.editable.defaults.ajaxOptions = {type: "GET"};
+    $('.editemp').editable();
+	$('body').on('click','.deleteemp',function(e){
+        var ids= $(this).data('empid'); 
+        bootbox.dialog({
+            message: "Are you sure want to delete this employment details ?",
+            title: "Delete Employment Details",
+            buttons: {
+                success: {
+                    label: "Yes",
+                    className: "btn-success",
+                    callback: function() {                        
+                        $.ajax({
+                            url:'/deleteEmp/',
+                            type:'GET',
+                            data:{empid:ids},
+                            success : function(data){
+                                window.location='/js/Employment_Details/';
+                            }
+                        })
+                    }
+                },
+                danger: {
+                    label: "No",
+                    className: "btn-danger",
+                    callback: function() {
+                    }
+                }
+            }
+        });
+        e.preventDefault()
+            
+    });
+
+	/*$("#todate").datepicker({
+        startView: "decade",
+		format: "mm-yyyy",
+        endDate : '+0d',
+	    minViewMode: 1,
+	    autoclose:true
+	});
+    $('#startdate').datepicker()
+    .on('show',function(ev){
+        var date=$('#startdate').datepicker("getDate");
+        date.setDate(date.getDate()+1);
+        $('#todate').datepicker("setStartDate",date);
+    })
+    .on('changeDate', function(ev){
+        var date1=$('#startdate').datepicker("getDate").valueOf();
+        var date11=$('#startdate').datepicker("getDate");
+        date11.setDate(date11.getDate()+32);
+        var date2=ev.date.valueOf();
+        if(date2<=date1){$('#todate').datepicker("setDate",date11);}
+    });*/
+    $('body').on('change','#iscurrentjob',function(){
+        if($(this).is(':checked')){
+            $('#Iscurrentjob').val("currentemployer");
+            $('#a').html('<input type="text" id="sindate" name="empstartdate" autocomplete="off" required />');
+            $('#b').css('display','inline');
+            $('#muldate').val('');
+
+        } else {
+            $('#Iscurrentjob').val("None");
+            $('#a').html('<input type="text" id="muldate" class="muldate" name="empstartdate" autocomplete="off" required />');
+            $('#b').css('display','none');
+            $('#muldate').val('');
+        }
+    });
+   $('#some-textarea').wysihtml5();
+    $('body').on('submit', '#empForm', function(event){
+        
+        event.preventDefault();
+	
+	$(this).serialize()
+	
+        $.ajax({
+            url:'/editemp/',
+            type:"POST",
+            data:$(this).serialize(),
+	    
+            success:function(data){
+		
+            	$('.editemp').editable();           
+                window.location='/js/Employment_Details/';
+            }
+        })
+    });
+
+    /*   $("body").on("submit","#empForm", function(event){
+        alert("sumbit forms");
+		$.post('/ajax/views/', $(this).serialize(),	function(data){
+			CreateRow(data);
+		});	
+		event.preventDefault();		
+	});
+	
+	*/
+	/* $('body').on("submit", "#empForm", function(event){
+        event.preventDefault();
+        $.ajax({
+            url:'/editemp/',
+            type:"POST",
+            data:$(this).serialize(),
+            success:function(data){  
+            	$('.editemp').editable();           
+                window.location='/js/Employment_Details/';
+            }
+        })*/
+    });
+    $('#some-textarea').wysihtml5();
+
+	$.fn.editable.defaults.mode = 'popup';
+    $.fn.editable.defaults.ajaxOptions = {type: "GET"};
+    $('.editemp').editable();
+	$('body').on('click','.deleteemp',function(e){
+        var ids= $(this).data('empid'); 
+        bootbox.dialog({
+            message: "Are you sure want to delete this employment details ?",
+            title: "Delete Employment Details",
+            buttons: {
+                success: {
+                    label: "Yes",
+                    className: "btn-success",
+                    callback: function() {                        
+                        $.ajax({
+                            url:'/deleteEmp/',
+                            type:'GET',
+                            data:{empid:ids},
+                            success : function(data){
+                                window.location='/js/Employment_Details/';
+                            }
+                        })
+                    }
+                },
+                danger: {
+                    label: "No",
+                    className: "btn-danger",
+                    callback: function() {
+                    }
+                }
+            }
+        });
+        e.preventDefault()
+            
+    });
+	
+
+</script>   
+{% endblock %}

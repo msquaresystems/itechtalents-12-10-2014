@@ -1,0 +1,165 @@
+<script type="text/javascript">
+$(document).ready(function ()
+    {
+      $('#selectall').click(function (event)
+        {
+          var selected = this.checked;
+          $(':checkbox[name=checklocs]').each(function ()
+            {
+              this.checked = selected;
+            });
+        });
+
+      $(".p1").click(function()
+        {
+          var array1 = [];
+          $("input:checkbox[name=checklocs]:checked").each(function ()
+            {
+              array1.push($(this).val());
+            });
+          $("#txt").val(array1.join(','));
+        });
+
+      $('.clickdel').click(function()
+        {
+          var id = $(this).attr('id');
+          $("#txt1").val(id);
+        });
+
+      $('.clickedit').click(function()
+        {
+          var id = $(this).attr('id');
+          $("#txt2").val(id);
+        });
+       
+    });
+
+  function delallval()
+    {
+      var s=document.getElementById('txt').value;
+      if (s==""||s==null)
+      {
+        alert("Select the Agent ! ");
+        return false;
+
+      }
+      else
+      {
+        return true;
+      }
+
+    }
+
+  function editval()
+    {
+      var e=document.getElementById('editsavejob').value;
+      
+      if(e=='' || e==null)
+      {
+        document.getElementById('editsavejob').style.borderColor = "#FF0000";
+        return false;
+      }
+      else
+      {
+        return true;
+      }
+    }
+</script>
+<div class="row">
+  <div class="span8" style="text-align:left;"><h3 class="text-info">Save Search Agent</h3></div>
+  <div class="span4">{% if savesearch %}<a class="p1 pull-right" href="#myModal" role="button" class="btn" data-toggle="modal" style="margin:20px 20px 0px 0px;">Delete</a>{% endif %}</div>
+</div>
+<div class="row">
+  <div class="span12">
+   <table class="table table-striped well" style="border-top:3px solid #FFB812;">      
+      <tr>
+        <th width="4%" style="text-align:center;"><input type="checkbox" id="selectall" name="selectall" ></th>
+        <th width="48%" style="text-align:center;">Save Search Name</th>
+        <th width="48%" style="text-align:center;">Action</th>
+      </tr>
+
+      {% if savesearch %}
+
+      {% for s in savesearch %}
+      <tr>
+        <td style="text-align:center;"><input type="checkbox" id="checkloc" name="checklocs" value="{{s.id}}" ></td>
+        <td style="text-align:center;"><a href="{{s.savedsearch}}">{{s.searchname}}</a></td>
+        <td style="text-align:center;">
+          <a class="clickedit" id="{{ s.id }}" href="#myModal2" role="button" class="btn" data-toggle="modal">Edit</a>&emsp;&emsp;
+
+          <a class="clickdel" id="{{ s.id }}" href="#myModal1" role="button" class="btn" data-toggle="modal">Delete</a>
+        </td>
+      </tr>
+      {% endfor %}
+
+      {% else %}
+      <tr>        
+        <td colspan="3" style="text-align:center;">You didn't create any search agent. You can search <a href="/accounts/SearchResumeAdvanced/">here</a> and create your search agent.</td>
+      </tr>
+      {% endif %}
+    </table><br>
+  </div>
+</div>
+<!-- ************* POPUP FORM DELETE ALL ****************-->
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <form action="/accounts/DeleteSearchAgent/" method="post">{% csrf_token %}
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+      <h4 id="myModalLabel">Delete All Search Agent</h4>
+    </div>
+
+    <div class="modal-body">
+      <input type="hidden" value="{{ user.id }}" name="empid" >
+      <input type="hidden" id="txt" value="" name="saveresultid">
+      <p>Are you sure to delete?</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">No</button>
+      <input class="btn btn-primary" type="submit" onclick="return delallval();" value="YES">
+    </div>
+  </form>
+</div>
+
+<!-- ********** POPUP FORM DELETE ONE BY ONE ************* -->
+<div id="myModal1" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <form action="/accounts/DeleteSearchAgent/" method="post">{% csrf_token %}
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+      <h4 id="myModalLabel">Delete Search Agent</h4>
+    </div>
+
+    <div class="modal-body">
+      <input type="hidden" name="empid" value="{{user.id}}" >
+      <input type="hidden" id="txt1" value="" name="saveresultid">
+      <p>Are you sure to delete ?</p>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">No</button>
+      <input class="btn btn-primary" type="submit" value="YES">
+    </div>
+  </form>
+</div>
+
+<!-- **************** POPUP EDIT FROM ****************** -->
+
+<div id="myModal2" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <form action="/accounts/EditSearchAgent/" method="post">{% csrf_token %}
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+      <h4 id="myModalLabel">Edit Search Agent</h4>
+    </div>
+
+    <div class="modal-body">
+      <input type="hidden" name="empid" value="{{user.id}}" >
+      <input type="hidden" id="txt2" value="" name="saveresultid">
+      <p>Enter Name to save</p>
+      <p><input type="text" value="" id="editsavejob" name="editsavejob"></p>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">No</button>&emsp;
+      <input type="submit" value="Edit" onclick="return editval();" class="btn btn-primary" >
+    </div>
+  </form>
+</div>

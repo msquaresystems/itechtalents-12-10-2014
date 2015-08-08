@@ -1,0 +1,117 @@
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('.selectpicker').selectpicker();		
+	});
+</script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/datepicker/bootstrap-datepicker.js"></script>
+<link rel="stylesheet" href="{{ STATIC_URL }}js/datepicker/datepicker.css" />
+<style type="text/css">
+sup{
+	color: red;
+}
+.dropdown-menu{
+	min-width: 220px !important;
+}
+</style>
+{% load mytaghelper %}
+<div>
+	<form action="/accounts/SearchAllJobsResult/" name="myForm" method="get" onsubmit="return validateSForm()">{% csrf_token %}
+
+		<h3 style="border-bottom:2px solid #FFB812;">Search Posted Job</h3>
+		<table class="table">
+		<tr>
+			<td>Contact Person:</td>
+			<td>
+			<select name="ownername" class="selectpicker" data-live-search="true">
+			<option value="">---- Select ----</option>
+			{% ownername request.user.id %}
+			</select>
+			</td>
+		</tr>
+		<tr>
+			<td>Job Code</td>
+			<td><select name="referencecode" class="selectpicker" data-live-search="true">
+			<option value="">---- Select ----</option>
+			{% refcode request.user.id %}
+			</select></td>
+		</tr>
+		<tr>
+			<td>Job Title</td>
+
+			<td><select name="title" class="selectpicker" data-live-search="true">
+			<option value="">---- Select ----</option>
+			{% jobtitle request.user.id %}
+			</select></td>
+		</tr>
+		<tr>
+			 <td>Job Type</td>
+		<td>
+		<select name="jobtype" class="selectpicker" data-live-search="true"><option value="">---- Select ----</option><option value="Fulltime">Fulltime</option><option value="Parttime">Parttime</option><option value="Internship">Internship</option><option value="Contract - Corp-to-Corp">Contract - Corp-to-Corp</option><option value="Contract - Independent">Contract - Independent</option><option value="Contract - W2">Contract - W2</option><option value="Contract to Hire - Corp-to-Corp">Contract to Hire - Corp-to-Corp</option><option value="Contract to Hire - Independent">Contract to Hire - Independent</option><option value="Contract to Hire - W2">Contract to Hire - W2</option><option value="Temporary">Temporary</option></select>
+		</select>
+		</td>
+		</tr>
+		<tr><td colspan="2"><h4 class="text-warning">Jobs posted between</h4></td></tr>
+		<tr>
+			<td>From</td>
+			<td><input type="text" name="before" value="" id="dpd1"></td>
+		</tr>
+		<tr>
+			<td>To</td>
+			<td><input type="text" name="after" value="" id="dpd2"></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><input type="submit" class="btn btn-primary" value="Search"></input></td>
+		</tr>
+</table>
+</form>
+</div>
+<script type='text/javascript'>
+$("#dpd1").datepicker({
+        format: "mm-dd-yyyy",
+    });
+    $("#dpd2").datepicker({
+        format: "mm-dd-yyyy",
+    });
+    $('#dpd1').datepicker()
+    .on('show',function(ev){
+        var date=$('#dpd1').datepicker("getDate");
+        date.setDate(date.getDate()+1);
+        $('#dpd2').datepicker("setStartDate",date);
+    })
+    .on('changeDate', function(ev){
+        var date1=$('#dpd1').datepicker("getDate").valueOf();
+        var date11=$('#dpd1').datepicker("getDate");
+        date11.setDate(date11.getDate()+1);
+        var date2=ev.date.valueOf();
+        if(date2<=date1){$('#dpd2').datepicker("setDate",date11);}
+    });
+function validateSForm()
+{
+var a=document.forms["advsearchform"]["key_skills"].value;
+var b=document.forms["advsearchform"]["industry"].value;
+var c=document.forms["advsearchform"]["functionalarea"].value;
+var d=document.forms["advsearchform"]["jobtype"].value;
+var e=document.forms["advsearchform"]["qualification"].value;
+var f=document.forms["advsearchform"]["min_salary"].value;
+var g=document.forms["advsearchform"]["max_salary"].value;
+var h=document.forms["advsearchform"]["min_exp"].value;
+var i=document.forms["advsearchform"]["max_exp"].value;
+var j=document.forms["advsearchform"]["city"].value;
+if ((a==""||a==null) && (b==""||b==null) && (c==""||c==null) && (d==""||d==null) && (e==""||e==null) && (f==""||f==null) && (g==""||g==null) && (h==""||h==null) && (i==""||i==null) && (j==""||j==null))
+  {
+  document.advsearchform.key_skills.style.borderColor = "#FF0000";
+  document.advsearchform.industry.style.borderColor = "#FF0000";
+  document.advsearchform.functionalarea.style.borderColor = "#FF0000";
+  document.advsearchform.jobtype.style.borderColor = "#FF0000";
+  document.advsearchform.qualification.style.borderColor = "#FF0000";
+  document.advsearchform.min_salary.style.borderColor = "#FF0000";
+  document.advsearchform.max_salary.style.borderColor = "#FF0000";
+  document.advsearchform.min_exp.style.borderColor = "#FF0000";
+  document.advsearchform.max_exp.style.borderColor = "#FF0000";
+  document.advsearchform.city.style.borderColor = "#FF0000";
+  return false;
+  }
+}
+</script>
+

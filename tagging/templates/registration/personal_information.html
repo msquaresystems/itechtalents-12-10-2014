@@ -1,0 +1,1098 @@
+{% extends "registration/base/jobseekerbase.html" %}
+{% block extrahead %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/datepicker/bootstrap-datepicker.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/datepicker/daterange.js"></script>
+<link rel="stylesheet" href="{{ STATIC_URL }}js/datepicker/datepicker.css" />
+<script type="text/javascript" src="{{ STATIC_URL }}js/loader.min.js"></script>
+<link rel="stylesheet" href="{{ STATIC_URL }}css/fuelux-min.css" />
+<link rel="stylesheet" href="{{ STATIC_URL }}css/fuelux-responsive-min.css" />
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-wysihtml5-0.0.2.css"></link>
+<script src="{{ STATIC_URL }}js/wysihtml5-0.3.0_rc2.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-wysihtml5-0.0.2.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/inputmask.js"></script>
+<script type="text/javascript">
+   function initmasks(){
+    $('#workno').mask('+1-999-999-9999');
+    $('#handno').mask('+1-999-999-9999');
+    $('#faxno').mask('+1-999-999-9999');
+    
+}
+
+$(function() {
+initmasks();
+   var nowTemp = new Date();
+    var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+     
+    var checkin = $('#dpd1').datepicker({
+      format: "mm-dd-yyyy"
+      }).on('changeDate', function(ev) {
+      if (ev.date.valueOf() > checkout.date.valueOf()) {
+      var newDate = new Date(ev.date)
+      newDate.setDate(newDate.getDate() + 1);
+      checkout.setValue(newDate);
+      }
+      checkin.hide();
+      $('#dpd2')[0].focus();
+      }).data('datepicker');
+      var checkout = $('#dpd2').datepicker({
+          format: "mm-dd-yyyy",
+          onRender: function(date) {
+              return date.valueOf() <= checkin.date.valueOf() ? 'disabled' : '';
+          }
+      }).on('changeDate', function(ev) {
+      checkout.hide();
+      }).data('datepicker');
+       
+  });
+
+</script>
+<script type="text/javascript">
+$(document).ready(function()
+{
+    var minyears = new Date();
+    minyears.setFullYear(nowTemp.getFullYear()-18);
+    $('#dob').datepicker({
+        format: "mm-dd-yyyy",
+        viewMode: 2,     
+        onRender: function(date) {
+            return date.valueOf() > minyears.valueOf() ? 'disabled' : '';
+        }
+    });
+        $('body').on('focus',".from",function(){
+            $(this).datepicker( {
+                format: "mm-yyyy",
+                viewMode: "months",
+                minViewMode: "months"
+            });
+    });
+        $('#MyWizard').on('change', function(e, data) {
+            console.log('change');
+            if(data.step===3 && data.direction==='next') {
+                // return e.preventDefault();
+            }
+            if(data.step===6){
+                $("#btnWizardsubmit").show("fast");
+                $("#btnWizardNext").hide("fast");
+
+            }
+        });
+        $('#MyWizard').on('changed', function(e, data) {
+            console.log('changed');
+        });
+        $('#MyWizard').on('finished', function(e, data) {
+            console.log('finished');
+        });
+        $('#btnWizardPrev').on('click', function() {
+            $('#MyWizard').wizard('previous');
+        });
+        $('#btnWizardNext').on('click', function() {
+
+            $('#MyWizard').wizard('next','foo');
+
+        });
+        $('#btnWizardStep').on('click', function() {
+            var item = $('#MyWizard').wizard('selectedItem');
+            console.log(item.step);
+        });
+        $('#MyWizard').on('stepclick', function(e, data) {
+            console.log('step' + data.step + ' clicked');
+            if(data.step===1) {
+                // return e.preventDefault();
+            }
+
+        });
+        $('.upfile2').bind('change', function(){
+        var a=(this.files[0].size);
+        var aa=document.getElementById('ur1').files[0].type  //mime type
+        if((aa=='application/vnd.oasis.opendocument.text') || (aa=='application/vnd.openxmlformats-officedocument.wordprocessingml.document') || (aa=='application/msword') || (aa=='text/plain'))
+            {
+                if(a > 153600)
+                    {
+                        alert('Size is more than 150KB');
+                        $('.upfile2').val('');
+                    }
+            }
+        else
+            {
+                alert('Invalid file format');
+                $('.upfile2').val('');
+            }
+        });
+        $('.upfile1').bind('change', function(){
+        var a=(this.files[0].size);
+        var aa=document.getElementById('Gfile_1').files[0].type  //mime type
+        if((aa=='image/jpeg') || (aa=='image/gif') || (aa=='image/jpg') || (aa=='image/png') || (aa=='image/bmp'))
+            {
+                if(a > 204800)
+                    {
+                        alert('Size is more than 200KB');
+                        $('.upfile1').val('');
+                    }
+            }
+        else
+            {
+                alert('Invalid file format');
+                $('.upfile1').val('');
+            }
+        });
+
+       });
+</script>
+<style type="text/css">
+.ui-autocomplete { position: absolute; cursor: default; }   
+.ui-menu {
+    list-style:none;
+    padding: 2px;
+    margin: 0;
+    display:block;
+    float: left;
+    z-index: 1; top: 467.867px; left: 263px; display: none; width: 302px;border: 1px solid #aaaaaa; background: #ffffff;
+}
+.ui-menu .ui-menu {
+    margin-top: -3px;
+}
+.ui-menu .ui-menu-item {
+    margin:0;
+    padding: 0;
+    zoom: 1;
+    float: left;
+    clear: left;
+    width: 100%;
+}
+.ui-menu .ui-menu-item a {
+    text-decoration:none;
+    display:block;
+    padding:.2em .4em;
+    line-height:1.5;
+    zoom:1;
+}
+.ui-menu .ui-menu-item a.ui-state-hover,
+.ui-menu .ui-menu-item a.ui-state-active {
+    font-weight: normal;
+    margin: -1px;
+}
+.ui-helper-hidden-accessible{
+    display: none;
+}
+</style>
+{% endblock %}
+{% block content %}
+<div style="min-height:495px;" class="container">
+    <div class="row-fluid">
+        <div class="span12">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}"><strong>{{message}}</strong></div>
+                    {% endfor %}
+                {% endif %}
+            <form name="adddetails" action="/accounts/ProfileDetails/" method="post" enctype="multipart/form-data">{% csrf_token %}
+            <div class="well wizard-example fuelux">
+                <div id="MyWizard" class="wizard">
+                    <ul class="steps">
+                        <li data-target="#step1" class="active"><span class="badge badge-info">1</span>Personal<span class="chevron"></span></li>
+                        <li data-target="#step2"><span class="badge">2</span>Education<span class="chevron"></span></li> <li data-target="#step3"><span class="badge">3</span>Profile and Skill Set<span class="chevron"></span></li> <li data-target="#step4"><span class="badge">4</span>Employment<span class="chevron"></span></li> <li data-target="#step5"><span class="badge">5</span>Project<span class="chevron"></span></li>
+                        <li data-target="#step6"><span class="badge">6</span>Others<span class="chevron"></span></li>
+                        <li data-target="#step7"><span class="badge">7</span>Resume<span class="chevron"></span></li>
+                    </ul>
+                    
+                </div>
+
+                <div class="step-content">
+                    <div class="step-pane active" id="step1">
+                        <h3 class="text text-info"> Personal Information</h3>
+                        <table class="table table-borderless">
+                        <tr><td>First Name</td><td><input type="text" name="fname" class="input-xlarge" value="{{ user.first_name }}" ></td><td>Last Name </td><td><input type="text" name="lastname" class="input-xlarge" value="{{ user.last_name }}" ></td></tr>
+                        <tr><td>Date of Birth</td><td><input type="text" readonly id="dob" name="dob" value="" class="input-xlarge" placeholder="MM/DD/YYYY" readonly>  </td><td>Primary Email</td><td><label>{{ user.email }}</label></td></tr>
+                        <tr><td>Secondary Email</td><td><input type="text" class="input-xlarge" name="sec_email" id="secemail" value="" placeholder="username@example.com">  </td><td>Marital Status</td><td><select name="maritalstatus" class="input-xlarge" ><option value="">Select</option><option value="Single/Unmarried">Single/Unmarried</option><option value="Married">Married</option><option value="Widowed">Widowed</option><option value="Divorced">Divorced</option><option value="Separated">Separated</option><option value="Other">Other</option></select></td></tr>
+                        <tr><td>Total Experience</td><td><select name="work_expyears" class="input-medium"><option value="">Year</option><script type="text/javascript">for(var i=0;i<=30;i++)document.write("<option value=\""+i+"\">"+i+"</option>");</script></select><select name="work_expmonths" class="input-medium" ><option value="">Month</option><script type="text/javascript">for(var i=0;i<=11;i++)document.write("<option value=\""+i+"\">"+i+"</option>");</script></select></td><td>Annual Salary</td><td><select name="salary" class="input-xlarge" ><option value="">Select</option><optgroup label="Month Wise"><script type="text/javascript">var Salary=new Array("Lessthan 20,000$","20,000$ - 30,000$","30,000$ - 40,000$","40,000$ - 50,000$","50,000$ - 60,000$","60,000$ - 70,000$","Above 70,000$");for(var i=0;i<Salary.length;i++)document.write("<option value=\""+Salary[i]+"\">"+Salary[i]+"</option>");</script></optgroup><optgroup label="Hour Wise"><script type="text/javascript">var Salary=new Array("Lessthan 40$/hr","40$/hr - 50$/hr","50$/hr - 60$/hr","60$/hr - 70$/hr","70$/hr - 80$/hr","80$/hr - 90$/hr","90$/hr - 100$/hr","Above 100$/hr");for(var i=0;i<Salary.length;i++)document.write("<option value=\""+Salary[i]+"\">"+Salary[i]+"</option>");</script></optgroup></select></td></tr>
+                        <tr><td>Current Industry</td><td><select name="industry" class="input-xlarge"><option value="">Select</option><script type="text/javascript">var industry= new Array("Accounting/Finance","Advertising/PR/MR/Events","Agriculture/Dairy","Animation","Architecture/Interior Designing","Auto/Auto Ancillary","Aviation / Aerospace Firms","Banking/Financial Services/Broking","BPO/ITES","Brewery / Distillery","Ceramics /Sanitary ware","Chemicals/PetroChemical/Plastic/Rubber","Construction/Engineering/Cement/Metals","Consumer Durables","Courier/Transportation/Freight","Defence/Government","Education/Teaching/Training","Education/Teaching/Training","Electricals / Switchgears","Export/Import","Facility Management","Fertilizers/Pesticides","FMCG/Foods/Beverage","Food Processing","Fresher/Trainee","Gems & Jewellery","Glass","Heat Ventilation Air Conditioning","Hotels/Restaurants/Airlines/Travel","Industrial Products/Heavy Machinery","Insurance","IT-Hardware & Networking","IT-Software/Software Services","KPO / Research /Analytics","Legal","Media/Dotcom/Entertainment","Internet/Ecommerce","Medical/Healthcare/Hospital","Mining","NGO/Social Services","Office Equipment/Automation","Oil and Gas/Power/Infrastructure/Energy","Paper","Pharma/Biotech/Clinical Research","Printing/Packaging","Publishing","Real Estate/Property","Recruitment","Retail","Security/Law Enforcement","Semiconductors/Electronics","Shipping/Marine","Steel","Strategy /Management Consulting Firms","Telcom/ISP","Textiles/Garments/Accessories","Tyres","Water Treatment / Waste Management","Wellness/Fitness/Sports","Other");for(var i=0; i<industry.length; i++)document.write("<option value=\""+industry[i]+"\">"+industry[i]+"</option>");</script></select></td><td>Functional Area</td><td><select name="functional_area" class="input-xlarge"><option value=""> Select </option><script type="text/javascript">var functional=new Array("Accounts/Finance/Tax/CS/Audit","Agent","Analytics & Business Intelligence","Architecture/Interior Design","Banking/Insurance","Content/Journalism","Corporate Planning/Consulting","Engineering Design/R&D","Export/Import/Merchandising","Fashion/Garments/Merchandising","Guards/Security Services","Hotels/Restaurants","HR/Administration/IR","IT Software-Client Server","IT Software-Mainframe","IT Software-Middleware","IT Software-Mobile","IT Software-Other","IT Software-System Programming","IT Software-Telecom Software","IT Software-Application Programming/Maintenance","IT Software-DBA/Datawarehousing","IT Software-E-Commerce/Internet Technologies","IT Software-Embedded/EDA/VLSI/ASIC/Chip Des","IT Software-ERP/CRM","IT Software-Network Administration/Security","IT Software-QA & Testing","IT Software-Systems/EDP/MIS","IT-Hardware/Telecom/Technical Staff/Support","ITES/BPO/KPO/Customer Service/Operations","Legal","Marketing/Advertising/MR/PR","Packaging","Pharma/Biotech/Healthcare/Medical/R&D","Production/Maintenance/Quality","Purchase/Logistics/Supply Chain","Sales/BD","Secretary/Front Office/Data Entry","Self Employed/Consultants","Shipping","Site Engineering/Project Management","Teaching/Education","Ticketing/Travel/Airlines","Top Management","TV/Films/Production","Web/Graphic Design/Visualiser","Other");for(var i=0;i<functional.length;i++)document.write("<option value=\""+functional[i]+"\">"+functional[i]+"</option>");</script></select></td></tr>
+                        <tr><td>Gender</td><td><select name="gender" class="input-xlarge" ><option value="">-Select-</option><option value="Male">Male</option><option value="Female">Female</option><option value="General">General</option></select></td><td>LinkedIn URL</td><td><input type="text" name="profileurl" class="input-xlarge" ></td></tr>
+                        <tr><th colspan="4">Communication Details</th></tr>
+                        <tr><td>Mobile Number</td><td><input type="text" name="handno" class="input-xlarge" value="" maxlength="10" id="handno" ></td><td>Home Number</td><td><input type="text" name="homeno" value="" maxlength="10" id="homeno" class="input-xlarge"></td></tr>
+                        <tr><td>Work Number</td><td><input type="text" name="workno" value="" maxlength="10" id="workno" class="input-xlarge"></td><td>Pre. Time to call</td><td><select  name="prefertime" class="input-xlarge"><option value="">Select Time</option><script language="javascript">var time = new Array("Any Time","10AM-12PM","12PM-02PM","02PM-04PM","04PM-06PM");for(var i=0; i<time.length; i++)document.write("<option value=\""+time[i]+"\">"+time[i]+"</option>");
+                            </script></select></td></tr>
+                        <tr><td colspan="4"><strong>Search your address here&emsp;:</strong>&emsp;<input type="text" class="input-xxlarge" id="addresspicker_map" placeholder="Boylston Avenue, Princeton, MA 01541, USA" /><br/></td></tr>
+                        <tr><td>Address 1</td><td><input type="text" name="address1" value="" class="input-xlarge"></td><td>Address 2</td><td> <input type="text" name="address2" id="locality" value="" class="input-xlarge" ></td></tr>
+                        <tr><td><label>District: </label></td><td><input type="text" id="administrative_area_level_2" value="" name="city" class="input-xlarge"></td><td><label>State/Province:</label></td><td><input type="text" id="administrative_area_level_1" value="" name="state" class="input-xlarge" ></td></tr>
+                        <tr><td><label>Country:  </label></td><td><input type="text" id="country" class="input-xlarge" value="" name="country" ></td><td><label>Zip Code: </label></td><td><input type="text" id="postal_code" value="" name="zipcode" maxlength="6" class="input-xlarge"></td><input type="hidden" id="lat" name="latitude"><input type="hidden" id="lng" name="longitude" ><input type="hidden" name="type" id="type"/></tr>
+                        </table>
+                    </div>
+
+                    <div class="step-pane" id="step2">
+                        <h3 class="text text-info">Education Details</h3>
+                        <div class="EducationGroup">
+                            <fieldset class="edu">
+                                <legend>Education Details 1</legend>
+                                <table class="table table-borderless">
+                                <tr><td>Degree</td><td><select   name="degree1" ><option value="">Select</option><option value="Military service">Military service</option><option value="High school">High school</option><option value="Associate">Associate</option><option value="Pre- Bachelors">Pre- Bachelors</option><option value="Bachelors">Bachelors</option><option value="Post-Bachelors">Post-Bachelors</option><option value="Masters">Masters</option><option value="Post- Masters">Post- Masters</option><option value="PHD - Doctorate">PHD - Doctorate</option><option value="MBA">MBA</option><option value="Other">Other</option></select></td><td>Specialization</td><td><input type="text" name="special1" ></td></tr>
+                                <tr><td>University</td><td><input   type="text" name="institution1" ></td><td>City/State</td><td><input   type="text" name="location1" value="{% for a in details1 %}{{a.pg_location}}{% endfor %}" ></td></tr>
+                                <tr><td>Year of Passing</td><td><input type="text" class="from" name="year1" readonly></td><td>Country</td><td><select type="text" name="country1" value="{% for a in details1 %}{{a.pg_country}}{% endfor %}"><option value="">Select</option><option value="Afganistan">Afghanistan</option><option value="Albania">Albania</option><option value="Algeria">Algeria</option><option value="American Samoa">American Samoa</option><option value="Andorra">Andorra</option><option value="Angola">Angola</option><option value="Anguilla">Anguilla</option><option value="Antigua &amp; Barbuda">Antigua &amp; Barbuda</option><option value="Argentina">Argentina</option><option value="Armenia">Armenia</option><option value="Aruba">Aruba</option><option value="Australia">Australia</option><option value="Austria">Austria</option><option value="Azerbaijan">Azerbaijan</option><option value="Bahamas">Bahamas</option><option value="Bahrain">Bahrain</option><option value="Bangladesh">Bangladesh</option><option value="Barbados">Barbados</option><option value="Belarus">Belarus</option><option value="Belgium">Belgium</option><option value="Belize">Belize</option><option value="Benin">Benin</option><option value="Bermuda">Bermuda</option><option value="Bhutan">Bhutan</option><option value="Bolivia">Bolivia</option><option value="Bonaire">Bonaire</option><option value="Bosnia &amp; Herzegovina">Bosnia &amp; Herzegovina</option><option value="Botswana">Botswana</option><option value="Brazil">Brazil</option><option value="British Indian Ocean Ter">British Indian Ocean Ter</option><option value="Brunei">Brunei</option><option value="Bulgaria">Bulgaria</option><option value="Burkina Faso">Burkina Faso</option><option value="Burundi">Burundi</option><option value="Cambodia">Cambodia</option><option value="Cameroon">Cameroon</option><option value="Canada">Canada</option><option value="Canary Islands">Canary Islands</option><option value="Cape Verde">Cape Verde</option><option value="Cayman Islands">Cayman Islands</option><option value="Central African Republic">Central African Republic</option><option value="Chad">Chad</option><option value="Channel Islands">Channel Islands</option><option value="Chile">Chile</option><option value="China">China</option><option value="Christmas Island">Christmas Island</option><option value="Cocos Island">Cocos Island</option><option value="Colombia">Colombia</option><option value="Comoros">Comoros</option><option value="Congo">Congo</option><option value="Cook Islands">Cook Islands</option><option value="Costa Rica">Costa Rica</option><option value="Cote DIvoire">Cote D'Ivoire</option><option value="Croatia">Croatia</option><option value="Cuba">Cuba</option><option value="Curaco">Curacao</option><option value="Cyprus">Cyprus</option><option value="Czech Republic">Czech Republic</option><option value="Denmark">Denmark</option><option value="Djibouti">Djibouti</option><option value="Dominica">Dominica</option><option value="Dominican Republic">Dominican Republic</option><option value="East Timor">East Timor</option><option value="Ecuador">Ecuador</option><option value="Egypt">Egypt</option><option value="El Salvador">El Salvador</option><option value="Equatorial Guinea">Equatorial Guinea</option><option value="Eritrea">Eritrea</option><option value="Estonia">Estonia</option><option value="Ethiopia">Ethiopia</option><option value="Falkland Islands">Falkland Islands</option><option value="Faroe Islands">Faroe Islands</option><option value="Fiji">Fiji</option><option value="Finland">Finland</option><option value="France">France</option><option value="French Guiana">French Guiana</option><option value="French Polynesia">French Polynesia</option><option value="French Southern Ter">French Southern Ter</option><option value="Gabon">Gabon</option><option value="Gambia">Gambia</option><option value="Georgia">Georgia</option><option value="Germany">Germany</option><option value="Ghana">Ghana</option><option value="Gibraltar">Gibraltar</option><option value="Great Britain">Great Britain</option><option value="Greece">Greece</option><option value="Greenland">Greenland</option><option value="Grenada">Grenada</option><option value="Guadeloupe">Guadeloupe</option><option value="Guam">Guam</option><option value="Guatemala">Guatemala</option><option value="Guinea">Guinea</option><option value="Guyana">Guyana</option><option value="Haiti">Haiti</option><option value="Hawaii">Hawaii</option><option value="Honduras">Honduras</option><option value="Hong Kong">Hong Kong</option><option value="Hungary">Hungary</option><option value="Iceland">Iceland</option><option value="India">India</option><option value="Indonesia">Indonesia</option><option value="Iran">Iran</option><option value="Iraq">Iraq</option><option value="Ireland">Ireland</option><option value="Isle of Man">Isle of Man</option><option value="Israel">Israel</option><option value="Italy">Italy</option><option value="Jamaica">Jamaica</option><option value="Japan">Japan</option><option value="Jordan">Jordan</option><option value="Kazakhstan">Kazakhstan</option><option value="Kenya">Kenya</option><option value="Kiribati">Kiribati</option><option value="Korea North">Korea North</option><option value="Korea Sout">Korea South</option><option value="Kuwait">Kuwait</option><option value="Kyrgyzstan">Kyrgyzstan</option><option value="Laos">Laos</option><option value="Latvia">Latvia</option><option value="Lebanon">Lebanon</option><option value="Lesotho">Lesotho</option><option value="Liberia">Liberia</option><option value="Libya">Libya</option><option value="Liechtenstein">Liechtenstein</option><option value="Lithuania">Lithuania</option><option value="Luxembourg">Luxembourg</option><option value="Macau">Macau</option><option value="Macedonia">Macedonia</option><option value="Madagascar">Madagascar</option><option value="Malaysia">Malaysia</option><option value="Malawi">Malawi</option><option value="Maldives">Maldives</option><option value="Mali">Mali</option><option value="Malta">Malta</option><option value="Marshall Islands">Marshall Islands</option><option value="Martinique">Martinique</option><option value="Mauritania">Mauritania</option><option value="Mauritius">Mauritius</option><option value="Mayotte">Mayotte</option><option value="Mexico">Mexico</option><option value="Midway Islands">Midway Islands</option><option value="Moldova">Moldova</option><option value="Monaco">Monaco</option><option value="Mongolia">Mongolia</option><option value="Montserrat">Montserrat</option><option value="Morocco">Morocco</option><option value="Mozambique">Mozambique</option><option value="Myanmar">Myanmar</option><option value="Nambia">Nambia</option><option value="Nauru">Nauru</option><option value="Nepal">Nepal</option><option value="Netherland Antilles">Netherland Antilles</option><option value="Netherlands">Netherlands (Holland, Europe)</option><option value="Nevis">Nevis</option><option value="New Caledonia">New Caledonia</option><option value="New Zealand">New Zealand</option><option value="Nicaragua">Nicaragua</option><option value="Niger">Niger</option><option value="Nigeria">Nigeria</option><option value="Niue">Niue</option><option value="Norfolk Island">Norfolk Island</option><option value="Norway">Norway</option><option value="Oman">Oman</option><option value="Pakistan">Pakistan</option><option value="Palau Island">Palau Island</option><option value="Palestine">Palestine</option><option value="Panama">Panama</option><option value="Papua New Guinea">Papua New Guinea</option><option value="Paraguay">Paraguay</option><option value="Peru">Peru</option><option value="Phillipines">Philippines</option><option value="Pitcairn Island">Pitcairn Island</option><option value="Poland">Poland</option><option value="Portugal">Portugal</option><option value="Puerto Rico">Puerto Rico</option><option value="Qatar">Qatar</option><option value="Republic of Montenegro">Republic of Montenegro</option><option value="Republic of Serbia">Republic of Serbia</option><option value="Reunion">Reunion</option><option value="Romania">Romania</option><option value="Russia">Russia</option><option value="Rwanda">Rwanda</option><option value="St Barthelemy">St Barthelemy</option><option value="St Eustatius">St Eustatius</option><option value="St Helena">St Helena</option><option value="St Kitts-Nevis">St Kitts-Nevis</option><option value="St Lucia">St Lucia</option><option value="St Maarten">St Maarten</option><option value="St Pierre &amp; Miquelon">St Pierre &amp; Miquelon</option><option value="St Vincent &amp; Grenadines">St Vincent &amp; Grenadines</option><option value="Saipan">Saipan</option><option value="Samoa">Samoa</option><option value="Samoa American">Samoa American</option><option value="San Marino">San Marino</option><option value="Sao Tome & Principe">Sao Tome &amp; Principe</option><option value="Saudi Arabia">Saudi Arabia</option><option value="Senegal">Senegal</option><option value="Seychelles">Seychelles</option><option value="Sierra Leone">Sierra Leone</option><option value="Singapore">Singapore</option><option value="Slovakia">Slovakia</option><option value="Slovenia">Slovenia</option><option value="Solomon Islands">Solomon Islands</option><option value="Somalia">Somalia</option><option value="South Africa">South Africa</option><option value="Spain">Spain</option><option value="Sri Lanka">Sri Lanka</option><option value="Sudan">Sudan</option><option value="Suriname">Suriname</option><option value="Swaziland">Swaziland</option><option value="Sweden">Sweden</option><option value="Switzerland">Switzerland</option><option value="Syria">Syria</option><option value="Tahiti">Tahiti</option><option value="Taiwan">Taiwan</option><option value="Tajikistan">Tajikistan</option><option value="Tanzania">Tanzania</option><option value="Thailand">Thailand</option><option value="Togo">Togo</option><option value="Tokelau">Tokelau</option><option value="Tonga">Tonga</option><option value="Trinidad &amp; Tobago">Trinidad &amp; Tobago</option><option value="Tunisia">Tunisia</option><option value="Turkey">Turkey</option><option value="Turkmenistan">Turkmenistan</option><option value="Turks &amp; Caicos Is">Turks &amp; Caicos Is</option><option value="Tuvalu">Tuvalu</option><option value="Uganda">Uganda</option><option value="Ukraine">Ukraine</option><option value="United Arab Erimates">United Arab Emirates</option><option value="United Kingdom">United Kingdom</option><option value="United States of America">United States of America</option><option value="Uraguay">Uruguay</option><option value="Uzbekistan">Uzbekistan</option><option value="Vanuatu">Vanuatu</option><option value="Vatican City State">Vatican City State</option><option value="Venezuela">Venezuela</option><option value="Vietnam">Vietnam</option><option value="Virgin Islands (Brit)">Virgin Islands (Brit)</option><option value="Virgin Islands (USA)">Virgin Islands (USA)</option><option value="Wake Island">Wake Island</option><option value="Wallis &amp; Futana Is">Wallis &amp; Futana Is</option><option value="Yemen">Yemen</option><option value="Zaire">Zaire</option><option value="Zambia">Zambia</option><option value="Zimbabwe">Zimbabwe</option></select></td></tr>
+                                </table>
+                            </fieldset>
+                        </div>
+                        <input type="hidden" name="educationcounter" id="education-counter"><i id="addEducation" title="Add" class="icon-plus-sign icon-large icon-hover"></i>&emsp;<i id="removeEducation" title="Remove" class="icon-minus-sign icon-large  icon-hover"></i>
+                        <h3 class="text text-info">Certificate Details</h3>
+                        <p><strong>Diploma/Certificate</strong></p>
+                        <table class="CertificateGroup table table-borderless">
+                        <tr class="cert" id="CertificateDiv"><td>1&emsp;<input id="certificate1" type="text" name="certificate1"></td></tr></table><br><input type="hidden" name="certificatecounter" id="certificate-counter"><i id="addCertificate" title="Add" class="icon-plus-sign icon-large icon-hover"></i>&emsp;<i id="removeCertificate" title="Remove" class="icon-minus-sign icon-large icon-hover"></i>
+                        
+                    </div>
+
+                    <div class="step-pane" id="step3">
+                        <h3 class="text text-info">Profile Summary</h3>
+                        <table class="table table-borderless">
+                        <tr><td>Profile Summary</td><td><textarea style="width:600px;height:130px;" id="addtexteditor" name="profile_summary" ></textarea><script type="text/javascript">$('#addtexteditor').wysihtml5();</script></td></tr>
+                        <tr><td>Upload Profile picture</td><td><input type="file" class="upfile1" id="Gfile_1" name="profile_pic" ><p>(max.size 200KB, .jpeg, .jpg, .png, .gif, .bmp)</p></td></tr>
+                        <tr><td colspan="2"><h4 class="text text-info">TECHNICAL SKILL SET</h4></td></tr>
+                        </table>
+                        <table class="table table-borderless"><tr><th width="30%">Skill</th><th width="15%">Version</th><th width="15%">Last Used</th><th>Experience</th></tr></table>
+                        <table id="outer" class="table table-borderless"><tr id="inner" class="skill"><td width="30%"><input id="skill1" type="text" name="skill1"></td><td width="15%"><input id="version1" type="text" name="version1" class="input-small"></td><td width="15%"><select class="input-small" name="lastused1" id="lastused1"><option value="">Select</option><script type="text/javascript">var prof=new Array("2013","2012","2011","2010","2009","2008","2007","2006","2005","2004","2003","2002","2001","2000","1999","1998","1997","1996","1995","1994","1993","1992","1991","1990");for (var i=0;i<prof.length;i++)document.write("<option value=\""+prof[i]+"\">"+prof[i]+"</option>");</script></select></td><td><select name="skillyear1" id="skillyear1" class="input-small"><option value="">Year</option><script type="text/javascript">var prof=new Array('0','1','2','3','4','5','6','7','8','9','10','11','12');for (var i=0;i<prof.length;i++)document.write("<option value=\""+prof[i]+"\">"+prof[i]+"</option>");</script></select><select  name="skillmon1" id="skillmon1" class="input-small"><option value="">Month</option><script type="text/javascript">var prof=new Array('1','2','3','4','5','6','7','8','9','10','11');for (var i=0;i<prof.length;i++)document.write("<option value=\""+prof[i]+"\">"+prof[i]+"</option>");</script></select></td></tr>
+                        </table>
+                        <input type="hidden" name="skillcounter" id="skill-counter" ><i id="addSkill" title="Add" class="icon-plus-sign icon-large icon-hover"></i>&emsp;<i id="removeSkill" title="Remove" class="icon-minus-sign icon-large icon-hover"></i>
+                    </div>
+
+                    <div class="step-pane" id="step4">
+                        <h3 class="text text-info">Employment Details</h3>
+                        <div class="EmpGroup">
+                        <fieldset class="empdtls"><legend>Employment Details 1</legend>
+                        <table class="table table-borderless">
+                        <tr><td>Employer Name</td><td><input type="text"  name="employer_name1" >&emsp;<input type="radio" name="empstatus1" value="Current Employer">&nbsp;Current Employer&emsp;<input type="radio" name="empstatus1" value="Previous Employer">&nbsp;Previous Employer&emsp;<input type="radio" name="empstatus1" value="Other Employer">&nbsp;Other Employer</td></tr>
+                        <tr><td>Duration</td><td><input type="text" name="empstartdate1" class="from" readonly>&emsp;to&emsp;<input type="text" name="emptodate1" class="from" readonly></td></tr>
+                        <tr><td>Designation</td><td ><input type="text"  name="designation1" class="input-xxlarge" ></td></tr>
+                        <tr><td>Job Profile</td><td ><textarea style="width:600px;height:130px;" id="jobprof1" name="jobprofile1" ></textarea><script type="text/javascript">$('#jobprof1').wysihtml5();</script></td></tr>
+                        </table>
+                        </fieldset>
+                        </div>
+                        <div><input type="hidden" name="empcounter" id="emp-counter" ><i id="addEmp" title="Add" class="icon-plus-sign icon-large icon-hover"></i>&emsp;<i id="removeEmp" title="Remove" class="icon-minus-sign icon-large icon-hover"></i></div>
+                    </div>
+
+                    <div class="step-pane" id="step5">
+                        <h3 class="text text-info">Project Details</h3>
+                        <div class="ProjGroup">
+                        <fieldset class="projdet"><legend>Project Details 1</legend>
+                        <table class="table table-borderless"><tr><td>Client</td><td><input type="text" name="client1" >&emsp;Project Title&emsp;<input type="text" name="project_title1"></td></tr>
+                        <tr><td>Duration</td><td><input type="text" name="projstartdate1" id="startDate" class="from" readonly>&emsp;to&emsp;<input type="text" name="projtodate1" id="toDate" class="from" readonly></td></tr>
+                        <tr><td>Project Location</td><td><input type="text" name="project_loc1" >&emsp;<input type="radio" name="on_offsite1" value="Onsite">&nbsp;Onsite&emsp;<input type="radio" name="on_offsite1" value="Offsite">&nbsp;Offsite</td></tr>
+                        <tr><td>Employment Type</td><td><input type="radio" name="emp_type1" value="Full Time" />&nbsp;Full Time&emsp;<input type="radio" name="emp_type1" value="Part Time" />&nbsp;Part Time&emsp;<input type="radio"  name="emp_type1" value="Contractual Project" />&nbsp;Contractual Project</td></tr>
+                        <tr><td>Project Details</td><td><textarea id="prodet1" name="project_details1" style="width:600px;height:130px;"></textarea><script type="text/javascript">$('#prodet1').wysihtml5();</script></td></tr>
+                        <tr><td>Role Description</td><td><textarea id='roledesc1' name="role_desc1" style="width:600px;height:130px;"></textarea><script type="text/javascript">$('#roledesc1').wysihtml5();</script></td></tr>
+                        <tr><td>Skills Used</td><td><input type="text" name="skill_used1" class="input-xxlarge"></td></tr>
+                        <tr><td>Role</td><td><select name="role1"><option value="">Select Role</option><option value="Domain Expert">Domain Expert</option><option value="Sr.Project Leader">Sr.Project Leader</option><option value="Solution Architect">Solution Architect</option><option value="Quality Analyst">Quality Analyst</option><option value="Database Architect/DBA">Database Architect/DBA</option><option value="Network/System Administrator">Network/System Administrator</option><option value="Project Leader">Project Leader</option><option value="Module Leader">Module Leader</option><option value="Sr.Programmer">Sr.Programmer</option><option value="Programmer">Programmer</option><option value="Test Engineer">Test Engineer</option><option value="Other">Other</option></select>&emsp;Team Size&emsp;<select  name="teamsize1"><option value="">Select</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="19">19</option></select></td></tr>
+                        </table>
+                        </fieldset>
+                        </div>
+                        <div><input type="hidden" name="projcounter" id="proj-counter" ><i id="addProj" title="Add" class="icon-plus-sign icon-large icon-hover"></i>&emsp;<i id="removeProj" title="Add" class="icon-minus-sign icon-large icon-hover"></i></div>
+                    </div>
+                    <div class="step-pane" id="step6">
+                        <h3 class="text text-info">Other Details</h3>
+                        <p><strong>Security Clearance Section</strong></p>
+                        <table class="table table-borderless">
+                        <tr><td>Security Clearance</td><td><select name="jssecretclear" ><option value=""> Select </option><script type="text/javascript">var functional=new Array('None','Public Trust','NACI','ADP1/IT1','ADP2/IT2','Confidential','DOE L','DOE Q','Secret','Top Secret','Top Secret/SCI','Top Secret/SCI CI Polygeaph','Top Secret/SCI Full Scope Polygeaph','Other Clearance');for(var i=0;i<functional.length;i++)document.write("<option value=\""+functional[i]+"\">"+functional[i]+"</option>");</script></select></td></tr>
+                        <tr><td>From Date</td><td><input type="text" name="jsfromdate" id="dpd1" class="date-picker" ></td></tr>
+                        <tr><td>Expire Date</td><td><input type="text" name="jstodate" id="dpd2" class="date-picker" ></td></tr></table>
+                        <table class="LanguageGroup table table-borderless">
+                        <tr><td colspan="6"><strong>Languages Known</strong></td></tr>
+                        <tr><th>Language</th><th>Proficiency</th><th>Read</th><th>Write</th><th>Speak</th></tr>
+                        <tr class="lang"><td><input id="language1" type="text" name="language1"></td><td><select  name="proficiency1" id="proficiency1"><option value="">Select</option><option value="Beginner">Beginner</option><option value="Proficient">Proficient</option><option value="Expert">Expert</option></select></td><td><input type="checkbox"  name="read1" id="read1" value="Yes" /></td><td><input type="checkbox"  name="write1" id="write1" value="Yes" /></td><td><input type="checkbox"  name="speak1" id="speak1" value="Yes" /></td></tr>
+                        </table>
+                        <div><input type="hidden" name="langcounter" id="lang-counter" ><i id="addLanguage" title="Add" class="icon-plus-sign icon-large icon-hover"></i>&emsp;<i id="removeLanguage" title="Add" class="icon-minus-sign icon-large icon-hover"></i></div>
+                        <table>
+                        <tr><td colspan="6"><p><b>Desired Job Details</b></p></td></tr>
+                        <tr><td>Employment Type</td><td colspan="5"><select id="jobtype"  name="job_type" size="4" style="width:250px;"><option value="" style="background-color:#7F9DB9;">Select</option><script type="text/javascript">var jobtype=new Array("Full time","Contract - Corp to Corp","Contract - Independent","Contract - W2","Part time");for (var i=0;i<jobtype.length;i++)document.write("<option value=\""+jobtype[i]+"\">"+jobtype[i]+"</option>");</script></select></td></tr>
+                        <tr><td colspan="6">Work Authorization</td></tr>
+                        <tr><td>Work Permit for USA</td><td colspan="5"><select id="workpermit"  name="workpermit"><option value="">Select</option><script type="text/javascript">var work=new Array("Have H1 Visa","Need H1 Visa","TN Permit Holder","Green Card Holder","US Citizen","Authorize to work in US");for (var i = 0; i < work.length; i++)document.write("<option value=\""+work[i]+"\">"+work[i]+"</option>");</script></select></td></tr>
+                        <tr><td>Other Countries</td><td colspan="5"><select id="workother"  name="workother" size="5" multiple style="width:250px;"><option value="" style="background-color:#7F9DB9;">Select</option><script type="text/javascript">var other=new Array('Afghanistan','Albania','Algeria','Angola','Argentina','Australia','Austria','Bahamas','Bangladesh','Belarus','Belgium','Bhutan','Botswana','Brazil','Burma','Burundi','Cambodia','Cameroon','Canada','Chile','China','Colombia','Comoros','Congo','Cuba','Cyprus','Czech Republic','Denmark','Egypt','Estonia','Ethiopia','France','Gambia','Georgia','Germany','Ghana','Greece','Guinea','Guyana','Hungary','Iceland','India','Indonesia','Iran','Iraq','Ireland','Israel','Italy','Jamaica','Japan','Kenya','Korea','Kuwait','Lebanon','Liberia','Libya','Lithuania','Malaysia','Maldives','Mexico','Moldova','Mongolia','Namibia','Nepal','Netherlands','New Zealand','Nigeria','Norway','Oman','Pakistan','Panama','Philippines','Poland','Portugal','Qatar','Russia','Saint Lucia','Saudi Arabia','Serbia','Singapore','South Africa','South Sudan','Spain','Sri Lanka','Sudan','Sweden','Switzerland','Thailand','Togo','Tonga','Trinidad and Tobago','Tunisia','Turkey','Ukraine','United Arab Emirates','United Kingdom','United States','Uruguay','Vatican City','Vietnam','Yemen','Zambia','Zimbabwe');for (var i = 0; i < other.length; i++)document.write("<option value=\""+other[i]+"\">"+other[i]+"</option>");</script></select></td></tr>
+                        </table>
+                    </div>
+                    <div class="step-pane" id="step7">
+                        <h3 class="text text-info">Resume Upload</h3>
+                        <table class="table table-borderless">
+                        <tr><td>Resume Title</td><td><input type="text"  name="resumeTitle" ></td></tr>
+                        <tr><td>Upload Resume<input type="radio"  name="resume" id="ur" onchange="disablefield();" value="upload resume" /></td><td><input type="file" disabled id="ur1" class="upfile2" name="resumeFile" ><p><sub>(.doc/.docx, rtf, odt, txt)</sub></p></td></tr>
+                        <tr><td>Text Resume <input type="radio" id="tr" name="resume" onchange="disablefield();" value="text resume" /></td><td><textarea style="width:600px;height:130px;" disabled id="tr1"  name="text_resume"></textarea><script type="text/javascript">$('#tr1').wysihtml5();</script></td></tr>
+                        <tr><td>Video Resume<br><sub>(only mp4,ogg,ogv,webm acceptable)</sub></td><td><input type="file" name="videoresume" ></td></tr>
+                        </table>
+                        <h4 class="text text-info">Preferred Locations</h4>
+                        <table class="table table-borderless">
+                        <tr><td>I'm willing to telecommute</td><td><input id="telecommute" type="checkbox" value="Yes" name="telecommute"></td></tr>
+                        <tr><td>I'm willing to travel</td><td><select id="travel" name="travel"><option selected="selected" value="0% - No travel">0% - No travel</option><option value="25%">25%</option><option value="50%">50%</option><option value="75%">75%</option><option value="100%">100%</option></select></td></tr>
+                        <tr><td>I'm willing to relocate</td><td><input type="checkbox" value="Yes" name="relocate" id="relocate"></td></tr>
+                        <tr><td>Relocation Choice</td><td><select id="relocatechoice"  name="relocatechoice" size="5" multiple style="width:250px;"><option value="" style="background-color:#7F9DB9;">Select</option><script type="text/javascript">var relocate=new Array('Afghanistan','Albania','Algeria','Angola','Argentina','Australia','Austria','Bahamas','Bangladesh','Belarus','Belgium','Bhutan','Botswana','Brazil','Burma','Burundi','Cambodia','Cameroon','Canada','Chile','China','Colombia','Comoros','Congo','Cuba','Cyprus','Czech Republic','Denmark','Egypt','Estonia','Ethiopia','France','Gambia','Georgia','Germany','Ghana','Greece','Guinea','Guyana','Hungary','Iceland','India','Indonesia','Iran','Iraq','Ireland','Israel','Italy','Jamaica','Japan','Kenya','Korea','Kuwait','Lebanon','Liberia','Libya','Lithuania','Malaysia','Maldives','Mexico','Moldova','Mongolia','Namibia','Nepal','Netherlands','New Zealand','Nigeria','Norway','Oman','Pakistan','Panama','Philippines','Poland','Portugal','Qatar','Russia','Saint Lucia','Saudi Arabia','Serbia','Singapore','South Africa','South Sudan','Spain','Sri Lanka','Sudan','Sweden','Switzerland','Thailand','Togo','Tonga','Trinidad and Tobago','Tunisia','Turkey','Ukraine','United Arab Emirates','United Kingdom','United States','Uruguay','Vatican City','Vietnam','Yemen','Zambia','Zimbabwe');for (var i = 0; i < relocate.length; i++)document.write("<option value=\""+relocate[i]+"\">"+relocate[i]+"</option>");</script></select></td></tr>
+                        </table>
+                        <input type="hidden" value="{{user.id}}" name="user_id" />
+                    </div>
+                </div>
+                <input class="btn btn-warning" id="btnWizardPrev" value="Back" type="button" />
+                <input class="btn btn-primary" id="btnWizardNext" value="Next" type="button" />
+                <input class="btn btn-success btn-large" id="btnWizardsubmit" value="Submit" type="submit" style="display:none;" />
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extrajavascript %}
+<script src="http://maps.google.com/maps/api/js?libraries=places&region=uk&language=en&sensor=true"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.ui.addresspicker.js"></script>
+<script type="text/javascript">
+
+    function disablefield()
+        { 
+            if (document.getElementById('ur').checked == 1)
+                { 
+                document.getElementById('ur1').disabled=''; 
+                document.getElementById('tr1').disabled='disabled'; 
+                }
+            else if (document.getElementById('tr').checked == 1)
+                { 
+                document.getElementById('ur1').disabled='disabled'; 
+                document.getElementById('tr1').disabled=''; 
+                } 
+        }
+
+var currentLayer = 'page1';
+function showLayer(lyr){
+    hideLayer(currentLayer);
+    document.getElementById(lyr).style.visibility = 'visible';
+    currentLayer = lyr;
+}
+
+function hideLayer(lyr){
+    document.getElementById(lyr).style.visibility = 'hidden';
+}
+
+
+    function isNumberKey(evt)
+      {
+         var charCode = (evt.which) ? evt.which : event.keyCode
+         if (charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+
+         return true;
+      }
+
+
+   
+      
+    </script>
+
+<script type="text/javascript">
+$(document).ready(function()
+{
+
+/* -----------------------Languages Known ------------------------------------- */
+
+
+var li = $('.lang').size();
+$("#lang-counter").val(li);
+$("#addLanguage").click(function ()
+{
+    var lj = $('.lang').size()+1;
+    $("#lang-counter").val(lj);
+    $('<tr class="lang">'+
+'<td>'+
+'<input id="language' + lj + '" type="text" name="language' + lj + '">'+
+'</td>'+
+'<td>'+
+'<select  name="proficiency' + lj + '" id="proficiency' + lj + '">'+
+'<option value="">Select</option>'+
+'<option value="Beginner">Beginner</option>'+
+'<option value="Proficient">Proficient</option>'+
+'<option value="Expert">Expert</option>'+
+'</select>'+
+'</td>'+
+'<td style="width:100px;"><input type="checkbox"  name="read' + lj + '" id="read' + lj + '" value="Yes" /></td>'+
+'<td style="width:100px;"><input type="checkbox"  name="write' + lj + '" id="write' + lj + '" value="Yes" /></td>'+
+'<td style="width:100px;"><input type="checkbox"  name="speak' + lj + '" id="speak' + lj + '" value="Yes" /></td>'+
+'</tr>').fadeIn('fast').appendTo('.LanguageGroup');
+            lj++;
+            li++;
+    });
+
+   
+$('#removeLanguage').click(function () {
+        if (li > 1) {
+            $('.lang:last').remove();
+            li--;
+            var lj = $('.lang').size();
+            $("#lang-counter").val(lj);
+        }
+    });
+
+
+
+/*  ----------------------------- Educational Details ---------------------------*/
+
+var i = $('.edu').size();
+$("#education-counter").val(i);
+$("#addEducation").click(function ()
+{
+    var j = $('.edu').size()+1;
+    $("#education-counter").val(j);
+    $(
+        '<fieldset class="edu">'+
+    '<legend>Education Details ' + j +'</legend>'+
+    '<table class="table table-borderless">'+
+    
+    '<tr>'+
+       
+        '<td>Degree</td>'+
+        '<td>'+
+            '<select name="degree" >'+
+                '<option value="">Select</option>'+
+                '<option value="Military service">Military service</option>'+
+                '<option value="High school">High school</option>'+
+                '<option value="Associate">Associate</option>'+
+                '<option value="Pre- Bachelors">Pre- Bachelors</option>'+
+                '<option value="Bachelors">Bachelors</option>'+
+                '<option value="Post-Bachelors">Post-Bachelors</option>'+
+                '<option value="Masters">Masters</option>'+
+                '<option value="Post- Masters">Post- Masters</option>'+
+                '<option value="PHD - Doctorate">PHD - Doctorate</option>'+
+                '<option value="MBA">MBA</option>'+
+                '<option value="Other">Other</option>'+
+            '</select>'+
+        '</td>'+
+        '<td>Specialization</td>'+
+        '<td><input   type="text" name="special' + j + '" ></td>'+
+    '</tr>'+
+    '<tr>'+
+        '<td>University</td>'+
+        '<td><input   type="text" name="institution' + j + '" ></td>'+
+        '<td>City/State</td>'+
+        '<td><input   type="text" name="location' + j+ '" value="{% for a in details1 %}{{a.pg_location}}{% endfor %}" ></td>'+
+    '</tr>'+
+    '<tr>'+
+        '<td>Year of Passing</td>'+
+        '<td>'+
+            '<input type="text" class="from" name="year' + j + '" value="{{a.year}}" readonly>'+
+               
+        '</td>'+
+
+        '<td>Country</td>'+
+        '<td>'+
+        '<select type="text" name="country' + j + '" value="{{a.country}}">'+
+                    '<option value="">Select</option>'+
+                    '<option value="Afganistan">Afghanistan</option>'+
+                    '<option value="Albania">Albania</option>'+
+                    '<option value="Algeria">Algeria</option>'+
+                    '<option value="American Samoa">American Samoa</option>'+
+                    '<option value="Andorra">Andorra</option>'+
+                    '<option value="Angola">Angola</option>'+
+                    '<option value="Anguilla">Anguilla</option>'+
+                    '<option value="Antigua &amp; Barbuda">Antigua Barbuda</option>'+
+                    '<option value="Argentina">Argentina</option>'+
+                    '<option value="Armenia">Armenia</option>'+
+                    '<option value="Aruba">Aruba</option>'+
+                    '<option value="Australia">Australia</option>'+
+                    '<option value="Austria">Austria</option>'+
+                    '<option value="Azerbaijan">Azerbaijan</option>'+
+                    '<option value="Bahamas">Bahamas</option>'+
+                    '<option value="Bahrain">Bahrain</option>'+
+                    '<option value="Bangladesh">Bangladesh</option>'+
+                    '<option value="Barbados">Barbados</option>'+
+                    '<option value="Belarus">Belarus</option>'+
+                    '<option value="Belgium">Belgium</option>'+
+                    '<option value="Belize">Belize</option>'+
+                    '<option value="Benin">Benin</option>'+
+                    '<option value="Bermuda">Bermuda</option>'+
+                    '<option value="Bhutan">Bhutan</option>'+
+                    '<option value="Bolivia">Bolivia</option>'+
+                    '<option value="Bonaire">Bonaire</option>'+
+                    '<option value="Bosnia &amp; Herzegovina">Bosnia Herzegovina</option>'+
+                    '<option value="Botswana">Botswana</option>'+
+                    '<option value="Brazil">Brazil</option>'+
+                    '<option value="British Indian Ocean Ter">British Indian Ocean Ter</option>'+
+                    '<option value="Brunei">Brunei</option>'+
+                    '<option value="Bulgaria">Bulgaria</option>'+
+                    '<option value="Burkina Faso">Burkina Faso</option>'+
+                    '<option value="Burundi">Burundi</option>'+
+                    '<option value="Cambodia">Cambodia</option>'+
+                    '<option value="Cameroon">Cameroon</option>'+
+                    '<option value="Canada">Canada</option>'+
+                    '<option value="Canary Islands">Canary Islands</option>'+
+                    '<option value="Cape Verde">Cape Verde</option>'+
+                    '<option value="Cayman Islands">Cayman Islands</option>'+
+                    '<option value="Central African Republic">Central African Republic</option>'+
+                    '<option value="Chad">Chad</option>'+
+                    '<option value="Channel Islands">Channel Islands</option>'+
+                    '<option value="Chile">Chile</option>'+
+                    '<option value="China">China</option>'+
+                    '<option value="Christmas Island">Christmas Island</option>'+
+                    '<option value="Cocos Island">Cocos Island</option>'+
+                    '<option value="Colombia">Colombia</option>'+
+                    '<option value="Comoros">Comoros</option>'+
+                    '<option value="Congo">Congo</option>'+
+                    '<option value="Cook Islands">Cook Islands</option>'+
+                    '<option value="Costa Rica">Costa Rica</option>'+
+                    '<option value="Cote DIvoire">Cote DIvoire</option>'+
+                    '<option value="Croatia">Croatia</option>'+
+                    '<option value="Cuba">Cuba</option>'+
+                    '<option value="Curaco">Curacao</option>'+
+                    '<option value="Cyprus">Cyprus</option>'+
+                    '<option value="Czech Republic">Czech Republic</option>'+
+                    '<option value="Denmark">Denmark</option>'+
+                    '<option value="Djibouti">Djibouti</option>'+
+                    '<option value="Dominica">Dominica</option>'+
+                    '<option value="Dominican Republic">Dominican Republic</option>'+
+                    '<option value="East Timor">East Timor</option>'+
+                    '<option value="Ecuador">Ecuador</option>'+
+                    '<option value="Egypt">Egypt</option>'+
+                    '<option value="El Salvador">El Salvador</option>'+
+                    '<option value="Equatorial Guinea">Equatorial Guinea</option>'+
+                    '<option value="Eritrea">Eritrea</option>'+
+                    '<option value="Estonia">Estonia</option>'+
+                    '<option value="Ethiopia">Ethiopia</option>'+
+                    '<option value="Falkland Islands">Falkland Islands</option>'+
+                    '<option value="Faroe Islands">Faroe Islands</option>'+
+                    '<option value="Fiji">Fiji</option>'+
+                    '<option value="Finland">Finland</option>'+
+                    '<option value="France">France</option>'+
+                    '<option value="French Guiana">French Guiana</option>'+
+                    '<option value="French Polynesia">French Polynesia</option>'+
+                    '<option value="French Southern Ter">French Southern Ter</option>'+
+                    '<option value="Gabon">Gabon</option>'+
+                    '<option value="Gambia">Gambia</option>'+
+                    '<option value="Georgia">Georgia</option>'+
+                    '<option value="Germany">Germany</option>'+
+                    '<option value="Ghana">Ghana</option>'+
+                    '<option value="Gibraltar">Gibraltar</option>'+
+                    '<option value="Great Britain">Great Britain</option>'+
+                    '<option value="Greece">Greece</option>'+
+                    '<option value="Greenland">Greenland</option>'+
+                    '<option value="Grenada">Grenada</option>'+
+                    '<option value="Guadeloupe">Guadeloupe</option>'+
+                    '<option value="Guam">Guam</option>'+
+                    '<option value="Guatemala">Guatemala</option>'+
+                    '<option value="Guinea">Guinea</option>'+
+                    '<option value="Guyana">Guyana</option>'+
+                    '<option value="Haiti">Haiti</option>'+
+                    '<option value="Hawaii">Hawaii</option>'+
+                    '<option value="Honduras">Honduras</option>'+
+                    '<option value="Hong Kong">Hong Kong</option>'+
+                    '<option value="Hungary">Hungary</option>'+
+                    '<option value="Iceland">Iceland</option>'+
+                    '<option value="India">India</option>'+
+                    '<option value="Indonesia">Indonesia</option>'+
+                    '<option value="Iran">Iran</option>'+
+                    '<option value="Iraq">Iraq</option>'+
+                    '<option value="Ireland">Ireland</option>'+
+                    '<option value="Isle of Man">Isle of Man</option>'+
+                    '<option value="Israel">Israel</option>'+
+                    '<option value="Italy">Italy</option>'+
+                    '<option value="Jamaica">Jamaica</option>'+
+                    '<option value="Japan">Japan</option>'+
+                    '<option value="Jordan">Jordan</option>'+
+                    '<option value="Kazakhstan">Kazakhstan</option>'+
+                    '<option value="Kenya">Kenya</option>'+
+                    '<option value="Kiribati">Kiribati</option>'+
+                    '<option value="Korea North">Korea North</option>'+
+                    '<option value="Korea Sout">Korea South</option>'+
+                    '<option value="Kuwait">Kuwait</option>'+
+                    '<option value="Kyrgyzstan">Kyrgyzstan</option>'+
+                    '<option value="Laos">Laos</option>'+
+                    '<option value="Latvia">Latvia</option>'+
+                    '<option value="Lebanon">Lebanon</option>'+
+                    '<option value="Lesotho">Lesotho</option>'+
+                    '<option value="Liberia">Liberia</option>'+
+                    '<option value="Libya">Libya</option>'+
+                    '<option value="Liechtenstein">Liechtenstein</option>'+
+                    '<option value="Lithuania">Lithuania</option>'+
+                    '<option value="Luxembourg">Luxembourg</option>'+
+                    '<option value="Macau">Macau</option>'+
+                    '<option value="Macedonia">Macedonia</option>'+
+                    '<option value="Madagascar">Madagascar</option>'+
+                    '<option value="Malaysia">Malaysia</option>'+
+                    '<option value="Malawi">Malawi</option>'+
+                    '<option value="Maldives">Maldives</option>'+
+                    '<option value="Mali">Mali</option>'+
+                    '<option value="Malta">Malta</option>'+
+                    '<option value="Marshall Islands">Marshall Islands</option>'+
+                    '<option value="Martinique">Martinique</option>'+
+                    '<option value="Mauritania">Mauritania</option>'+
+                    '<option value="Mauritius">Mauritius</option>'+
+                    '<option value="Mayotte">Mayotte</option>'+
+                    '<option value="Mexico">Mexico</option>'+
+                    '<option value="Midway Islands">Midway Islands</option>'+
+                    '<option value="Moldova">Moldova</option>'+
+                    '<option value="Monaco">Monaco</option>'+
+                    '<option value="Mongolia">Mongolia</option>'+
+                    '<option value="Montserrat">Montserrat</option>'+
+                    '<option value="Morocco">Morocco</option>'+
+                    '<option value="Mozambique">Mozambique</option>'+
+                    '<option value="Myanmar">Myanmar</option>'+
+                    '<option value="Nambia">Nambia</option>'+
+                    '<option value="Nauru">Nauru</option>'+
+                    '<option value="Nepal">Nepal</option>'+
+                    '<option value="Netherland Antilles">Netherland Antilles</option>'+
+                    '<option value="Netherlands">Netherlands (Holland, Europe)</option>'+
+                    '<option value="Nevis">Nevis</option>'+
+                    '<option value="New Caledonia">New Caledonia</option>'+
+                    '<option value="New Zealand">New Zealand</option>'+
+                    '<option value="Nicaragua">Nicaragua</option>'+
+                    '<option value="Niger">Niger</option>'+
+                    '<option value="Nigeria">Nigeria</option>'+
+                    '<option value="Niue">Niue</option>'+
+                    '<option value="Norfolk Island">Norfolk Island</option>'+
+                    '<option value="Norway">Norway</option>'+
+                    '<option value="Oman">Oman</option>'+
+                    '<option value="Pakistan">Pakistan</option>'+
+                    '<option value="Palau Island">Palau Island</option>'+
+                    '<option value="Palestine">Palestine</option>'+
+                    '<option value="Panama">Panama</option>'+
+                    '<option value="Papua New Guinea">Papua New Guinea</option>'+
+                    '<option value="Paraguay">Paraguay</option>'+
+                    '<option value="Peru">Peru</option>'+
+                    '<option value="Phillipines">Philippines</option>'+
+                    '<option value="Pitcairn Island">Pitcairn Island</option>'+
+                    '<option value="Poland">Poland</option>'+
+                    '<option value="Portugal">Portugal</option>'+
+                    '<option value="Puerto Rico">Puerto Rico</option>'+
+                    '<option value="Qatar">Qatar</option>'+
+                    '<option value="Republic of Montenegro">Republic of Montenegro</option>'+
+                    '<option value="Republic of Serbia">Republic of Serbia</option>'+
+                    '<option value="Reunion">Reunion</option>'+
+                    '<option value="Romania">Romania</option>'+
+                    '<option value="Russia">Russia</option>'+
+                    '<option value="Rwanda">Rwanda</option>'+
+                    '<option value="St Barthelemy">St Barthelemy</option>'+
+                    '<option value="St Eustatius">St Eustatius</option>'+
+                    '<option value="St Helena">St Helena</option>'+
+                    '<option value="St Kitts-Nevis">St Kitts-Nevis</option>'+
+                    '<option value="St Lucia">St Lucia</option>'+
+                    '<option value="St Maarten">St Maarten</option>'+
+                    '<option value="St Pierre &amp; Miquelon">St Pierre Miquelon</option>'+
+                    '<option value="St Vincent &amp; Grenadines">St Vincent Grenadines</option>'+
+                    '<option value="Saipan">Saipan</option>'+
+                    '<option value="Samoa">Samoa</option>'+
+                    '<option value="Samoa American">Samoa American</option>'+
+                    '<option value="San Marino">San Marino</option>'+
+                    '<option value="Sao Tome & Principe">Sao Tome Principe</option>'+
+                    '<option value="Saudi Arabia">Saudi Arabia</option>'+
+                    '<option value="Senegal">Senegal</option>'+
+                    '<option value="Seychelles">Seychelles</option>'+
+                    '<option value="Sierra Leone">Sierra Leone</option>'+
+                    '<option value="Singapore">Singapore</option>'+
+                    '<option value="Slovakia">Slovakia</option>'+
+                    '<option value="Slovenia">Slovenia</option>'+
+                    '<option value="Solomon Islands">Solomon Islands</option>'+
+                    '<option value="Somalia">Somalia</option>'+
+                    '<option value="South Africa">South Africa</option>'+
+                    '<option value="Spain">Spain</option>'+
+                    '<option value="Sri Lanka">Sri Lanka</option>'+
+                    '<option value="Sudan">Sudan</option>'+
+                    '<option value="Suriname">Suriname</option>'+
+                    '<option value="Swaziland">Swaziland</option>'+
+                    '<option value="Sweden">Sweden</option>'+
+                    '<option value="Switzerland">Switzerland</option>'+
+                    '<option value="Syria">Syria</option>'+
+                    '<option value="Tahiti">Tahiti</option>'+
+                    '<option value="Taiwan">Taiwan</option>'+
+                    '<option value="Tajikistan">Tajikistan</option>'+
+                    '<option value="Tanzania">Tanzania</option>'+
+                    '<option value="Thailand">Thailand</option>'+
+                    '<option value="Togo">Togo</option>'+
+                    '<option value="Tokelau">Tokelau</option>'+
+                    '<option value="Tonga">Tonga</option>'+
+                    '<option value="Trinidad &amp; Tobago">Trinidad Tobago</option>'+
+                    '<option value="Tunisia">Tunisia</option>'+
+                    '<option value="Turkey">Turkey</option>'+
+                    '<option value="Turkmenistan">Turkmenistan</option>'+
+                    '<option value="Turks &amp; Caicos Is">Turks &amp; Caicos Is</option>'+
+                    '<option value="Tuvalu">Tuvalu</option>'+
+                    '<option value="Uganda">Uganda</option>'+
+                    '<option value="Ukraine">Ukraine</option>'+
+                    '<option value="United Arab Erimates">United Arab Emirates</option>'+
+                    '<option value="United Kingdom">United Kingdom</option>'+
+                    '<option value="United States of America">United States of America</option>'+
+                    '<option value="Uraguay">Uruguay</option>'+
+                    '<option value="Uzbekistan">Uzbekistan</option>'+
+                    '<option value="Vanuatu">Vanuatu</option>'+
+                    '<option value="Vatican City State">Vatican City State</option>'+
+                    '<option value="Venezuela">Venezuela</option>'+
+                    '<option value="Vietnam">Vietnam</option>'+
+                    '<option value="Virgin Islands (Brit)">Virgin Islands (Brit)</option>'+
+                    '<option value="Virgin Islands (USA)">Virgin Islands (USA)</option>'+
+                    '<option value="Wake Island">Wake Island</option>'+
+                    '<option value="Wallis &amp; Futana Is">Wallis &amp; Futana Is</option>'+
+                    '<option value="Yemen">Yemen</option>'+
+                    '<option value="Zaire">Zaire</option>'+
+                    '<option value="Zambia">Zambia</option>'+
+                    '<option value="Zimbabwe">Zimbabwe</option>'+
+'</select>'+
+
+        '</td> '+
+    '</tr>'+
+    '</table>'+
+        '</fieldset>'
+    
+    ).fadeIn('fast').appendTo('.EducationGroup');
+            j++;
+            i++;
+    });
+
+   
+$('#removeEducation').click(function () {
+        if (i > 1) {
+            $('.edu:last').remove();
+            i--;
+            var j = $('.edu').size();
+            $("#education-counter").val(j);
+        }
+    });
+
+
+/* --------------- Employment Details ------------------------ */
+
+var empi = $('.empdtls').size();
+$("#emp-counter").val(empi);
+$("#addEmp").click(function ()
+{
+var empj = $('.empdtls').size()+1;
+$("#emp-counter").val(empj);
+$('<fieldset class="empdtls">'+
+    '<legend>Employment Details ' + empj +'</legend>'+
+    '<table class="table table-borderless">'+
+    '<tr>'+
+    '<td>Employer Name</td>'+
+    '<td>'+
+    '<input type="text"  name="employer_name' + empj +'" >'+
+    '&emsp;<input type="radio" name="empstatus' + empj +'" value="Current Employer">&nbsp;Current Employer'+
+    '&emsp;<input type="radio" name="empstatus' + empj +'" value="Previous Employer">&nbsp;Previous Employer'+
+    '&emsp;<input type="radio" name="empstatus' + empj +'" value="Other Employer">&nbsp;Other Employer'+
+    '</td>'+
+    '</tr>'+
+    '<tr>'+
+    '<td>Duration</td>'+
+    '<td>'+
+    '<input type="text" name="empstartdate' + empj +'" class="from" readonly>'+
+    '&emsp;to&emsp;'+
+    '<input type="text" name="emptodate' + empj +'" class="from" readonly>'+
+    '</td>'+
+    '</tr>'+
+    '<tr>'+
+    '<td>Designation</td>'+
+    '<td ><input type="text"  name="designation' + empj +'" class="input-xxlarge" ></td>'+
+    '</tr>'+
+    '<tr>'+
+    '<td>Job Profile</td>'+
+    '<td >'+
+    '<textarea style="width:600px;height:130px;" name="jobprofile' + empj +'" id="jobprof' + empj +'"></textarea>'+
+    '</td>'+
+    '</tr>'+
+    '</table>'+
+    '</fieldset>').fadeIn('fast').appendTo('.EmpGroup');
+            empj++;
+            empi++;
+    });
+
+$('#removeEmp').click(function () {
+        if (empi > 1) {
+            $('.empdtls:last').remove();
+            empi--;
+            var empj = $('.empdtls').size();
+            $("#emp-counter").val(empj);
+        }
+    });
+
+
+/* -------------------- Project Details ----------------------- */
+
+var proi = $('.projdet').size();
+$("#proj-counter").val(proi);
+$("#addProj").click(function ()
+{
+var proj = $('.projdet').size()+1;
+$("#proj-counter").val(proj);
+$('<fieldset class="projdet">'+
+'<legend>Project Details '+ proj + '</legend>'+
+'<table class="table table-borderless">'+
+'<tr>'+
+'<td>Client</td>'+
+'<td><input type="text"  name="client'+ proj + '" >'+
+'&emsp;Project Title&emsp;'+
+'<input type="text" name="project_title'+ proj + '"></td>'+
+'</tr>'+
+'<tr>'+
+'<td>Duration</td>'+
+'<td>'+
+'<input type="text" name="projstartdate'+ proj + '" id="startDate" class="from" readonly>'+
+'&emsp;to&emsp;'+
+'<input type="text" name="projtodate'+ proj + '" id="toDate" class="from" readonly>'+
+'</td>'+
+'</tr>'+
+'<tr>'+
+'<td>Project Location</td>'+
+'<td>'+
+'<input type="text"  name="project_loc'+ proj + '" >'+
+'&emsp;<input type="radio" name="on_offsite'+ proj + '" value="Onsite">&nbsp;Onsite'+
+'&emsp;<input type="radio" name="on_offsite'+ proj + '" value="Offsite">&nbsp;Offsite'+
+'</td>'+
+'</tr>'+
+'<tr>'+
+'<td>Employment Type</td>'+
+'<td>'+
+'<input type="radio" name="emp_type'+ proj + '" value="Full Time" />&nbsp;Full Time'+
+'&emsp;<input type="radio" name="emp_type'+ proj + '" value="Part Time" />&nbsp;Part Time'+
+'&emsp;<input type="radio" name="emp_type'+ proj + '" value="Contractual Project" />&nbsp;Contractual Project'+
+'</tr>'+
+'<tr>'+
+'<td>Project Details</td>'+
+'<td>'+
+'<textarea  name="project_details'+ proj + '" style="width:600px;height:130px;"></textarea>'+
+'</td>'+
+'</tr>'+
+'<tr>'+
+'<td>Role Description</td>'+
+'<td>'+
+'<textarea  name="role_desc'+ proj + '" style="width:600px;height:130px;"></textarea>'+
+'</td>'+
+'</tr>'+
+'<tr>'+
+'<td>Skills Used</td>'+
+'<td>'+
+'<input type="text"  name="skill_used'+ proj + '" class="input-xxlarge"></textarea>'+
+'</td>'+
+'</tr>'+
+'<tr>'+
+'<td>Role</td>'+
+'<td>'+
+'<select  name="role'+ proj + '">'+
+'<option value="">Select Role</option>'+
+'<option value="">Select</option>'+
+'<option value="Domain Expert">Domain Expert</option>'+
+'<option value="Sr.Project Leader">Sr.Project Leader</option>'+
+'<option value="Solution Architect">Solution Architect</option>'+
+'<option value="Quality Analyst">Quality Analyst</option>'+
+'<option value="Database Architect/DBA">Database Architect/DBA</option>'+
+'<option value="Network/System Administrator">Network/System Administrator</option>'+
+'<option value="Project Leader">Project Leader</option>'+
+'<option value="Module Leader">Module Leader</option>'+
+'<option value="Sr.Programmer">Sr.Programmer</option>'+
+'<option value="Programmer">Programmer</option>'+
+'<option value="Test Engineer">Test Engineer</option>'+
+'<option value="Other">Other</option>'+
+'</select>'+
+'&emsp;Team Size'+
+'&emsp;<select  name="teamsize'+ proj + '">'+
+'<option value="">Select</option>'+
+'<option value="1">1</option>'+
+'<option value="2">2</option>'+
+'<option value="3">3</option>'+
+'<option value="4">4</option>'+
+'<option value="5">5</option>'+
+'<option value="6">6</option>'+
+'<option value="7">7</option>'+
+'<option value="8">8</option>'+
+'<option value="9">9</option>'+
+'<option value="10">10</option>'+
+'<option value="11">11</option>'+
+'<option value="12">12</option>'+
+'<option value="13">13</option>'+
+'<option value="14">14</option>'+
+'<option value="15">15</option>'+
+'<option value="16">16</option>'+
+'<option value="17">17</option>'+
+'<option value="18">18</option>'+
+'<option value="19">19</option>'+
+'<option value="19">19</option>'+
+'</select>'+
+'</td>'+
+'</tr>'+
+'</table>'+
+'</fieldset>').fadeIn('fast').appendTo('.ProjGroup');
+            proj++;
+            proi++;
+    });
+
+$('#removeProj').click(function () {
+        if (proi > 1) {
+            $('.projdet:last').remove();
+            proi--;
+            var proj = $('.projdet').size();
+            $("#proj-counter").val(proj);
+        }
+    });
+
+});
+</script>
+
+
+
+<!-- Skill Set -->
+<script type="text/javascript">
+$(document).ready(function()
+{
+var i = $('.skill').size();
+$("#skill-counter").val(i);
+$("#addSkill").click(function ()
+{
+var j = $('.skill').size()+1;
+$("#skill-counter").val(j);
+$(  '<tr class="skill">'+
+'<td width="30%">'+
+'<input type="text" name="skill' + j + '" id="skill' + j + '" ></td>'+
+'<td width="15%">'+
+'<input type="text" class="input-small" name="version' + j + '"id="version' + j + '" ></td>'+
+'<td width="15%">'+
+'<select class="input-small" name="lastused' + j + '" id="lastused' + j + '">' +
+'<option value="" >Select</option>'+
+'<option value="2013" >2013</option>'+
+'<option value="2012" >2012</option>'+
+'<option value="2011" >2011</option>'+
+'<option value="2010" >2010</option>'+
+'<option value="2009" >2009</option>'+
+'<option value="2008" >2008</option>'+
+'<option value="2007" >2007</option>'+
+'<option value="2006" >2006</option>'+
+'<option value="2005" >2005</option>'+
+'<option value="2004" >2004</option>'+
+'<option value="2003" >2003</option>'+
+'<option value="2002" >2002</option>'+
+'<option value="2001" >2001</option>'+
+'<option value="2000" >2000</option>'+
+'<option value="1999" >1999</option>'+
+'<option value="1998" >1998</option>'+
+'<option value="1997" >1997</option>'+
+'<option value="1996" >1996</option>'+
+'<option value="1995" >1995</option>'+
+'<option value="1994" >1994</option>'+
+'<option value="1993" >1993</option>'+
+'<option value="1992" >1992</option>'+
+'<option value="1991" >1991</option>'+
+'<option value="1990" >1990</option>'+
+'</select>'+
+'</td>'+
+'<td colspan="2">'+
+'<select class="input-small" name="skillyear' + j + '" id="skillyear' + j + '">'+
+'<option value="" >Year</option>'+
+'<option value="0" >0</option>'+
+'<option value="1" >1</option>'+
+'<option value="2" >2</option>'+
+'<option value="3" >3</option>'+
+'<option value="4" >4</option>'+
+'<option value="5" >5</option>'+
+'<option value="6" >6</option>'+
+'<option value="7" >7</option>'+
+'<option value="8" >8</option>'+
+'<option value="9" >9</option>'+
+'<option value="10" >10</option>'+
+'<option value="11" >11</option>'+
+'<option value="12" >12</option>'+
+'</select>'+
+
+'&nbsp;<select class="input-small" name="skillmon' + j + '" id="skillmon' + j + '">'+
+'<option value="" >Month</option>'+
+'<option value="1" >1</option>'+
+'<option value="2" >2</option>'+
+'<option value="3" >3</option>'+
+'<option value="4" >4</option>'+
+'<option value="5" >5</option>'+
+'<option value="6" >6</option>'+
+'<option value="7" >7</option>'+
+'<option value="8" >8</option>'+
+'<option value="9" >9</option>'+
+'<option value="10" >10</option>'+
+'<option value="11" >11</option>'+
+'</select>'+
+'</td>'+
+'</tr>'
+).fadeIn('fast').appendTo("#outer");
+j++;
+i++;
+});
+$("#removeSkill").click(function ()
+{
+    if (i > 1)
+    {
+        $('.skill:last').remove();
+        i--;
+        var j = $('.skill').size();
+        $("#skill-counter").val(j);
+    }
+});
+});
+</script>
+
+
+
+<!--CERTIFICATE DETAILS -->
+<script>
+$(document).ready(function () {
+    
+    var i = $('.cert').size();
+    $("#certificate-counter").val(i);
+    $('#addCertificate').click(function () {
+        var j = $('.cert').size()+1;
+        $("#certificate-counter").val(j);
+        $(  '<tr class="cert">'+
+            '<td>'+ j +'&emsp;'+
+            '<input  type="text" name="certificate' + j + '" id="certificate' + j + '" value="" ></td>'+
+            '</tr>'+
+            '</table>'
+        ).fadeIn('fast').appendTo('.CertificateGroup');
+            j++;
+            i++;
+    });
+
+    $('#removeCertificate').click(function () {
+        if (i > 1) {
+            $('.cert:last').remove();
+            i--;
+            var j = $('.cert').size();
+            
+            $("#certificate-counter").val(j);
+        }
+    });
+    $('#secemail').change(function(){
+        var em = $("#secemail").val();
+        var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+        if (!emailReg.test(em))
+            {
+                alert("Enter valid email");
+                $("#secemail").val('');
+                $(this).css("border","0.2em solid #C85A17");
+
+            }
+        
+
+    });
+});
+</script>
+
+<script>
+    $(function() {
+        var addresspicker = $( "#addresspicker" ).addresspicker();
+        var addresspickerMap = $( "#addresspicker_map" ).addresspicker({
+            regionBias: "fr",
+      updateCallback: showCallback,
+          elements: {
+            map:      "#map",
+            lat:      "#lat",
+            lng:      "#lng",
+            street_number: '#street_number',
+            route: '#route',
+            locality: '#locality',
+            administrative_area_level_2: '#administrative_area_level_2',
+            administrative_area_level_1: '#administrative_area_level_1',
+            country:  '#country',
+            postal_code: '#postal_code',
+            type:    '#type' 
+          }
+        });
+
+        var gmarker = addresspickerMap.addresspicker( "marker");
+        gmarker.setVisible(true);
+        addresspickerMap.addresspicker( "updatePosition");
+
+    $('#reverseGeocode').change(function(){ 
+      $("#addresspicker_map").addresspicker("option", "reverseGeocode", ($(this).val() === 'true'));
+    });
+
+    function showCallback(geocodeResult, parsedGeocodeResult){
+      $('#callback_result').text(JSON.stringify(parsedGeocodeResult, null, 4));
+    }
+        
+    });
+    </script>
+{% endblock %}

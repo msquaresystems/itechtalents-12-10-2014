@@ -1,0 +1,11 @@
+{% block candidateitemcontent %}
+<div>
+	<h3 class="text text-info">Profile Summary</h3>
+	<table class="table table-borderless">
+		<tr>
+			<td width="20%">Profile Summary</td>
+			<td>{% for a in profilesum %}{{ a.profile_summary|safe }}{% endfor %}</td>
+		</tr>
+	</table>
+</div>
+{% endblock %}

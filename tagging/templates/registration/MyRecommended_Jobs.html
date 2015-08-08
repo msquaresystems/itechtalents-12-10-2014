@@ -1,0 +1,34 @@
+<div>
+    <h4 style="border-bottom:2px solid #FFB812;" class="text text-info">Jobs Matching Your Latest Search</h4>
+    <table class="table table-striped">
+        <tr>
+            <th>Job Title</th>
+            <th>Company</th>
+            <th>Location</th>
+            <th>Date Posted</th>
+        </tr>
+        {% if details %}
+        {% for d in details|dictsortreversed:"marklive" %}
+        <tr>
+            <td><a href="/accounts/JobFullDescription/{{d.id}}/" >{{ d.title }} {{ d.referencecode }}</a></td>
+            <td>{{ d.emp.companyname }}</td>
+            <td>{{ d.state }}</td>
+            <td>{{ d.marklive|date:"M-d-Y" }}</td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="4">Sorry,Your Key Skills does'nt match any jobs!!!.
+                <!-- Please 
+                {% if jsinfo %}
+                    <a href="#" id="editskill">Edit</a>
+                {% else %}
+                    <a href="/accounts/ProfileDetails/" id="addinfo">Add</a></li>
+                {% endif %} your keyskills. -->
+            </td>
+        </tr>
+        {% endif %}
+    </table>
+</div>
+
+

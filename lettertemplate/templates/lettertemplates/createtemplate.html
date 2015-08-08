@@ -1,0 +1,60 @@
+{% load crispy_forms_tags %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-wysihtml5.css"></link>
+<div class="well">
+	<label class="control-label">Job Owner: <strong>{{ request.user.username }}</strong></label>
+    <form id="signup" class="form-horizontal" method="post" action="/employer/createtemplate/">{% csrf_token %}{% if tempid %}<input type="hidden" name="tempid" value="{{ tempid }}">{% endif %}
+    	{% crispy form %}
+       <input type="submit" class="btn btn-success" name="submit" value="Save" />
+   </form>
+</div> 
+<script src="{{STATIC_URL}}js/jquery.validate.min.js"></script>
+<script>
+
+// I am using jquery.validate to validate the fields such as title,'subject',replayto
+function validateName(name){
+    var tname=$.trim(name);
+    if(tname.length<10){
+      return false;
+    }else{
+      return true;
+    }
+}
+
+
+$("#signup").validate({
+	 rules: {
+		title: "required",
+		subject: {
+			required: true,
+			minlength: 2
+		},
+		replayto: {
+			required: true,
+			email: true
+		}			
+	},
+	messages: {
+		title: "Please specify your name",
+		subject: {
+			required: "Required subject",
+			minlength: "atleast 2chars required"
+		},
+		replayto: {
+			required: "We need your email address to contact you",
+			email: "Your email address must be in the format of name@domain.com"
+		}
+	},
+	submitHandler: function (form) { // for validate the textarea.
+		var tval=$('.textarea').val();
+		if (validateName(tval)){
+			form.submit();
+		}else{
+			alert('Message body requires atleast 10characters'); // for demo
+        	return false; // for demo
+		}            
+    }
+});
+</script>
+<script src="{{ STATIC_URL }}js/wysihtml5-0.3.0.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-wysihtml5.js"></script>
+<script type="text/javascript">$('.textarea').wysihtml5();</script>

@@ -1,0 +1,80 @@
+{% extends "registration/base/jobseekerbase.html" %}
+
+{% block content %}
+<div style="width:1200px;padding:0px;margin:auto;" class="outerdiv">
+	
+<h3>Refine Searchd</h3>
+<table border="1" width="90%">
+<tr>
+<td width="30%">
+
+<p>Comapny</p>
+<ul>
+<li>Company 1</li>
+<li>Company 2</li>
+<li>Company 3</li>
+</ul>
+
+<p>State</p>
+<ul>
+<li>Andhra Pradesh</li>
+<li>Karnataka</li>
+<li>Tamil Nadu</li>
+ </ul>
+
+<p>Category</p>
+<ul>
+<li>IT (90)</li>
+<li>Managemenmt (50)</li>
+<li>Human Resource</li>
+</ul>
+
+
+</td>
+
+
+<td width="60%">
+	{% if details %}
+	 {% for d in details %}
+	 
+	 <div style="width:500px; border:1px solid green;">
+	 <p>
+	<label>Key Skills : </label><label>{{ d.key_skills }}</label>
+	</p>
+
+	<p>
+	<label>Title : </label><label>{{ d.title }}</label>
+	</p>
+
+	<p>
+	<label>Posted Date : </label> <label>{{ d.marklive }}</label>
+	</p>
+
+	<p>
+	<label>Company Name : </label> <label>{{ d.emp.companyname }}</label>
+	</p>
+	<p>
+	<label>Location : </label> <label>{{ d.state }}</label>
+	</p>
+	<p>
+	<label>Username : </label> <label>{{ d.emp.username }}</label>
+	</p>
+
+	<p>
+	<label>Required Experience : </label> <label>{{ d.min_exp }} to {{ d.max_exp }} years</label>
+	</p>
+	<p><a href="">Apply this job</a>&emsp;<a href="/accounts/JobFullDescription/{{ d.id }}/">Full Description View</a>&emsp;<a href="">Email this Job</a></p>
+
+</div>
+
+
+ {% endfor %}
+
+ {% else %}
+ <p>No Recommended Jobs</p>
+ {% endif %}
+</td>
+</tr>
+</table>
+
+{% endblock %}

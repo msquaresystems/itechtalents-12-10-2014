@@ -1,0 +1,14 @@
+{% extends "quorum/base_quorum.html" %}
+{% block content %}
+<div class="container">
+  <!-- Topics  -->
+  <table class="table table-hover table-bordered">
+  	{% for user in users %}
+    <tr>
+        <td><a style="color:#003366;" href="{% url 'quorum.views.quorumuser' username=user.username %}">{{ user.username }}</a> 
+        </td>
+    </tr>
+    {% endfor %} 
+  </table>
+{% endblock %}
+

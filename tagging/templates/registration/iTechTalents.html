@@ -1,0 +1,82 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+{% extends "registration/base/basehome.html" %}
+{% block extrahead %}  
+<script type="text/javascript">
+    window.onload = function () {
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = "http://www.telize.com/jsonip?callback=DisplayIP";
+        document.getElementsByTagName("head")[0].appendChild(script);
+    };
+    function DisplayIP(response) {
+        
+        //document.getElementById("ipaddress").innerHTML = "Your IP Address is " + response.ip;
+          document.getElementById("ipaddress").value = response.ip;
+    }
+</script>
+
+<style type="text/css">
+div.center {   
+    text-align: center;
+    margin-left: auto;   
+    margin-right: auto; 
+    margin-top:8em;  
+    width: 75em;
+    /*background: #FFFFFF;
+    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=70)";
+    filter: alpha(opacity=70);
+    -moz-opacity:0.7
+    -khtml-opacity: 0.7;
+    opacity: 0.7;*/
+    background: rgb(225, 225, 255); /* The Fallback */
+    background: rgba(225, 225, 225, 0.5);
+    border-radius: 30px;
+    padding: 30px;
+  }
+.itechh1 {
+    font-size: 48px;
+    color: #E56717;
+    line-height:1.3;
+    margin-bottom:0.8em;
+    font-weight: bold;
+    font-family:arial,geneva,sans-serif;
+}
+.itechh4 {
+    font-size:2.2em;
+    color:#336600;
+    line-height: 1.5;
+    font-weight: normal;
+    margin-bottom:2.5em;
+    font-family:arial,geneva,sans-serif;
+}
+.home-btn{
+    font-size: 18px;
+    font-weight: bold;
+}
+</style>
+</head>
+{% endblock %}
+{% block content %}
+<body>
+<br>
+<br>
+<br>
+    <form>
+        <!--span id = "ipaddress"></span-->
+        <!-- Ipaddress of a client machine -->
+        <input type="hidden" name="ipaddress" id="ipaddress" value="">
+    </form>
+<div class="one" style="min-height:600px;">
+            <div class="center">
+                <h1 class="itechh1" > iTechTalents.com is a platform that brings together Job seeker and Employers.</h1>
+                <h4 class="itechh4" >We provide an employment services throughout the world!.</h4> 
+                <a class="btn btn-large btn-success home-btn input-xlarge" href="/accounts/EmpReg/">Employer</a>&emsp;
+                <a class="btn btn-large btn-danger home-btn input-xlarge" href="/accounts/login/">Job seeker</a>
+            </div>
+</div>
+{% endblock %}
+</body>
+
+

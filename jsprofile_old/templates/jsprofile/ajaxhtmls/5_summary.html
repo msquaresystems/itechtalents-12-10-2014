@@ -1,0 +1,53 @@
+<div id="summary" class="xgap">
+	<h4 style="border-bottom:2px solid #FFB812;">Profile Summary</h4>
+	<br>
+	<div id="summaryview">		
+	</div>
+	<div class="toggleview">
+		<a href="javascript:void(0);"  rel="summary" class="btn btn-warning toggle-button">Update</a>		
+		{% if summary %}
+		<div style="border:1px solid #ccc; padding:10px;">
+			
+			<div id="id_summary">{{ summary.profile_summary|safe }}</div>
+		</div>
+		{% else %}
+			<div style="background-color:#ffa; padding:20px">
+				<strong>Please Add a Profile summary. <a class="toggle-button">add</a></strong>
+			</div>
+		{% endif %}					    
+	</div>
+	<div class="editable toggleform" style="display:none;">
+		<form id="summaryForm" action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+		<input type="hidden" name="curform" value="summaryform">
+		<textarea  name="profile_summary" id="some-textarea" style="width:600px;height:200px;" >{{summary.profile_summary|safe}}</textarea><br>
+		<input class="btn btn-success" type="submit" value="save" />
+	    <a href="javascript:void(0);" class="btn btn-danger toggle-button">cancel</a>
+		<!--<input type="reset" class="btn btn-info" value="Reset">-->
+		</form>
+	</div>
+</div>
+
+<script type="text/javascript">
+ $(document).ready(function() {
+ 	/*$(".btn").each(function(){
+ 		alert("hi");
+ 		alert($(this).attr("title"));
+ 	});*/
+	$('body').on('click','.toggle-button',function() {
+        //var section=$(this).attr('rel');
+        $('.toggleview').toggle();
+        $('.toggleform').toggle();        
+    });
+    $('#some-textarea').wysihtml5();
+    $("body").on("submit","#summaryForm",function(event){	
+		$.post('/ajax/views/', $(this).serialize(),	function(data){
+			$('.toggleview').toggle();
+			$('.toggleform').toggle();
+			$("#id_summary").html(data.profile_summary);
+			//CreateRow(data);
+		}, "json");	
+		event.preventDefault();	
+	});	
+});
+
+</script>

@@ -1,0 +1,88 @@
+<div>
+    <p><h3> Profile Information</h3></p>
+    <div>
+        <form  action="/accounts/UpdateEmployerProfile/" method="post" enctype="multipart/form-data">{% csrf_token %}
+            <input type='hidden' name="user_id" value="{{ user.id }}">
+            <table class="table table-striped">
+                <tr>
+                    <td width="20%" height="30">Recruiter Name</td>
+                    <td width="20%" height="30">{{ user.username }}</td>
+                </tr>
+                <tr>
+                    <td height="30">Email id</td>
+                    <td >{{user.email}}</td>
+                </tr>
+                <tr>
+                    <td>Company Name</td>
+                    <td>{{user.companyname}}</td>
+                </tr>
+                <tr>
+                    <td height="30">Company URL</td>
+                    <td ><input type="text"  name="companyurl" value="{% for a in details1 %}{{a.companyurl}}{% endfor %}"></td>
+                </tr>
+                <tr>
+                    <td height="30">Company Logo</td>
+                    <td >
+                        <img  style="width:120px;height:50px;" src="{{ STATIC_URL }}{{user.employerreg_form.companylogo}}" />
+                        <input type="file" accept="image/*" name="companylogo" value="{{user.employerreg_form.companylogo}}" />
+                    </td>
+                </tr>
+                <tr>
+                    <td height="30">Company Type</td>
+                    {% for a in details1 %}
+                    {% if a.companytype == "Company" %}
+                    <td >
+                        <input type="radio" checked name="companytype" value="Company">Corporate&emsp;
+                        <input type="radio"  name="companytype" value="Consultancy">Staffing
+                    </td>
+                    {% else %}
+                    <td>
+                        <input type="radio"  name="companytype" value="Company">Company
+                        <input type="radio" checked name="companytype" value="Consultancy">Consultancy
+                    </td>
+                    {% endif %}
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td height="30">Contact Person</td>
+                    <td ><input type="text"  name="contactperson" value="{% for a in details1 %}{{a.contactperson}}{% endfor %}"></td>
+                </tr>
+
+                <tr>
+                    <td height="30">Phone Number</td>
+                    <td ><input type="text"  name="contactno" value="{% for a in details1 %}{{a.contactno}}{% endfor %}"></td>
+                </tr>
+                <tr>
+                    <td>Company Profile&nbsp;<sup>*</sup></td>
+                    <td ><textarea style="width:600px;height:150px;" id="some-textarea" name="companyprofile" >{{user.employerreg_form.companyprofile|safe}}</textarea>
+                        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-wysihtml5.css"></link>
+                        <script src="{{ STATIC_URL }}js/wysihtml5-0.3.0.js"></script>
+                        <script src="{{ STATIC_URL }}js/bootstrap-wysihtml5.js"></script>
+                        <script type="text/javascript">
+                        $('#some-textarea').wysihtml5();
+                        </script>
+                    </td>
+                </tr>
+                <tr>
+                    <td height="30">Profile through Facebook</td>
+                    <td ><div class="input-prepend"><span class="add-on">www.facebook.com/</span><input type="text"  class="soc span6" name="facebook" value="{{user.empsocialnetworks.facebook}}" data-message="invalidfb" autocomplete="off"></div></td>
+                </tr>
+                <tr>
+                    <td height="30">Profile through Twitter</td>
+                    <td ><div class="input-prepend"><span class="add-on">www.twitter.com/</span><input type="text" class="soc span6" name="twitter" value="{{user.empsocialnetworks.twitter}}" data-message="invalidtw" autocomplete="off"></div></td>
+                </tr>
+                <tr>
+                    <td height="30">Profile through Linkedin</td>
+                    <td ><div class="input-prepend"><span class="add-on">www.linkedin.com/</span><input type="text" class="soc span6" name="linkedin" value="{{user.empsocialnetworks.linkedin}}" data-message="invalidlin" autocomplete="off"></div></td>
+                </tr>
+            </table>
+            <table border="0" width="100%">
+                <tr>
+                    <td style="text-align:center;">
+                        <input type="submit" id="sub" class="btn btn-primary" value="SAVE">&nbsp;&nbsp;
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div> 

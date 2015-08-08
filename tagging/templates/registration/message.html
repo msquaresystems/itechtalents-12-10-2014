@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<body>
+	<div style="width:70%;margin:auto;background-color:#FCF8E3;border:1px solid #FBEED5;margin-bottom:20px;color:#3A87AD;font-family:Trebuchet MS, Helvetica, sans-serif;font-size:14px;">
+		<div style="width:70%;margin:auto;"><p style="font-size:36px;color: #357EC7;"><strong>ITechTalents <sub style="font-size:16px;"><i>"Smart Engine, Smart People"</i></sub></strong></p></div>
+		<hr style="border:solid 1px #ffc21f;width:80%;margin:auto;"><br>
+		<div style="width:70%;margin:auto;">
+			<p style="padding:15px;background:#FDE25E;border:solid 1px #ffc21f;color:#830303;text-align:center;"><strong>New Application received for {{position}}</strong></p><br>
+			<p><strong>Dear {{ companyname }}</strong>&nbsp;(Login ID : {{username}}),</p><br>
+			<p>You have received an application for the position of <strong>{{position}}[{{jobcode}}]</strong></p><br>
+			{%if fname%}<p>First Name : {{ fname }}</p>{%endif%}
+			{%if lname%}<p>Last Name  : {{ lname }}</p>{%endif%}
+			{%if pemail%}<p>Pri.Email  : {{ pemail }}</p>{%endif%}
+			{%if semail%}<p>Sec.Email  : {{ semail }}</p>{%endif%}
+			{%if handno%}<p>Hand No. : {{ handno }}</p>{%endif%}
+			{%if workno%}<p>Work No. : {{ workno }}</p>{%endif%}
+			{%if homeno%}<p>Home No. : {{ homeno }}</p>{%endif%}
+			{%if wexpyear or wexpmon %}<p>Year of Experience : {{ wexpyear }} years - {{ wexpmon }} months</p>{% endif %}
+			{%if lsalary%}<p>Current CTC : {{ lsalary }}</p>{%endif%}<br><br>			
+			<p><a target="_blank" style="margin-right:5px;background:#3c98ed;font-size:17px;font-weight:bold;color:#fff;padding:7px 10px;font-family:Trebuchet MS,Helvetica,sans-serif;text-decoration:none;" href="http://{{current_domain}}/accounts/EmpReg/">View Application ! </a></p><br><br><br>
+			<p>Thanks & Regards,</p>
+			<p>HR Staffing Team, ItechTalents.com</p>
+			<br>
+		</div>
+		<hr style="border:solid 1px #ffc21f;"><br>
+	</div>
+</body>
+</html>

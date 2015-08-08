@@ -1,0 +1,97 @@
+
+{% block candidateitemcontent %}
+  <div>
+
+	<div>
+		<p><h3>Education Details</h3></p>
+
+		{% for a in qualification %}
+
+	
+	{% ifequal a.degree 'Other' %}
+
+	<fieldset>
+  	<legend>Other Educational details</legend>
+	<table class="table table-borderless table-hover" style="table-layout:fixed;">
+	<tr>
+		<th width="25%">Degree</th>
+		<td width="25%">{{a.degree}}</td>
+	
+		<th width="25%">Specialization</th>
+		<td width="25%">{{a.special}}</td>
+	</tr>
+
+	<tr>
+		<th width="25%">University/Board</th>
+		<td width="25%">{{a.institution}}</td>
+		<th width="25%">City/State</th>
+		<td width="25%">{{a.location}}</td> 
+	</tr>
+	<tr>
+	
+		<th width="25%">Year of Passing</th>
+		<td width="25%">{{a.year}}
+		</td>
+		<th width="25%">Country</th>
+		<td width="25%">{{a.country}}</td>
+	</tr>
+</table>
+	</fieldset>
+
+	{% else %}
+
+	<fieldse>
+
+  	<legend>Educational details</legend>
+	<table class="table table-borderless table-hover" style="table-layout:fixed;">
+	<tr>
+		
+		<th width="25%">Degree</th>
+		<td width="25%">{{a.degree}}
+		</td>
+	
+		<th width="25%">Specialization</th>
+		<td width="25%">{{a.special}}</td>
+	</tr>
+
+	<tr>
+		<th width="25%">University/Board</th>
+		<td>{{a.institution}}</td>
+		<th width="25%">City/State</th>
+		<td>{{a.location}}</td> 
+	</tr>
+	<tr>
+		
+		<th width="25%">Year of Passing</th>
+		<td  width="25%">{{a.year}}
+		</td>
+		<th width="25%">Country</th>
+		<td width="25%">{{a.country}}</td> 
+
+	</tr>
+</table>
+	</fieldset>
+	{% endifequal %}
+	
+	{% endfor %}
+
+	<fieldset>
+  	<legend>Certificates</legend>
+  	<table class="table table-borderless">
+  		{% for a in certificate %}
+  		<tr>
+  			<td>
+  			{{a.certificate}}
+  			</td>
+  		</tr>
+		{% endfor %}
+	</table>
+
+	</fieldset>
+
+	
+	
+
+</div>
+</div>
+{% endblock %}

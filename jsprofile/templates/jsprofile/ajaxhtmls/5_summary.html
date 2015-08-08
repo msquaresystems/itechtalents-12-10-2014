@@ -1,0 +1,167 @@
+{% extends "jsprofile/base.html" %}
+{% block extrahead %} 
+<link rel="stylesheet" href="{{ STATIC_URL }}js/datepicker/datepicker.css" />
+<link href="{{STATIC_URL}}jsprofile_static/xeditable/bootstrap-editable.css" rel="stylesheet"/>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-wysihtml5.css"></link>
+<style>
+.editable form{
+    background-color: #F8F8F8;
+    border: 1px solid #EAD9CE;
+    ursor: default;
+    margin: 0;
+    padding: 13px;
+}
+hr{
+margin: 5px;
+}
+.item_tittle h1 span{
+    background: none repeat scroll 0 0 #74767A;
+    border-radius: 3px 3px 3px 3px;
+    color: #ffffff;
+    float: right;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 7px 0 0;
+    padding: 0 5px;
+    margin-right: 0;
+}
+.item_tittle h2 {
+    font-size: 18px;
+    font-weight:normal;
+    text-align: left;
+    color:#000;
+}
+.item_tittle h3{
+    font-size: 14px;
+    font-weight:normal;
+    text-align: right;
+    color:#000;
+}
+.bs-sidebar.affix {
+    position: static;
+}
+.sideheading{
+    background-color: #e0e0e0;
+    background-image: -moz-linear-gradient(#fafafa, #e0e0e0);
+    background-image: -webkit-linear-gradient(#fafafa, #e0e0e0);
+    background-image: linear-gradient(#fafafa, #e0e0e0);
+    background-repeat: repeat-x;
+    display: block;
+    padding: 10px 10px;
+    border-bottom: 1px solid #ccc;
+    color: #222;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 20px;
+    border-left: 0 none;
+}
+.bs-sidenav {
+    padding-top:    10px;
+    padding-bottom: 10px;
+    background-color: #fafafa;
+    border-radius: 5px;
+    border:1px solid #CCC;
+}
+.bs-sidebar .nav > li > a {
+    font-size: 1.2em;
+    display: block;
+    color: #716b7a;
+    padding: 10px 20px;
+    border-right: 4px solid transparent;
+}
+.bs-sidebar .nav > li > a:hover,.bs-sidebar .nav > li > a:focus{
+    text-decoration: none;
+    background-color: #fff;
+    border-right: 4px solid #dbd8e0;
+}
+.bs-sidebar .nav > .active > a,.bs-sidebar .nav > .active:hover > a,.bs-sidebar .nav > .active:focus > a {
+    font-weight: bold;
+    color: #418cd1;
+    background-color: #fff;
+    border-right: 4px solid #418cd1;
+}
+</style>
+{% endblock %}
+{% block content %}
+{% load mytaghelper %}
+{% load jsprofile_extras %}
+<div class="container-fluid" style="min-height:580px;">
+    <div class="row-fluid">
+        <div class="span3">
+            <div class="bs-sidebar">
+                <ul class="nav bs-sidenav">
+                    <li class='sideheading'>{{ request.user.username }}</li>
+                    <li class="active"><a href="/js/Dashboard/">Dashboard</a></li>{% for nav in navs %}<li{% ifequal next forloop.counter %} class="active"{% endifequal %}><a class="ajaxLoad" href="/js/{% sidebar nav %}/" data-ajxurl="{{ forloop.counter }}">{{nav}}</a></li>{% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="span9">
+            <div id="summary" class="xgap">
+	<h4 style="border-bottom:2px solid #FFB812;">Profile Summary</h4>
+	<br>
+	<div id="summaryview">		
+	</div>
+	<div class="toggleview">
+		<a href="javascript:void(0);"  rel="summary" class="btn btn-warning toggle-button">Update</a>		
+		{% if summary %}
+		<div style="border:1px solid #ccc; padding:10px;">
+			
+			<div id="id_summary">{{ summary.0.profile_summary|safe }}</div>
+		</div>
+		{% else %}
+			<div style="background-color:#ffa; padding:20px">
+				<strong>Please Add a Profile summary. <a class="toggle-button">add</a></strong>
+			</div>
+		{% endif %}					    
+	</div>
+	<div class="editable toggleform" style="display:none;">
+		<form id="summaryForm" action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+		<input type="hidden" name="curform" value="summaryform">
+		<textarea  name="profile_summary" id="some-textarea" style="width:600px;height:200px;" >{{summary.0.profile_summary|safe}}</textarea><br>
+		<input class="btn btn-success" type="submit" value="save" />&emsp;<input type="reset" class="btn btn-warning toggle-button" href="javascript:void(0);" value="Cancel">
+		<!--<input type="reset" class="btn btn-info" value="Reset">-->
+		</form>
+	</div>
+</div>
+</div></div></div>
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/datepicker/bootstrap-datepicker.js"></script>
+<script src="{{STATIC_URL}}jsprofile_static/xeditable/bootstrap-editable.min.js"></script>
+<script src="{{ STATIC_URL }}js/wysihtml5-0.3.0.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-wysihtml5.js"></script>
+<script src="{{STATIC_URL}}js/bootbox.min.js" ></script>
+<script type="text/javascript">
+ $(document).ready(function() {
+    $('.bs-sidenav li').removeClass('active');
+    $(".bs-sidenav li:nth-child(8)" ).addClass("active");
+	$('.toggle-button').click(function() {
+        $('.toggleview').toggle();
+        $('.toggleform').toggle();        
+    });
+    $('#some-textarea').wysihtml5();
+    /*$("body").on("submit","#summaryForm",function(event){	
+		$.post('/ajax/views/', $(this).serialize(),	function(data){
+			$('.toggleview').toggle();
+			$('.toggleform').toggle();
+			$("#id_summary").html(data.profile_summary);
+			//CreateRow(data);
+		}, "json");	
+		event.preventDefault();	
+	});*/
+     $('body').on("submit", "#summaryForm", function(event){
+        event.preventDefault();
+	
+        $.ajax({
+            url:'/editsummary/',
+            type:"POST",
+            data:$(this).serialize(),
+            success:function(data){                
+                window.location='/js/Profile_Summary/';
+            }
+        })
+    });	
+});
+
+</script>
+{% endblock %}

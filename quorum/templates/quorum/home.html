@@ -1,0 +1,58 @@
+{% extends "quorum/base_quorum.html" %}
+{% load q_extras %}
+{% block content %}
+<script type="text/javascript">
+function filter(element) {
+    var value = $(element).val().toLowerCase();
+    var $li = $(".span4");
+
+    $li.hide();
+    $li.filter(function() {
+        return $(this).text().toLowerCase().indexOf(value) > -1;
+    }).show();
+}
+</script>
+<div class="container" style="min-height:485px;">
+  <!-- Topics  -->
+  <div class="row">
+  <div class="span6" style="text-align:left;"><h3 class="text text-info">Quorum Topics</h3></div>
+  <div class="span6"><input class="pull-right input-xlarge" placeholder="Filter your topics" type="text" onkeyup="filter(this)" /></div>
+  <div class="span12">
+    <ul class="thumbnails">
+    {% for tp in topics %}
+    
+      {% if forloop.counter0 != 0 and forloop.counter0|divisibleby:"3" %}
+    </ul>
+    <ul class="thumbnails">
+      {% endif %}
+
+      <li class="span4">
+        <div class="thumbnail divthumbnial">                
+          <a class="thumbnail" style="color:#003366;" href="/quorum/topic/{{ tp.pk }}/">
+          <img src="{{STATIC_URL}}media/{{ tp.imgurl }}">
+          </a>             
+          <div class="caption">
+            <h4><a style="color:#003366;" href="/quorum/topic/{{ tp.pk }}/{#{% url quorum.views.questions tp.pk %}#}">{{ tp.topic }}</a></h4>
+            <p><small>{{ tp.pk|question_count }}:Questions</small></p>
+            <p>{{ tp.desc }}</p>
+
+            {% if request.user.is_active %}                       
+              <p class="followbtns"><button id="{{ tp.pk }}" class="follow btn {{ tp.pk|topic_following:request.user.pk }}">Follow</button></p>           
+            {% endif %}
+
+          </div>
+        </div>
+      </li><!--/span4-->
+      
+      {% endfor %}
+    </ul>
+    </div>      
+  </div><!--/row fluid-->
+
+</div>
+{% endblock %}
+{% block extrajavascript %}
+
+<!-- the follow btn helper is only used by me-->
+<script src ="/static/js/followbtnhelper.js"></script>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% block candidateitemcontent %}
+  <div >
+
+<p><h3>Projects Details</h3></p>
+
+	<div>
+		{% for a in project %}
+		<fieldset>
+			<legend>Project Details {{forloop.counter}}</legend>
+			<table class="table table-borderless">
+				<tr>
+				<th >Client</th>
+				<td>{{a.client}}&emsp;&emsp;
+				Project Title :&emsp;&emsp;
+				{{a.project_title}}</td>
+			</tr>
+
+			<tr>
+				<th>Duration</th>
+				<td>
+					{{a.projstartdate}}&emsp;&emsp;to&emsp;&emsp;{{a.projtodate}}
+				</td>
+			</tr>
+
+			<tr>
+				<th>Project Location</th>
+				<td>
+					{{a.project_loc}}&emsp;&emsp;{{a.on_offsite}}
+				</td>
+			</tr>
+
+			<tr>
+				<th>Employment Type</th>
+				<td>
+					{{a.emp_type}}
+				</td>
+					
+			</tr>
+
+			<tr>
+				<th>Project Details</th>
+				<td>
+					{{a.project_details|safe}}
+				</td>
+			</tr>
+
+			<tr>
+				<th>Role Description</th>
+				<td>
+					{{a.role_desc|safe}}
+				</td>
+			</tr>
+
+			<tr>
+				<th>Skills Used</th>
+				<td>
+					{{a.skill_used}}
+				</td>
+			</tr>
+
+			<tr>
+				<th>Role</th>
+				<td>{{a.role}}&emsp;&emsp;Team Size&emsp;&emsp;{{a.teamsize}}
+				</td>
+			</tr>
+		</table>
+		</fieldset>
+		{% endfor %}
+	</div>
+</div>
+		{% endblock %}

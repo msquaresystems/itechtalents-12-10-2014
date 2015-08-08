@@ -1,0 +1,188 @@
+{% extends "registration/base/jobseekerbase.html" %}
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-select1.min.css">
+<link rel="stylesheet" href="{{ STATIC_URL }}js/datepicker/datepicker.css" />
+<style type="text/css">
+.selectpicker{width:400px !important;}
+</style>
+{% endblock %}
+{% block content %}
+<div style="min-height:580px;" class="container">
+  <div class="row-fluid">
+    <div class="span10 offset1" style="text-align:left;">
+      <h3 style="border-bottom:2px solid #FFB812;"> Advanced Job Search</h3>
+      <form action="/accounts/AdvSearchResult/" name="advsearchform" id="advsearchform" method="GET" onsubmit="return validateSForm()" class="text text-warning">
+        <table class="table table-borderless">
+          <tr>
+            <td colspan="2">
+              <h4>Keywords</h4>
+              <P><input type="text" name="key_skills" autocomplete="off" class="input-block-level" placeholder="Technical skills(java,python) or Job title" id="skill"></P>
+              <p style="font-size:12px;">(e.g. Senior Java Developer,Java,HTML)</p>              
+            </td>
+          </tr>
+          <tr>
+            <td width="50%">
+              <h4>Industry type</h4>
+              <p><select name="industry" class="selectpicker" data-live-search="true"><option value="">------ Select ------</option><script type="text/javascript">var industry= new Array("Accounting/Finance","Advertising/PR/MR/Events","Agriculture/Dairy","Animation","Architecture/Interior Designing","Auto/Auto Ancillary","Aviation / Aerospace Firms","Banking/Financial Services/Broking","BPO/ITES","Brewery / Distillery","Ceramics /Sanitary ware","Chemicals/PetroChemical/Plastic/Rubber","Construction/Engineering/Cement/Metals","Consumer Durables","Courier/Transportation/Freight","Defence/Government","Education/Teaching/Training","Education/Teaching/Training","Electricals / Switchgears","Export/Import","Facility Management","Fertilizers/Pesticides","FMCG/Foods/Beverage","Food Processing","Fresher/Trainee","Gems & Jewellery","Glass","Heat Ventilation Air Conditioning","Hotels/Restaurants/Airlines/Travel","Industrial Products/Heavy Machinery","Insurance","IT-Hardware & Networking","IT-Software/Software Services","KPO / Research /Analytics","Legal","Media/Dotcom/Entertainment","Internet/Ecommerce","Medical/Healthcare/Hospital","Mining","NGO/Social Services","Office Equipment/Automation","Oil and Gas/Power/Infrastructure/Energy","Paper","Pharma/Biotech/Clinical Research","Printing/Packaging","Publishing","Real Estate/Property","Recruitment","Retail","Security/Law Enforcement","Semiconductors/Electronics","Shipping/Marine","Steel","Strategy /Management Consulting Firms","Telcom/ISP","Textiles/Garments/Accessories","Tyres","Water Treatment / Waste Management","Wellness/Fitness/Sports","Other");
+                for(var i=0; i<industry.length; i++)
+                  document.write("<option value=\""+industry[i]+"\">"+industry[i]+"</option>");</script></select>
+              </p>
+            </td>
+            <td width="50%">
+              <h4>Functional Area</h4>
+              <p><select name="functionalarea" class="selectpicker" data-live-search="true" ><option value="">------- Select -------</option><script type="text/javascript">var functional=new Array("Accounts/Finance/Tax/CS/Audit","Agent","Analytics & Business Intelligence","Architecture/Interior Design","Banking/Insurance","Content/Journalism","Corporate Planning/Consulting","Engineering Design/R&D","Export/Import/Merchandising","Fashion/Garments/Merchandising","Guards/Security Services","Hotels/Restaurants","HR/Administration/IR","IT Software-Client Server","IT Software-Mainframe","IT Software-Middleware","IT Software-Mobile","IT Software-Other","IT Software-System Programming","IT Software-Telecom Software","IT Software-Application Programming/Maintenance","IT Software-DBA/Datawarehousing","IT Software-E-Commerce/Internet Technologies","IT Software-Embedded/EDA/VLSI/ASIC/Chip Des","IT Software-ERP/CRM","IT Software-Network Administration/Security","IT Software-QA & Testing","IT Software-Systems/EDP/MIS","IT-Hardware/Telecom/Technical Staff/Support","ITES/BPO/KPO/Customer Service/Operations","Legal","Marketing/Advertising/MR/PR","Packaging","Pharma/Biotech/Healthcare/Medical/R&D","Production/Maintenance/Quality","Purchase/Logistics/Supply Chain","Sales/BD","Secretary/Front Office/Data Entry","Self Employed/Consultants","Shipping","Site Engineering/Project Management","Teaching/Education","Ticketing/Travel/Airlines","Top Management","TV/Films/Production","Web/Graphic Design/Visualiser","Other");for(var i=0;i<functional.length;i++)document.write("<option value=\""+functional[i]+"\">"+functional[i]+"</option>");  </script></select></p>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <h4>Job Type</h4>
+              <p><select name="jobtype" class="selectpicker" data-live-search="true" ><option value="">------- Select -------</option><script type="text/javascript">var qualification=new Array('Fulltime','Parttime','Internship','Contract - Corp-to-Corp','Contract - Independent','Contract - W2','Contract to Hire - Corp-to-Corp','Contract to Hire - Independent','Contract to Hire - W2','Temporary');for(var i=0;i<qualification.length;i++)document.write("<option value=\""+qualification[i]+"\">"+qualification[i]+"</option>");</script></select></p>
+            </td>
+            <td>
+              <h4>Work Permit for USA</h4>
+              <p><select class="selectpicker" data-live-search="true"  name="workpermit"><option value="">------- Select -------</option><option value="Have H1 Visa">Have H1 Visa</option><option value="Need H1 Visa">Need H1 Visa</option><option value="TN Permit Holder">TN Permit Holder</option><option value="Green Card Holder">Green Card Holder</option><option value="US Citizen">US Citizen</option><option value="Authorize to work in US">Authorize to work in US</option></select></p>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <h4>Secret Clearance Level</h4>
+              <p><select name="secretclear" class="selectpicker" data-live-search="true" ><option value="">------- Secret Clearance -------</option>
+              <script type="text/javascript">var sc=new Array('None','Public Trust','NACI','ADP1/IT1','ADP2/IT2','Confidential','DOE L','DOE Q','Secret','Top Secret','Top Secret/SCI','Top Secret/SCI CI Polygeaph','Top Secret/SCI Full Scope Polygeaph','Other Clearance');for(var i=0;i<sc.length;i++)document.write("<option value=\""+sc[i]+"\">"+sc[i]+"</option>");</script></select></p>
+            </td>
+            <td>
+              <h4>Salary Range</h4>
+              <p><select name="salary_range" class="selectpicker" data-live-search="true"><option value="">------- Select -------</option><optgroup label="Month Wise"><script type="text/javascript">var Salary=new Array("Lessthan 20,000$","20,000$ - 30,000$","30,000$ - 40,000$","40,000$ - 50,000$","50,000$ - 60,000$","60,000$ - 70,000$","Above 70,000$");for(var i=0;i<Salary.length;i++)document.write("<option value=\""+Salary[i]+"\">"+Salary[i]+"</option>");</script></optgroup><optgroup label="Hour Wise"><script type="text/javascript">var Salary=new Array("Lessthan 40$/hr","40$/hr - 50$/hr","50$/hr - 60$/hr","60$/hr - 70$/hr","70$/hr - 80$/hr","80$/hr - 90$/hr","90$/hr - 100$/hr","Above 100$/hr");for(var i=0;i<Salary.length;i++)document.write("<option value=\""+Salary[i]+"\">"+Salary[i]+"</option>");</script></optgroup></select></p>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <h4>Minimum Experience</h4>
+              <p><select name="min_exp" class="selectpicker" data-live-search="true" ><option value="">------- Min -------</option><script type="text/javascript">var minexp=new Array('0','1','2','3','4','5','6','7','8','9','10','11','12');for(var i=0;i<minexp.length;i++)document.write("<option value=\""+minexp[i]+"\">"+minexp[i]+"</option>");</script></select></p>
+            </td>
+            <td>
+              <h4>Maximum Experience</h4>
+              <p><select name="max_exp" class="selectpicker" data-live-search="true"><option value="">------- Max -------</option><script type="text/javascript">var maxexp=new Array('1','2','3','4','5','6','7','8','9','10','11','12','13','14','15');for(var i=0;i<maxexp.length;i++)document.write("<option value=\""+maxexp[i]+"\">"+maxexp[i]+"</option>");</script></select></p>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <h4>Job Posted between <small>( Date Range )</small></h4>
+              <p><input type='text' class='input-xlarge' placeholder="From Date" id='dpd11' name="fromrange">&emsp;&emsp;&emsp;&emsp;<input type="text" id="dpd22" class="input-xlarge" name="torange" placeholder="To Date"></p>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2"><h4>Location</h4>
+              <p><input type="text" autocomplete="off" name="city" placeholder="City / State / Country / Zipcode" class="input-xxlarge" id="state">&emsp;<select name="miles" id="miles" class="selectpicker" data-live-search="true"><option value="">------- Select -------</option><option value="10">10 Miles</option><option value="50">50 Miles</option><option value="100">100 Miles</option><option value="150">150 Miles</option><option value="200">200 Miles</option><option value="250">250 Miles</option><option value="300">300 Miles</option></select></p>
+              <p style="font-size:12px;">( e.g. Boston or Newyork or Canada or 52401 )</p>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <p style="text-align:center;"><input type="submit" value="Search" class="btn btn-success btn btn-large" ></input>&emsp;<input type="reset" value="Reset" class="btn btn-warning btn btn-large" ></input>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extrajavascript %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/datepicker/bootstrap-datepicker.js"></script>
+<script>
+  jQuery(function($) {
+    $('#checkboxOne').click(function() {
+      var cb1 = $('#checkboxOne').is(':checked');
+      $('#secretclear').prop('disabled', !(cb1 ));
+    });
+  });
+  $(function(){
+    $('.selectpicker').selectpicker();
+    var checkins = $('#dpd11').datepicker({
+        format: "mm-dd-yyyy",
+    }).on('changeDate', function(ev) {
+        if (ev.date.valueOf() > checkouts.date.valueOf()) {
+            var newDate = new Date(ev.date)
+            newDate.setDate(newDate.getDate() + 1);
+            checkouts.setValue(newDate);
+        }
+        checkins.hide();
+        $('#dpd22')[0].focus();
+    }).data('datepicker');
+    var checkouts = $('#dpd22').datepicker({
+        format: "mm-dd-yyyy",
+        onRender: function(date) {
+            return date.valueOf() <= checkins.date.valueOf() ? 'disabled' : '';
+        }
+    }).on('changeDate', function(ev) {
+    checkouts.hide();
+    }).data('datepicker');
+    $("#advsearchform").submit(function(){
+      var valid=0;
+      $(this).find('input:text,textarea,select').each(function(){
+        if($(this).val() != "") valid+=1;
+      });
+      if(valid){
+        return true;
+      }
+      else{
+        $(this).find('input:text,textarea,select').css({'border' : '1px solid red'});
+        return false;
+      }
+    });
+    $(":reset").click(function(){
+      $("#advsearchform").find('input:text,textarea,select').css({'border' : '1px solid #C6C6C6'});
+      return true;
+    });
+  });
+  !function(source) {
+    function extractor(query) {
+      var result = /([^,]+)$/.exec(query);
+      if(result && result[1])
+        return result[1].trim();
+      return '';
+    }
+    $('#state').typeahead({
+      source: source,
+      updater: function(item) {
+        return this.$element.val().replace(/[^,]*$/,'')+item+',';
+      },matcher: function (item) {
+        var tquery = extractor(this.query);
+        if(!tquery) return false;
+        return ~item.toLowerCase().indexOf(tquery.toLowerCase())
+      },highlighter: function (item) {
+        var query = extractor(this.query).replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, '\\$&')
+        return item.replace(new RegExp('(' + query + ')', 'ig'), function ($1, match){
+          return '<strong>' + match + '</strong>'
+        })
+      }
+    });
+  }(["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Dakota","North Carolina","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming","Los Angeles","Chicago","Houston","Phoenix","Philadelphia","San Antonio","San Diego","Dallas","San Jose","Detroit","Jacksonville","Indianapolis","San Francisco","Columbus","Austin","Memphis","Fort Worth","Baltimore","Charlotte","75462","02115","33122","33125","33126","33127","33129","33130","33131","33132","33133","33136","02116","33137","33138","33139","33140","33142","33143","33145","33150","33156","33161","02138","33166","33169","33172","33173","33175","33176","33178","33179","33181","33184","10001","33186","33301","33304","33305","33306","33308","33309","33312","33315","33316","10019","33334","33431","33441","33442","33458","33510","33548","33549","33566","33570","10021","33594","33601","33602","33603","33604","33605","33606","33607","33609","33610","10022","33611","33612","33613","33614","33615","33616","33618","33619","33624","33625","10036","33626","33629","33634","33635","33637","33647","33755","33756","33762","33765","10065","33901","33904","33907","33908","33912","33914","33950","33952","33980","34102","10502","34103","34104","34108","34109","34110","34113","34114","34119","34134","34145","98104","10506","34242","10533","10583","10701","10704","19147","20005","20036","20850","21201","90210","21740","22201","22314","23185","28092","28262","30004","30005","30013","30022","02871","30067","30075","30083","30084","30096","30097","30144","30303","30305","30308","60607","30309","30313","30318","30324","30328","30329","30339","30342","32118","32207","77304","32216","32218","32256","32301","32303","32401","32408","32541","32601","32608","32780","32801","32808","32809","32812","32817","32819","32821","32822","89052","32826","32836","32837","32901","32926","32931","32952","33004","33009","33012","33013","33016","33019","33020","33021","33030","33040","33060","33062","33069"]);
+  !function(source) {
+    function extractor(query) {
+      var result = /([^,]+)$/.exec(query);
+      if(result && result[1])
+        return result[1].trim();
+      return '';
+    }
+    $('#skill').typeahead({
+      source: source,
+      updater: function(item) {
+        return this.$element.val().replace(/[^,]*$/,'')+item+',';
+      },matcher: function (item) {
+        var tquery = extractor(this.query);
+        if(!tquery) return false;
+        return ~item.toLowerCase().indexOf(tquery.toLowerCase())
+      },highlighter: function (item) {
+        var query = extractor(this.query).replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, '\\$&')
+        return item.replace(new RegExp('(' + query + ')', 'ig'), function ($1, match) {
+          return '<strong>' + match + '</strong>'
+        })
+      }
+    });
+  }(["Android","Assembler","ASP","Ajax","C","c#","C++","Css","HTML","HTML5","Java","JavaScript","Python","ASP.NET","A# (Axiom)","ActionScript","ALGOL","APL","AppleScript","Arc","AutoIt","Babbage","Bash","BASIC","BETA","Boomerang","Basic","C--","C#","CMS","COBOL","CobolScript","Cobra","CODE","CoffeeScript","Cola","ColdC","COMAL","Coral","Clojure","Corn","Csound","Curl","Curry","Cyclone","Cython","DASL","DataFlex","DYNAMO","Erlang","Emerald","Epigram","ESPOL","Euler","Falcon","Flavors","Flex","Fortran","FoxPro","G-code","Genie","Godiva","Haskell","HLSL","Hume","HyperTalk","IBM","IBM AScript","Icon","JADE","Jython","JASS","JQuery","JCL","JEAN","ECMAScript","JScript","Karel","Kaya","KRYPTON","LabVIEW","Ladder","Lua","Lisp","Scheme","Legoscript","Limbo","Lite-C","Lucid","Magma","Maple","MASM","Mathematica","MATLAB","Maxima","Maya","Mercury","Mesa","MetaL","Microcode","MicroScript","Mouse","NASM","NATURAL","Nemerle","NetLogo","NewtonScript","Nickle","o:XML","Oberon","Obix","Obliq","Octave","Oxygene","Pascal","Pawn","PEARL","Perl","PDL","PHP","PILOT","PortablE","PostScript","PowerBuilder","Powerhouse","PowerShell","Pascal","Pro*C","Processing","Processing.js","Prograph","PROIV","Prolog","Promela","PROTEL","ProvideX","Pure","Visual Prolog","MS Visual C++","QBasic","QPL","QtScript","QuakeC","REBOL","Redcode","REFAL","REXX","Ruby","Ruby on Rails","Rust","Scala","SIMPOL","SIMSCRIPT","Simula","SQL","Simulink","SOL","Tcl","Tea","TECO","TELCOMP","TOM","UCSD Pascal","Unicon","Unix shell","VBScript","Verilog","VHDL","Visual Basic .NET","Visual Basic","Visual C#","Visual DataFlex","Visual DialogScript","Visual Fortran","Visual FoxPro","Visual J#","Visual J++","Visual Objects","XML",".net Developer","Account Manager","Accountant","Accounting Manager","Administrator Payroll","Assistant Controller","Auditor","Business Analyst","Business Development Manager","Controller","Cost Accountant","Design Engineer","Director Business Development","Electrical Engineer","Engineer","Engineering Technician","Financial Analyst","Human Resources Assistant","Human Resources Coordinator","Human Resources Specialist","Java Developer","LPN","Manufacturing Engineer","Marketing","Marketing Director","Marketing Manager","Mechanical Engineer","Network Engineer","Nurse","Occupational Therapist","Occupational Therapist Occupation","Payroll Clerk","Payroll Specialist","Pharmacist","Physical Therapist","Physical Therapist Thera","Process Engineer","Product Manager","Product Marketing Manager","Project Engineer","Project Manager","Quality Engineer","Recruiter","Registered Nurse","Senior Accountant","Senior Financial Analyst","Senior Marketing Manager","Senior Product Manager","Senior Software Engineer","Software Engineer","Speech Language Pathologist","Speech Pathologist Assistant","Systems Administrator","Systems Engineer","Tax Manager","Technical Recruiter","Technician","Trainer","Training Specialist","Web Developer","Applications Engineer","Chief Information Office","Chief Technology Office","Computer and Information Systems Manager","Database Administrator","Help Desk Technician","Information Technology Director","Information Technology Manager","Management Information Systems Director","Network Architect","Network Engineer","Network System Administrator","Programmer","Programmer Analyst","Security Specialist","Senior Applications Enginee","Senior Database Administrato","Senior Network Architec","Senior Network Enginee","Senior Network System Administrator","Senior Programme","Senior Programmer Analys","Senior Security Specialist","Senior Support Specialist","Senior System Administrator","Senior System Analyst","Senior System Architect","Senior System Designer","Senior Systems Analyst","Senior Systems Software Engineer","Senior Web Administrator","Senior Web Developer","Software Developer","Software Quality Assurance Analyst","Support Specialist","System Administrator","System Analyst","System Architect","System Designer","Systems Analyst","Systems Software Engineer","Technical Specialist","Telecommunications Specialist","Web Administrator","Web Developer","Webmaster"]);
+</script>
+{% endblock %}
+

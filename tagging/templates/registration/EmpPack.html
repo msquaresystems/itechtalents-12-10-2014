@@ -1,0 +1,116 @@
+
+{% extends "registration/base/jobseekerbase.html" %}
+
+
+{% block content %}
+
+<div style="margin:auto; padding:0px; width:1200px;">
+    <form action="." method="post" name="EmpPackForm" onsubmit="return BlogCommentFormvalidation() " >{% csrf_token %}
+        <div style="margin:auto; padding:0px; width:900px; min-height:458px; ">
+            <p style='text-align:right;'><button type="button" class="btn btn-primary" data-toggle="button" id="back">Back</button></p>
+            {% for a in pack %}
+            <div>
+                <p><h2>{{a.pack_name}}</h2></p>
+                <p style="text-align:justify;margin-left:40px;"><font size="3">
+                    {{a.pack_description}}
+                    <br/><br/>
+                    You can post <b>{{a.no_jobpost}}</b> jobs and view <b >{{a.no_resume}}</b> resumes per Subscription of "{{a.pack_name}}"
+                    <br/><br/>
+                    "{{a.pack_name}}" pack is valid for <b>{{a.pack_duration}}</b> days.
+                    <br/><br/>
+                    Pack costs only  <b>$</b><b>{{a.pack_cost}}</b> per "{{a.pack_name}}".
+                    </font>
+                </p>
+                <table align="center" width="60%">
+                    <tr>
+                        <td>
+                            <input type="hidden" name="pckid" value="{% for a in pack %}{{a.id}}{% endfor %}">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width='30%' style="text-align: left;">No of Packs:</td>
+                        <td width='30%' style="text-align: left;">
+                            <select name="quantity" id="quantity" onChange="quantitychange();" style="width:80px;" >
+                                
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left;">Given Job post:</td>
+                        <td style="text-align: left;">
+                            <label id="oj">{{a.no_jobpost}}</label>
+                            <input type="hidden" id="j" name="spack_jobpost" value="{{a.no_jobpost}}">
+                            <input type="hidden" id="jv" value="{{a.no_jobpost}}">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left;">Given resume views:</td>
+                        <td style="text-align: left;">
+                            <label id="or">{{a.no_resume}}</label>
+                            <input type="hidden" id="r" name="spack_resume" value="{{a.no_resume}}">
+                            <input type="hidden" id="rv" value="{{a.no_resume}}">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left;">Amount to be paid:</td>
+                        <td style="text-align: left;">$<span id="oc">{{a.pack_cost}}</span>
+                            <input type="hidden" id="c" name="spack_cost" value="{{a.pack_cost}}">
+                            <input type="hidden" id="cv" value="{{a.pack_cost}}">
+                        </td>
+                    </tr>
+                </table>
+                {% endfor %}
+                <br>
+                <input type="hidden" name="pckid" value="{% for a in pack %}{{a.id}}{% endfor %}">
+                <input type="hidden" name="employer_id" value="{{request.user.id}}">
+                <p style="text-align:center"> <input type="submit" align="center" class="btn btn-primary" value="Continue"/></p>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extrajavascript %}
+<script type="text/javascript">
+
+function quantitychange()
+{
+    var qty = EmpPackForm.quantity.value;
+    var res = document.getElementById("rv").value;
+    var job = document.getElementById("jv").value;
+    var cost = document.getElementById("cv").value;
+    var sres = res*qty;
+    var sjob = job*qty;
+    var scost = cost*qty;
+
+    document.getElementById("oj").innerHTML=sjob;
+    document.getElementById("j").value=sjob;
+
+    document.getElementById("or").innerHTML=sres;
+    document.getElementById("r").value=sres;
+
+    document.getElementById("oc").innerHTML=scost;
+    document.getElementById("c").value=scost;
+
+}
+
+$(document).ready(function(){
+    $('#back').click(function(){
+        parent.history.back();
+        return false;
+    });
+});
+
+
+</script>
+{% endblock %}

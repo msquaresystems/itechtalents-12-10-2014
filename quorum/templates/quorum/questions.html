@@ -1,0 +1,62 @@
+{% extends "quorum/base_quorum.html" %}
+{% block content %}
+<style type="text/css">    
+    .time { font-size: 0.8em; margin-top: 2px; }
+    .span12 { font-size: 1.1em; margin-top: 2px;color: #666666; }
+    .answerlink { text-align: right; }
+    .step-links a { font-size: 0.89em; }
+    .title {
+        font-size: 1.4em; margin: 20px; border-bottom: 1px solid #ccc;
+        padding-left: 4px; margin-left: 5px;
+    }
+    .questions { border-bottom: 1px solid #e6e6e6;}
+    .messages { margin-left: 20px; }
+    .pagination { margin-top: 20px; margin-left: -20px; }
+</style>
+<script type="text/javascript">
+function filter(element) {
+    var value = $(element).val().toLowerCase();
+    var $li = $(".questions");
+
+    $li.hide();
+    $li.filter(function() {
+        return $(this).text().toLowerCase().indexOf(value) > -1;
+    }).show();
+}
+</script>
+
+<div class="container" style="min-height:495px;">
+<div class="row">
+    <div class="span12">
+        <div class="span6" style="text-align:left;"><h3 class="text text-info">Quorum Questions</h3></div>
+        <div class="span6"><input class="pull-right input-xlarge" placeholder="Filter your questions" type="text" onkeyup="filter(this)" /></div>
+    </div>
+</div>
+<div class="row">
+    <div class="span12" style="text-align:left;">
+            <div class="questbox"><!-- Questions  -->
+                <div class="title"><strong>{{ topic }}</strong></div>
+                {% for quest in quest_list %}
+                <div class="questions">
+                    <ul>
+                        <div class="time">{% if qall %}Topic:<a href="/quorum/topic/{{ quest.topic.id }}/">{{ quest.topic.topic }}</a> | {% endif %}{{ quest.created }} | <a href="/quorum/user/{{ quest.user.username }}">{{ quest.user.username }}</a></div>
+                        <div class="body">{{ quest.question|safe|truncatechars:250 }}  <a href="/quorum/question/{{ quest.pk }}{#{% url quorum.views.question quest.pk %}#}">(view)</a></div>
+                        {#{{ quest.question|linebreaks }}#}
+                        <div class="answerlink">{{ quest.answer_set.count }} answers, {{ quest.favscount }} stars</div>
+                    </ul>
+                </div>
+                {% endfor %}
+                <!-- Next/Prev page links  -->
+                {% if not archive and quests.object_list and quests.paginator.num_pages > 1 %}
+                <div class="pagination">
+                    <span class="step-links">
+                    {% if quests.has_previous %}<a href= "?page={{ quests.previous_page_number }}">newer entries &lt;&lt; </a>{% endif %}
+                    <span class="current">&nbsp;Page {{ quests.number }} of {{ quests.paginator.num_pages }}</span>    {% if quests.has_next %}<a href="?page={{ quests.next_page_number }}"> &gt;&gt; older entries</a>   {% endif %}
+                    </span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

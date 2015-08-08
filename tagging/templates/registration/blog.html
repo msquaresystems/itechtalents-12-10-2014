@@ -1,0 +1,35 @@
+{% extends "registration/base/jobseekerbase.html" %}
+{% block extrahead %}
+<link rel="stylesheet" href="{{ STATIC_URL }}css/blog.css"/>
+<style type="text/css">
+.accordion-inner{list-style-type: none;}
+</style>
+{% endblock %}
+{% block content %}
+<div class="container" style="min-height:580px;">
+	<div class="row-fluid" style="border-bottom:2px solid #FFB812;">
+		<div class="span10"><h4>Articles under {{ btop.0.blogtopic }}</h4></div>
+		<div class="span2" style="margin-top:15px;"><a href="/accounts/BlogPost/">Post Article</a>&emsp;|&emsp;<a href="/accounts/BlogTopics/">Topics</a></div>
+	</div>
+	<br>
+	{% for bass in bass %}
+	<div class="row-fluid">
+		<div class="span12">
+			<div class="row-fluid">
+				<div class="span8">
+					<strong><a href="/accounts/BlogArticle/{{bass.id}}/">{{bass.btitle}}</a></strong>
+				</div>
+			</div>
+			<div class="row-fluid">
+				<div class="span2"><img class="img-polaroid" src="{{STATIC_URL}}{% if bass.bimage %}{{bass.bimage}}{% else %}images/noimage.jpg{% endif %}" alt="{{ btop.blogtopic }}" style="width:175px;height:100px;" ></div>
+				<div class="span10"><p>{{ bass.bcontent|truncatewords:50|safe }}</p>
+				<p><a class="btn btn-small btn-warning" href="/accounts/BlogArticle/{{bass.id}}/">Read more</a></p>
+				<p><i class="icon-user"></i> by {{bass.user.username}} | <i class="icon-calendar"></i> {{bass.bposted}} | <i class="icon-comment"></i> <a href="/accounts/BlogArticle/{{bass.id}}/">{{bass.bcomments_set.count}} Comments</a></p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<hr>
+	{% endfor %}	
+</div>
+{% endblock %}

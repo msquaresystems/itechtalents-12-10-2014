@@ -1,0 +1,67 @@
+{% extends "registration/base/jobseekerbase.html" %}
+{% block content %}
+<div style="width:1200px;padding:0px;margin:auto;" class="outerdiv">
+
+    <div>
+        <form method="POST" name="resetpass" action="." onsubmit="return validate()">
+{% csrf_token %}
+
+<table width="100%" class="tab1" border="0" cellspacing="10">
+<tr>
+    <td colspan="2"><label id="error"></label>
+    </td>
+</tr>
+<tr>
+<td width="25%"><label for="id_username">User name <k style="color:red;">&nbsp;*</k></label></td>
+<td><input type="text" name="username" > </td>
+
+</tr>
+
+<tr>
+    <td><label for="id_password1">Password<k style="color:red;">&nbsp;*</k></label></td>
+    <td><input type="text" name="password1" > </td>
+    
+</tr>
+<tr>
+    <td><label for="id_password2">Confirm Password<k style="color:red;">&nbsp;*</k></label></td>
+    <td><input type="text" name="password2" > </td>
+    
+</tr>
+<tr>
+    <td></td>
+    <td><input type="submit" value="Register" style="width:90px;" />&nbsp;&nbsp;<input type="reset" style="width:90px;" value="Clear" /></td>
+    <td></td>
+</tr>
+
+</table>
+<input type="text" value="jobseeker" name="usertype" />
+<input type="text" value={{ user.id }} name="userid" />
+</form>
+    </div>
+  </div>
+{% endblock %}
+{% block extrajavascript %}
+<script type="text/javascript">
+    function validate()
+    {
+        var un=document.forms["resetpass"]["username"].value;
+        var p1=document.forms["resetpass"]["password1"].value;
+        var p2=document.forms["resetpass"]["password2"].value;
+
+        if((un==''||un==null) || (p1==''||p1==null) || (p2==''||p2==null))
+        {
+            document.getElementById('error').innerHTML="Enter Mandatory Fields";
+            return false;
+        }
+        else if(p1==p2)
+        {
+            document.getElementById('error').innerHTML="Password Mismatched";
+            return true;
+        }
+        else
+        {
+            return true;
+        }
+    }
+    </script>
+{% endblock %}

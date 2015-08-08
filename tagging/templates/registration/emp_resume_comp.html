@@ -1,0 +1,43 @@
+{% extends "registration/base/jobseekerbase.html" %}
+{% block content %}
+<div class="container" style="min-height:550px;padding-bottom:30px;">
+  <div class="row">
+    <div class="span12">
+      <h3 style="text-align:left;border-bottom:2px solid #FFB812;" class="text-info">Only 3 resumes can be comparable</h3><br>
+      <p><strong>{{ msgrc }}</strong></p>
+      {% for resume in resumes %}
+          <div class="span4">
+              <p style="text-align:left;" class="text-warning"><strong>Job Details</strong></p>
+              <p style="text-align:left;" class="text-info">Title : {{resume.2}}</p>
+              <p style="word-break:break-all;text-align:left;" class="text-info">Skills : {{resume.3}}</p>
+              <p style="text-align:left;" class="text-warning" ><strong>Candidate Details</strong></p>
+              <p style="text-align:left;" class="text-info">Name: {% if resume.0.user.first_name %}{{resume.0.user.first_name}} {{resume.0.user.last_name}}{% else %}{{resume.0.user.username}}{% endif %}</p>
+              <p style="text-align:left;" class="text-info">Skills: {% for skill in resume.0.JS.jsskills_set.all %}{{ skill.skill }}{% if not forloop.last %},&nbsp;{% endif %}{%endfor%}</p><hr />
+              <div style="overflow:scroll;height:700px; width:395px;border:1px solid grey;text-align:left;">
+              {% if resume.1 == 1 %}
+                {% if resume.0.resumeFile %} 
+                  {{ resume.0.resumeFile|safe }}
+                {% else %}<h3 class="text-error" style="text-align:center;">No resumes attached</h3>{% endif %}              
+              {% elif resume.1 == 0 %}
+                {% if resume.0.resumeFile %}
+                  <iframe src="/accounts/emprescompdoc/{{ resume.0.id }}/" style="height:700px; width:395px;border:1px solid grey;"></iframe>
+                {% else %}<h3 class="text-error" style="text-align:center;">No resumes attached</h3>{% endif %}
+              {% else %}
+              <h3 class="text-error" style="text-align:center;">No resumes attached<h3>
+              {% endif %}
+              </div>
+          </div>        
+      {% endfor %}
+    </div>
+  </div>
+  <div class="pull-right"><button id="back" class="btn btn-info">Back</button></div>
+</div>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('#back').click(function(){
+        parent.history.back();
+        return false;
+    });
+});
+</script>
+{% endblock %}

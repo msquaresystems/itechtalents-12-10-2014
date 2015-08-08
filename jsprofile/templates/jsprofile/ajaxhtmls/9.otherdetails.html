@@ -1,0 +1,761 @@
+{% extends "jsprofile/base.html" %}
+{% block extrahead %} 
+<link rel="stylesheet" href="{{ STATIC_URL }}js/datepicker/datepicker.css" />
+<link href="{{STATIC_URL}}jsprofile_static/xeditable/bootstrap-editable.css" rel="stylesheet"/>  
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-wysihtml5.css"></link>
+<style>
+.editable form{
+    background-color: #F8F8F8;
+    border: 1px solid #EAD9CE;
+    ursor: default;
+    margin: 0;
+    padding: 13px;
+}
+hr{
+margin: 5px;
+}
+.item_tittle h1 span{
+    background: none repeat scroll 0 0 #74767A;
+    border-radius: 3px 3px 3px 3px;
+    color: #ffffff;
+    float: right;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 7px 0 0;
+    padding: 0 5px;
+    margin-right: 0;
+}
+.item_tittle h2 {
+    font-size: 18px;
+    font-weight:normal;
+    text-align: left;
+    color:#000;
+}
+.item_tittle h3{
+    font-size: 14px;
+    font-weight:normal;
+    text-align: right;
+    color:#000;
+}
+.bs-sidebar.affix {
+    position: static;
+}
+.sideheading{
+    background-color: #e0e0e0;
+    background-image: -moz-linear-gradient(#fafafa, #e0e0e0);
+    background-image: -webkit-linear-gradient(#fafafa, #e0e0e0);
+    background-image: linear-gradient(#fafafa, #e0e0e0);
+    background-repeat: repeat-x;
+    display: block;
+    padding: 10px 10px;
+    border-bottom: 1px solid #ccc;
+    color: #222;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 20px;
+    border-left: 0 none;
+}
+.bs-sidenav {
+    padding-top:    10px;
+    padding-bottom: 10px;
+    background-color: #fafafa;
+    border-radius: 5px;
+    border:1px solid #CCC;
+}
+.bs-sidebar .nav > li > a {
+    font-size: 1.2em;
+    display: block;
+    color: #716b7a;
+    padding: 10px 20px;
+    border-right: 4px solid transparent;
+}
+.bs-sidebar .nav > li > a:hover,.bs-sidebar .nav > li > a:focus{
+    text-decoration: none;
+    background-color: #fff;
+    border-right: 4px solid #dbd8e0;
+}
+.bs-sidebar .nav > .active > a,.bs-sidebar .nav > .active:hover > a,.bs-sidebar .nav > .active:focus > a {
+    font-weight: bold;
+    color: #418cd1;
+    background-color: #fff;
+    border-right: 4px solid #418cd1;
+}
+.editable form {
+	    background-color: #F8F8F8;
+	    border: 1px solid #EAD9CE;
+	    cursor: default;
+	    margin: 0;
+	    padding: 13px;
+	}
+	hr {
+	  margin: 5px;
+	}
+	.item_tittle h1 span {
+	    background: none repeat scroll 0 0 #74767A;
+	    border-radius: 3px 3px 3px 3px;
+	    color: #ffffff;
+	    float: right;
+	    font-size: 16px;
+	    font-weight: bold;
+	    margin: 7px 0 0;
+	    padding: 0 5px;
+	  margin-right: 0;
+	 
+	}
+	.item_tittle h2 {
+	  font-size: 18px;
+	  font-weight:normal;
+	  text-align: left;
+	  color:#000;
+	}
+	.item_tittle h3{
+	  font-size: 14px;
+	  font-weight:normal;
+	  text-align: right;
+	  color:#000;
+	}
+</style>
+{% endblock %}
+{% block content %}
+{% load mytaghelper %}
+{% load jsprofile_extras %}
+<div class="container-fluid" style="min-height:580px;">
+    <div class="row-fluid">
+        <div class="span3">
+            <div class="bs-sidebar">
+                <ul class="nav bs-sidenav">
+                    <li class='sideheading'>{{ request.user.username }}</li>
+                    <li class="active"><a href="/js/Dashboard/">Dashboard</a></li>{% for nav in navs %}<li{% ifequal next forloop.counter %} class="active"{% endifequal %}><a class="ajaxLoad" href="/js/{% sidebar nav %}/" data-ajxurl="{{ forloop.counter }}">{{nav}}</a></li>{% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="span9">
+
+<div id="language" class="xgap">
+	<h4 style="border-bottom:2px solid #FFB812;">Languages</h4>
+	<br>
+	<div id="languageview">				
+		{% if lang %}
+		<table class="table table-striped" id="languageTable">
+			<tr class="info"><th>Language</th><th>Proficiency</th><th>Read</th><th>Write</th><th>Speak</th><th></th></tr>
+			{% for l in lang %}
+			<tr id="language{{l.pk}}">
+			<td>
+<a href="#" class="editlanguage" data-type="text" data-title="Language" data-pk="{{l.pk}}" data-url="/updatelanguage/" data-name="language" data-params="{curtable:'languagetable'}">{{ l.language }}</a>
+			</td>
+			<td>
+<a href="#" class="editlanguage" data-type="select" data-source="/fillcombo/proficiency/" data-title="Proficiency" data-pk="{{l.pk}}" data-url="/updatelanguage/" data-name="proficiency" data-params="{curtable:'languagetable'}">{{ l.proficiency }}</a>
+			</td>
+			<td>
+<a href="#" class="editlanguage" data-type="select" data-source="/fillcombo/read/" data-title="Read" data-pk="{{l.pk}}" data-url="/updatelanguage/" data-name="read" data-params="{curtable:'languagetable'}">{{l.read}}</a></td>
+			<td>
+<a href="#" class="editlanguage" data-type="select" data-source="/fillcombo/read/" data-title="Write" data-pk="{{l.pk}}" data-url="/updatelanguage/" data-name="write" data-params="{curtable:'languagetable'}">{{l.write}}</a></td>
+			<td>
+<a href="#" class="editlanguage" data-type="select" data-source="/fillcombo/read/" data-title="Speak" data-pk="{{l.pk}}" data-url="/updatelanguage/" data-name="speak" data-params="{curtable:'languagetable'}">{{l.speak}}</a></td>
+
+			<td><a class="btn btn-mini btn-danger deletelanguage" data-languageid="{{ l.pk }}" href="#">delete</a>
+			</td></tr>
+			{% endfor %} 
+		</table>
+		{% else %}
+		<div style="background-color:#ffa; padding:20px">
+			<strong>Please Add Languages Known</strong>
+		</div>
+		{% endif %}
+	</div>
+	<div class="toggleviewlanguage"> 
+		<a class="btn btn-language toggle-language" href="javascript:void(0);" data-sec='language'>add languages</a>			    
+	</div>
+	<div class="editable toggleformlanguage" style="display:none;">
+		<form action="" class="form-horizontal" id="languageForm">	{% csrf_token %}
+		<!-- curform value can be used to check which form is ajaxpost in a python view -->
+			<input type="hidden" name="curform" value="languageform">
+			<div class="control-group">
+				<label class="control-label">Language</label>
+				<div class="controls">
+					<input id="languageadd" maxlength="100" name="language" type="text" required/>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Proficiency</label>
+				<div class="controls">
+					<select  name="proficiency" id="proficiency" required>
+						<option value="">Select</option>
+						<option value="Beginner">Beginner</option>
+						<option value="Proficient">Proficient</option>
+						<option value="Expert">Expert</option>
+					</select>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Read </label>
+				<div class="controls">
+				<input type="hidden" value="No" id="Read" name="Read">
+				<input  type="checkbox" name="read" id="read" value="Yes" />
+			</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Write</label>
+				<div class="controls">
+				<input type="hidden" value="No" id="Write" name="Write">
+				<input  type="checkbox" name="write" id="write" value="Yes" />
+			</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Speak</label>
+				<div class="controls">
+				<input type="hidden" value="No" id="Speak" name="Speak">
+				<input  type="checkbox" name="speak" id="speak" value="Yes" />
+			</div>
+			</div>
+		    <input class="btn btn-success btn-language" id="btn1" type="submit" value="save" />
+		    <a href="javascript:void(0);"  rel="language" data-sec='language' class="btn btn-warning toggle-language">cancel</a>
+	  </form>
+ 	</div><!-- .editable toggle form-->
+</div>
+
+<hr>
+<!-- =============================================================================== -->
+<div id="other" class="xgap" style="margin-top:30px;">
+	<h4 style="border-bottom:2px solid #FFB812;">Other details</h4>
+	<br>
+	<div class="toggleview"> 
+	<a href="javascript:void(0);" class="btn btn-warning toggle-button">Update</a>
+        <div id ='viewotherdetails'>
+		<table class="table table-striped">
+			<tr>
+				<th width="50%">Employment type</th>
+				<td width="50%" id='employmenttype'>{{otherdetails.0.emptype}}</td>
+			</tr>
+			<tr>
+				<th>Work permit for USA</th>
+				<td id="workpermit">{{otherdetails.0.workpermit}}</td>
+			</tr>
+			<tr>
+				<th>Othercountries</th>
+				<td id="workother">{{otherdetails.0.workother}}</td>
+			</tr>
+			<tr>
+				<th>Willing to relocation</th>
+				<td id="relocation">{{otherdetails.0.relocate}}</td>
+			</tr>
+			<tr>
+				<th>Willing to telecommunicate</th>
+				<td id="relocation">{{otherdetails.0.telecommunicate}}</td>
+			</tr>
+			<tr>
+				<th>Willing to travel</th>
+				<td id="relocation">{{otherdetails.0.travel}}</td>
+			</tr>
+			<tr>
+				<th>Relocation choice</th>
+				<td id="relocation">{{otherdetails.0.relocatechoice}}</td>
+			</tr>
+		</table>
+        </div>
+        <div id="viewlanguageform"> 
+        </div>
+	</div>
+	<div class="editable toggleform" style="display:none;">
+	    <form id="otherdetailsform" action="" method="post" enctype="multipart/form-data">{% csrf_token %}	
+	    <input type="hidden" name="curform" value="otherdetailsform">
+	    <table class="table table-borderless">
+        <tr><td style="width:50%;">Employment type</td>                  
+            <td style="width:50%;">
+            	{% if otherdetails.0.emptype %}{% SelectEmploymentType otherdetails.0.emptype %}
+            	{% else %}
+				<select id="emptype"  name="emptype" size="4" required>
+					<option value="">Select</option>
+					<option value="Full time">Full time</option>
+					<option value="Contract - Corp to Corp" >Contract - Corp to Corp</option>
+					<option value="Contract - Independent">Contract - Independent</option>
+					<option value="Contract - W2">Contract - W2</option>
+					<option value="Contract to Hire - Corp to Corp">Contract to Hire - Corp to Corp</option>
+					<option value="Contract to Hire - Independent">Contract to Hire - Independent</option>
+					<option value="Contract to Hire - W2">Contract to Hire - W2</option>
+					<option value="Part time">Part time</option>
+				</select>
+				{% endif %}
+			</td>
+        </tr>
+        <tr>
+			<td><h4>Work Authorization</h4></td>
+		</tr>
+		<tr>
+			<td>Work Permit for USA</td>
+			<td>
+				{% if otherdetails.0.workpermit %}{% SelectEmpWorkPermit otherdetails.0.workpermit %}
+				{% else %}
+				<select id="workpermit"  name="workpermit" required>
+					<option value="">Select</option>
+					<option value="Have H1 Visa">Have H1 Visa</option>
+					<option value="Need H1 Visa">Need H1 Visa</option>
+					<option value="TN Permit Holder">TN Permit Holder</option>
+					<option value="Green Card Holder">Green Card Holder</option>
+					<option value="US Citizen">US Citizen</option>
+					<option value="Authorize to work in US">Authorize to work in US</option>
+				</select>
+				{% endif %}
+			</td>
+		</tr>
+		<tr>
+			<td>Other Countries <sub>(By holding ctrl key, you can select more than 1 country)</sub></td>
+			<td>
+				{% if otherdetails.0.workother %}{% SelectOtherCountry otherdetails.0.workother %}{% else %}
+				<select id="workother"  name="workother" size="5" multiple="" required>
+					<option value="">Select</option>
+					<option value="Afghanistan">Afghanistan</option>
+					<option value="Albania">Albania</option>
+					<option value="Algeria">Algeria</option>
+					<option value="Angola">Angola</option>
+					<option value="Argentina">Argentina</option>
+					<option value="Australia">Australia</option>
+					<option value="Austria">Austria</option>
+					<option value="Bahamas">Bahamas</option>
+					<option value="Bangladesh">Bangladesh</option>
+					<option value="Belarus">Belarus</option>
+					<option value="Belgium">Belgium</option>
+					<option value="Bhutan">Bhutan</option>
+					<option value="Botswana">Botswana</option>
+					<option value="Brazil">Brazil</option>
+					<option value="Burma">Burma</option>
+					<option value="Burundi">Burundi</option>
+					<option value="Cambodia">Cambodia</option>
+					<option value="Cameroon">Cameroon</option>
+					<option value="Canada">Canada</option>
+					<option value="Chile">Chile</option>
+					<option value="China">China</option>
+					<option value="Colombia">Colombia</option>
+					<option value="Comoros">Comoros</option>
+					<option value="Congo">Congo</option>
+					<option value="Cuba">Cuba</option>
+					<option value="Cyprus">Cyprus</option>
+					<option value="Czech Republic">Czech Republic</option>
+					<option value="Denmark">Denmark</option>
+					<option value="Egypt">Egypt</option>
+					<option value="Estonia">Estonia</option>
+					<option value="Ethiopia">Ethiopia</option>
+					<option value="France">France</option>
+					<option value="Gambia">Gambia</option>
+					<option value="Georgia">Georgia</option>
+					<option value="Germany">Germany</option>
+					<option value="Ghana">Ghana</option>
+					<option value="Greece">Greece</option>
+					<option value="Guinea">Guinea</option>
+					<option value="Guyana">Guyana</option>
+					<option value="Hungary">Hungary</option>
+					<option value="Iceland">Iceland</option>
+					<option value="India">India</option>
+					<option value="Indonesia">Indonesia</option>
+					<option value="Iran">Iran</option>
+					<option value="Iraq">Iraq</option>
+					<option value="Ireland">Ireland</option>
+					<option value="Israel">Israel</option>
+					<option value="Italy">Italy</option>
+					<option value="Jamaica">Jamaica</option>
+					<option value="Japan">Japan</option>
+					<option value="Kenya">Kenya</option>
+					<option value="Korea">Korea</option>
+					<option value="Kuwait">Kuwait</option>
+					<option value="Lebanon">Lebanon</option>
+					<option value="Liberia">Liberia</option>
+					<option value="Libya">Libya</option>
+					<option value="Lithuania">Lithuania</option>
+					<option value="Malaysia">Malaysia</option>
+					<option value="Maldives">Maldives</option>
+					<option value="Mexico">Mexico</option>
+					<option value="Moldova">Moldova</option>
+					<option value="Mongolia">Mongolia</option>
+					<option value="Namibia">Namibia</option>
+					<option value="Nepal">Nepal</option>
+					<option value="Netherlands">Netherlands</option>
+					<option value="New Zealand">New Zealand</option>
+					<option value="Nigeria">Nigeria</option>
+					<option value="Norway">Norway</option>
+					<option value="Oman">Oman</option>
+					<option value="Pakistan">Pakistan</option>
+					<option value="Panama">Panama</option>
+					<option value="Philippines">Philippines</option>
+					<option value="Poland">Poland</option>
+					<option value="Portugal">Portugal</option>
+					<option value="Qatar">Qatar</option>
+					<option value="Russia">Russia</option>
+					<option value="Saint Lucia">Saint Lucia</option>
+					<option value="Saudi Arabia">Saudi Arabia</option>
+					<option value="Serbia">Serbia</option>
+					<option value="Singapore">Singapore</option>
+					<option value="South Africa">South Africa</option>
+					<option value="South Sudan">South Sudan</option>
+					<option value="Spain">Spain</option>
+					<option value="Sri Lanka">Sri Lanka</option>
+					<option value="Sudan">Sudan</option>
+					<option value="Sweden">Sweden</option>
+					<option value="Switzerland">Switzerland</option>
+					<option value="Thailand">Thailand</option>
+					<option value="Togo">Togo</option>
+					<option value="Tonga">Tonga</option>
+					<option value="Trinidad and Tobago">Trinidad and Tobago</option>
+					<option value="Tunisia">Tunisia</option>
+					<option value="Turkey">Turkey</option>
+					<option value="Ukraine">Ukraine</option>
+					<option value="United Arab Emirates">United Arab Emirates</option>
+					<option value="United Kingdom">United Kingdom</option>
+					<option value="United States">United States</option>
+					<option value="Uruguay">Uruguay</option>
+					<option value="Vatican City">Vatican City</option>
+					<option value="Vietnam">Vietnam</option>
+					<option value="Yemen">Yemen</option>
+					<option value="Zambia">Zambia</option>
+					<option value="Zimbabwe">Zimbabwe</option>
+				</select>
+				{% endif %}
+			</td>
+		</tr>
+		<tr>
+			<td>Willing to Relocation</td>
+			<td>
+			<input type="hidden" value="{% if otherdetails.0.relocate == "Yes" %}Yes{% else %}No{% endif %}" id="reloc" name="reloc">
+				<input  type="checkbox" {% if otherdetails.0.relocate == "Yes" %}checked{% endif %} name="relocate" id="relocate" value="yes" />
+			</td>
+		</tr>
+		<tr>
+			<td>Willing to TeleCommunicate</td>
+            <td>
+            <input type="hidden" value="{% if otherdetails.0.telecommunicate == "Yes" %}Yes{% else %}No{% endif %}" id="telecom" name="telecom">
+                <input id="telecommunicate" type="checkbox" {% if otherdetails.0.telecommunicate == "Yes" %}checked{% endif %} value="Yes" name="telecommunicate" >
+            </td>
+		</tr>
+		<tr>
+            <td>Willing to travel</td>
+            <td>
+            	{% if otherdetails.0.travel %}{% SelectTravelPercent otherdetails.0.travel %}{% else %}
+            	<select id="travel" name="travel" required>
+                	<option value="">Select</option>
+                    <option value="0% - No travel">0% - No travel</option>
+                    <option value="25%">25%</option>
+                    <option value="50%">50%</option>
+                    <option value="75%">75%</option>
+                    <option value="100%">100%</option>
+              	</select>
+              	{% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>Relocation Choice <sub>(By holding ctrl key, you can seelct more than 1 country)</sub></td>
+            <td>{% if otherdetails.0.relocatechoice %}{% SelectRelocateChoice otherdetails.0.relocatechoice %}{% else %}
+                <select id="relocatechoice"  name="relocatechoice" size="5" multiple required>
+                    <option value="">Select</option>
+					<option value="Afghanistan">Afghanistan</option>
+					<option value="Albania">Albania</option>
+					<option value="Algeria">Algeria</option>
+					<option value="Angola">Angola</option>
+					<option value="Argentina">Argentina</option>
+					<option value="Australia">Australia</option>
+					<option value="Austria">Austria</option>
+					<option value="Bahamas">Bahamas</option>
+					<option value="Bangladesh">Bangladesh</option>
+					<option value="Belarus">Belarus</option>
+					<option value="Belgium">Belgium</option>
+					<option value="Bhutan">Bhutan</option>
+					<option value="Botswana">Botswana</option>
+					<option value="Brazil">Brazil</option>
+					<option value="Burma">Burma</option>
+					<option value="Burundi">Burundi</option>
+					<option value="Cambodia">Cambodia</option>
+					<option value="Cameroon">Cameroon</option>
+					<option value="Canada">Canada</option>
+					<option value="Chile">Chile</option>
+					<option value="China">China</option>
+					<option value="Colombia">Colombia</option>
+					<option value="Comoros">Comoros</option>
+					<option value="Congo">Congo</option>
+					<option value="Cuba">Cuba</option>
+					<option value="Cyprus">Cyprus</option>
+					<option value="Czech Republic">Czech Republic</option>
+					<option value="Denmark">Denmark</option>
+					<option value="Egypt">Egypt</option>
+					<option value="Estonia">Estonia</option>
+					<option value="Ethiopia">Ethiopia</option>
+					<option value="France">France</option>
+					<option value="Gambia">Gambia</option>
+					<option value="Georgia">Georgia</option>
+					<option value="Germany">Germany</option>
+					<option value="Ghana">Ghana</option>
+					<option value="Greece">Greece</option>
+					<option value="Guinea">Guinea</option>
+					<option value="Guyana">Guyana</option>
+					<option value="Hungary">Hungary</option>
+					<option value="Iceland">Iceland</option>
+					<option value="India">India</option>
+					<option value="Indonesia">Indonesia</option>
+					<option value="Iran">Iran</option>
+					<option value="Iraq">Iraq</option>
+					<option value="Ireland">Ireland</option>
+					<option value="Israel">Israel</option>
+					<option value="Italy">Italy</option>
+					<option value="Jamaica">Jamaica</option>
+					<option value="Japan">Japan</option>
+					<option value="Kenya">Kenya</option>
+					<option value="Korea">Korea</option>
+					<option value="Kuwait">Kuwait</option>
+					<option value="Lebanon">Lebanon</option>
+					<option value="Liberia">Liberia</option>
+					<option value="Libya">Libya</option>
+					<option value="Lithuania">Lithuania</option>
+					<option value="Malaysia">Malaysia</option>
+					<option value="Maldives">Maldives</option>
+					<option value="Mexico">Mexico</option>
+					<option value="Moldova">Moldova</option>
+					<option value="Mongolia">Mongolia</option>
+					<option value="Namibia">Namibia</option>
+					<option value="Nepal">Nepal</option>
+					<option value="Netherlands">Netherlands</option>
+					<option value="New Zealand">New Zealand</option>
+					<option value="Nigeria">Nigeria</option>
+					<option value="Norway">Norway</option>
+					<option value="Oman">Oman</option>
+					<option value="Pakistan">Pakistan</option>
+					<option value="Panama">Panama</option>
+					<option value="Philippines">Philippines</option>
+					<option value="Poland">Poland</option>
+					<option value="Portugal">Portugal</option>
+					<option value="Qatar">Qatar</option>
+					<option value="Russia">Russia</option>
+					<option value="Saint Lucia">Saint Lucia</option>
+					<option value="Saudi Arabia">Saudi Arabia</option>
+					<option value="Serbia">Serbia</option>
+					<option value="Singapore">Singapore</option>
+					<option value="South Africa">South Africa</option>
+					<option value="South Sudan">South Sudan</option>
+					<option value="Spain">Spain</option>
+					<option value="Sri Lanka">Sri Lanka</option>
+					<option value="Sudan">Sudan</option>
+					<option value="Sweden">Sweden</option>
+					<option value="Switzerland">Switzerland</option>
+					<option value="Thailand">Thailand</option>
+					<option value="Togo">Togo</option>
+					<option value="Tonga">Tonga</option>
+					<option value="Trinidad and Tobago">Trinidad and Tobago</option>
+					<option value="Tunisia">Tunisia</option>
+					<option value="Turkey">Turkey</option>
+					<option value="Ukraine">Ukraine</option>
+					<option value="United Arab Emirates">United Arab Emirates</option>
+					<option value="United Kingdom">United Kingdom</option>
+					<option value="United States">United States</option>
+					<option value="Uruguay">Uruguay</option>
+					<option value="Vatican City">Vatican City</option>
+					<option value="Vietnam">Vietnam</option>
+					<option value="Yemen">Yemen</option>
+					<option value="Zambia">Zambia</option>
+					<option value="Zimbabwe">Zimbabwe</option>
+                </select>
+                {% endif %}
+            </td>
+        </tr>
+  		
+        <tr>
+        	<td colspan="2" style="text-align:center;">
+                <input class="btn btn-success" type="submit" value="save" />&emsp;<input type="reset" class="btn btn-warning toggle-button" href="javascript:void(0);" value="Cancel">
+            </td>
+        </tr>
+    	</table>
+    	</form>
+    </div>
+</div>
+</div></div></div>
+{% endblock %} 
+{% block javascript %}
+<script src="{{STATIC_URL}}js/bootbox.min.js" ></script> 
+<script type="text/javascript">
+/*function CreateRow(jdata) { 
+	if($("#languageTable").length == 0) {
+		$("#languageview").html('<table class="table table-striped" id="languageTable"><tr class="info"><th>language</th><th>Proficient</th><th>Read</th><th>Write</th><th>Speak</th><th></th></tr></table>');		
+	}
+	
+	//$('#SkillTable').append(fulltr);
+	$('#languageTable').append(jdata);
+    //$('#skillsview').fadeIn(1500);        
+	$('#language .toggleviewlanguage').toggle();
+	$('#language .toggleformlanguage').toggle();	
+	$('.editlanguage').editable();
+} 
+*/
+$(document).ready(function(){
+	$('.bs-sidenav li').removeClass('active');
+    $(".bs-sidenav li:nth-child(12)" ).addClass("active");
+	$.fn.editable.defaults.mode = 'popup';
+    $.fn.editable.defaults.ajaxOptions = {type: "GET"};
+    $('.editlanguage').editable();
+	$('.toggle-language').click(function() {
+        $('.toggleviewlanguage').toggle();
+        $('.toggleformlanguage').toggle();
+        if ($(this).hasClass('btn-language')) {
+            $('.toggleformlanguage').find("input[type=text], select, file").val("");
+        }
+    });
+   
+	/*$('body').on('click','.toggle-language',function () {
+    	var section=$(this).data('sec');
+        $('#'+section+' .toggleviewlanguage').toggle();
+        $('#'+section+' .toggleformlanguage').toggle();
+        if ($(this).hasClass('btn-language')){	        	
+        	$('#'+section+' .toggleformlanguage').find("input[type=text], select").val("");
+        }	        
+    });*/
+	$('#read').change(function(){
+    	if($("#read").prop('checked') == true){
+   		$('#Read').val("Yes");
+   	}
+    else{
+        $('#Read').val("No");
+    }
+	});
+	$('#write').change(function(){
+    	if($("#write").prop('checked') == true){
+   		$('#Write').val("Yes");
+   	}
+    else{
+        $('#Write').val("No");
+    }
+	});
+	$('#speak').change(function(){
+    	if($("#speak").prop('checked') == true){
+   		$('#Speak').val("Yes");
+   	}
+    else{
+        $('#Speak').val("No");
+    }
+	});
+    $('body').on('click','.deletelanguage',function(e){
+        var ids= $(this).data('languageid'); 
+        bootbox.dialog({
+            message: "Are you sure want to delete this language?",
+            title: "Delete Language",
+            buttons: {
+                success: {
+                    label: "Yes",
+                    className: "btn-success",
+                    callback: function() {                        
+                        $.ajax({
+                            url:'/deleteLanguage/',
+                            type:'GET',
+                            data:{languageid:ids},
+                            success : function(data){
+                                window.location='/js/Other_Details/';
+                            }
+                        })
+                    }
+                },
+                danger: {
+                    label: "No",
+                    className: "btn-danger",
+                    callback: function() {
+                    }
+                },
+            }
+        });
+        e.preventDefault()
+            
+    });
+	/*$('body').on("click",".deletelanguage", function(e){   	
+   		e.preventDefault();
+   		//alert('dele'); 
+   		var answer = confirm ("Are you sure you want to delete from the database?");
+   		if (answer)  		
+   			$.ajax({
+		 		type: "GET",
+				url: "/ajax/del/",
+				data: { languageid: $(this).data('languageid')}
+			}).done(function(msg) {
+				var tdname='#language'+msg;
+				$('#language'+msg).remove();
+				//i want to set the table hidden if there is no skills
+				if ($('#languageTable tr').length == 1){
+				$("#languageview").html('<div style="background-color:#ffa; padding:20px"><strong>Please Add Languages you Know</strong></div>');
+			}
+ 		});
+	});*/
+	$('body').on("submit", "#languageForm", function(event){
+        event.preventDefault();
+        $.ajax({
+            url:'/editlanguage/',
+            type:"POST",
+            data:$(this).serialize(),
+            success:function(data){  
+            	$('.editlanguage').editable();           
+                window.location='/js/Other_Details/';
+            }
+        })
+    });
+	/*$("body").on("submit","#languageForm", function(event){	
+		$.post('/ajax/views/', $(this).serialize(),	function(data){
+			alert('Language added successful');
+			CreateRow(data);
+		});	
+		event.preventDefault();		
+	});*/
+}); 
+</script>   
+<!-- ===========================================otherdetails======================================= --> 
+<script type="text/javascript">
+$(document).ready(function() {
+ 	/*$('.dpicker').datepicker({
+	    format: "yyyy-mm-dd",
+	    autoclose:true,
+	    startView: 2
+	});*/
+ 	$('#relocate').change(function(){
+    	if($("#relocate").prop('checked') == true){
+   		$('#reloc').val("Yes");
+   	}
+    else{
+        $('#reloc').val("No");
+    }
+	});
+	$('#telecommunicate').change(function(){
+    	if($("#telecommunicate").prop('checked') == true){
+   		$('#telecom').val("Yes");
+   	}
+    else{
+        $('#telecom').val("No");
+    }
+	});
+    $('body').on('click','.toggle-button',function() {
+        $('.toggleview').toggle();
+        $('.toggleform').toggle();
+        
+        if ($(this).hasClass('btn-success')) {
+            $('.toggleform').find("input[type=text], select").val("");
+            
+        }else if ($(this).hasClass('btn-warning')) {
+            //show already selected opts
+            var curopt=$('#secretopts').text();
+           /* alert(curopt); */     
+            $('#cmbsecretopts option[value="'+curopt+'"]').prop('selected', true);
+           /* $('#dpd11').val($('#fdate').text());
+            $('#dpd22').val($('#tdate').text());*/
+        	//Mark_selected_Options()
+        }
+    });
+    /*$("body").on("submit","#otherdetailsform",function(event){	
+		$.post('/ajax/views/', $(this).serialize(),	function(data){
+			$('#viewotherdetails').html(data);
+            $('.toggleview').toggle();
+            $('.toggleform').toggle();  
+		});	
+		event.preventDefault();		
+	});*/
+	$('body').on("submit", "#otherdetailsform", function(event){
+        event.preventDefault();
+        $.ajax({
+            url:'/editotherdetails/',
+            type:"POST",
+            data:$(this).serialize(),
+            success:function(data){                
+                window.location='/js/Other_Details/';
+            }
+        })
+    });	
+});
+</script>
+{% endblock %}

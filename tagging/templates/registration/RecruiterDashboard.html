@@ -1,0 +1,406 @@
+{% extends "registration/base/jobseekerbase.html" %}
+{% block extrahead %}   
+<link rel="stylesheet" href="{{ STATIC_URL }}js/datepicker/datepicker.css" />
+<link href="{{STATIC_URL}}jsprofile_static/xeditable/bootstrap-editable.css" rel="stylesheet"/>  
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-wysihtml5.css"></link>
+<style type="text/css">
+
+</style>
+
+<style type="text/css">
+.bs-sidebar.affix {
+  position: static;
+}
+.sideheading{
+background-color: #e0e0e0;
+background-image: -moz-linear-gradient(#fafafa, #e0e0e0);
+background-image: -webkit-linear-gradient(#fafafa, #e0e0e0);
+background-image: linear-gradient(#fafafa, #e0e0e0);
+background-repeat: repeat-x;
+display: block;
+padding: 10px 10px;
+border-bottom: 1px solid #ccc;
+color: #222;
+font-weight: bold;
+font-size: 20px;
+line-height: 20px;
+border-left: 0 none;
+}
+
+.bs-docs-sidenav a.section-head {
+  text-decoration: none;
+/*background-color: #139cd2;*/
+    background-image: linear-gradient(#5d71b8, #B5BFE4);
+   background-repeat: repeat-x;
+    border-bottom: 1px solid #CCCCCC;
+    border-left: 0 none;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
+    color: #fff;
+    display: block;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 20px;
+    padding: 10px;
+    cursor:default;
+    
+  }
+
+.bs-docs-sidenav > li > a {
+  display: block;
+  width: 190px \9;
+  margin: 0 0 -1px;
+  padding: 8px 14px;
+  border: 1px solid #e5e5e5;
+}
+.bs-docs-sidenav > li > a:hover {
+  background: #CED6F2;    
+}
+/* First level of nav */
+.bs-sidenav {  
+  /*margin-bottom: 30px;*/
+  padding-top:    10px;
+  padding-bottom: 10px;
+  background-color: #fafafa;
+  border-radius: 5px;
+  border:1px solid #CCC;
+}
+
+/* All levels of nav */
+.bs-sidebar .nav > li > a {
+  font-size: 1.2em;
+  display: block;
+  color: #716b7a;
+  padding: 10px 20px;
+  border-right: 4px solid transparent;
+}
+.bs-sidebar .nav > li > a:hover,
+.bs-sidebar .nav > li > a:focus {
+  text-decoration: none;
+ /* background-color: #e5e3e9;*/
+background-color: #fff;
+border-right: 4px solid #dbd8e0;
+}
+.bs-sidebar .nav > .active > a,
+.bs-sidebar .nav > .active:hover > a,
+.bs-sidebar .nav > .active:focus > a {
+  font-weight: bold;
+  color: #418cd1;
+  background-color: #fff;
+  border-right: 4px solid #418cd1;
+}
+ .xgap{
+    margin-top:60px;
+  }
+    
+/*body {
+padding: 30px 0;
+background-color: #2f3439;
+font-family: "Noto Sans", sans-serif;
+}*/
+.wrap {
+margin: 0 auto;
+}
+/* -------------------------------------
+* Bar container
+* ------------------------------------- */
+
+.progressbar { 
+  height: 30px;
+  position: relative;
+  border: 1px solid #ccc;
+}
+.progressbar .progress {
+  position: absolute;
+  height: 30px;
+  left: 0;
+  top: 0;
+  width: 0%;
+  transition: width 0.3s ease-out;
+  background: #f00;
+}
+
+
+.progress-radial {
+float: left;
+margin-right: 30px;
+position: relative;
+width: 100px;
+height: 100px;
+border-radius: 50%;
+border: 2px solid #2f3439;
+/*background-color: tomato;
+*/}
+/* -------------------------------------
+* Optional centered circle w/text
+* ------------------------------------- */
+.progress-radial .overlay {
+position: absolute;
+width: 60px;
+height: 60px;
+background-color: #fffde8;
+border-radius: 50%;
+margin-left: 20px;
+margin-top: 20px;
+text-align: center;
+line-height: 60px;
+font-size: 16px;
+}
+/* -------------------------------------
+* Mixin for progress-% class
+* ------------------------------------- */
+.progress-0 {
+background-image: linear-gradient(90deg, #2f3439 50%, transparent 50%, transparent), linear-gradient(90deg, #ff6347 50%, #2f3439 50%, #2f3439);
+}
+.progress-5 {
+background-image: linear-gradient(90deg, #2f3439 50%, transparent 50%, transparent), linear-gradient(108deg, #ff6347 50%, #2f3439 50%, #2f3439);
+}
+.progress-10 {
+background-image: linear-gradient(90deg, #2f3439 50%, transparent 50%, transparent), linear-gradient(126deg, #ff6347 50%, #2f3439 50%, #2f3439);
+}
+.progress-15 {
+background-image: linear-gradient(90deg, #2f3439 50%, transparent 50%, transparent), linear-gradient(144deg, #ff6347 50%, #2f3439 50%, #2f3439);
+}
+.progress-20 {
+background-image: linear-gradient(90deg, #2f3439 50%, transparent 50%, transparent), linear-gradient(162deg, #ff6347 50%, #2f3439 50%, #2f3439);
+}
+.progress-25 {
+background-image: linear-gradient(90deg, #2f3439 50%, transparent 50%, transparent), linear-gradient(180deg, #ff6347 50%, #2f3439 50%, #2f3439);
+}
+.progress-30 {
+background-image: linear-gradient(90deg, #2f3439 50%, transparent 50%, transparent), linear-gradient(198deg, #ff6347 50%, #2f3439 50%, #2f3439);
+}
+.progress-35 {
+background-image: linear-gradient(90deg, #2f3439 50%, transparent 50%, transparent), linear-gradient(216deg, #ff6347 50%, #2f3439 50%, #2f3439);
+}
+.progress-40 {
+background-image: linear-gradient(90deg, #2f3439 50%, transparent 50%, transparent), linear-gradient(234deg, #ff6347 50%, #2f3439 50%, #2f3439);
+}
+.progress-45 {
+background-image: linear-gradient(90deg, #2f3439 50%, transparent 50%, transparent), linear-gradient(252deg, #ff6347 50%, #2f3439 50%, #2f3439);
+}
+.progress-50 {
+background-image: linear-gradient(-90deg, #ff6347 50%, transparent 50%, transparent), linear-gradient(270deg, #ff6347 50%, #2f3439 50%, #2f3439);
+}
+.progress-55 {
+background-image: linear-gradient(-72deg, #ff6347 50%, transparent 50%, transparent), linear-gradient(270deg, #ff6347 50%, #2f3439 50%, #2f3439);
+}
+.progress-60 {
+background-image: linear-gradient(-54deg, #ff6347 50%, transparent 50%, transparent), linear-gradient(270deg, #ff6347 50%, #2f3439 50%, #2f3439);
+}
+.progress-65 {
+background-image: linear-gradient(-36deg, #ff6347 50%, transparent 50%, transparent), linear-gradient(270deg, #ff6347 50%, #2f3439 50%, #2f3439);
+}
+.progress-70 {
+background-image: linear-gradient(-18deg, #ff6347 50%, transparent 50%, transparent), linear-gradient(270deg, #ff6347 50%, #2f3439 50%, #2f3439);
+}
+.progress-75 {
+background-image: linear-gradient(0deg, #ff6347 50%, transparent 50%, transparent), linear-gradient(270deg, #ff6347 50%, #2f3439 50%, #2f3439);
+}
+.progress-80 {
+background-image: linear-gradient(18deg, #ff6347 50%, transparent 50%, transparent), linear-gradient(270deg, #ff6347 50%, #2f3439 50%, #2f3439);
+}
+.progress-85 {
+background-image: linear-gradient(36deg, #ff6347 50%, transparent 50%, transparent), linear-gradient(270deg, #ff6347 50%, #2f3439 50%, #2f3439);
+}
+.progress-90 {
+background-image: linear-gradient(54deg, #ff6347 50%, transparent 50%, transparent), linear-gradient(270deg, #ff6347 50%, #2f3439 50%, #2f3439);
+}
+.progress-95 {
+background-image: linear-gradient(72deg, #ff6347 50%, transparent 50%, transparent), linear-gradient(270deg, #ff6347 50%, #2f3439 50%, #2f3439);
+}
+.progress-100 {
+background-image: linear-gradient(90deg, #ff6347 50%, transparent 50%, transparent), linear-gradient(270deg, #ff6347 50%, #2f3439 50%, #2f3439);
+}
+</style>
+{% endblock %}
+{% block content %}
+<div class="container-fluid" style="min-height:575px;">
+    <div class="row-fluid">
+    <div class="span3">
+      <div class="bs-sidebar">
+    		<ul class="nav bs-sidenav">
+                <a class="section-head">My Desk</a>
+                <li><a href="#" id="dashboard"><i class='icon-dashboard'></i> Dashboard</a></li>
+                <li><a href="#" id="myprofile"><i class='icon-eye-open'></i> My Profile</a></li>
+                <li><a href="#" id="updateprofile"><i class='icon-edit'></i> Update Profile</a></li>
+                <br>  
+                <a class="section-head">My Messages</a>
+                <li><a href='#' id="createtemplate"><i class='icon-pencil'></i> Create Template</a></li>
+                <li><a href='/employer/composeletter/' id="composemessage"><i class='icon-envelope-alt'></i> Compose Message</a></li>
+                <li><a href='#' id="lettertemplates"><i class='icon-save'></i> Saved Templates</a></li>
+                <li><a href='#' id="sentmessages"><i class='icon-upload-alt'></i> Sent Messages</a></li>
+                <li><a href='#' id="addbook"><i class='icon-book'></i> Address Book</a></li>
+            </ul>
+        </div>
+      </div>
+
+        <div class="span9 rightside">
+            {% if messages %}
+            <div class="row">
+                {% for message in messages %}
+                <div class="span12">
+                    <div style="text-align:center;" class="alert alert-{{message.tags}}">{{ message }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+         <div class="row">
+
+            </div>
+
+<div class="row">
+  <div class="span12" style="text-align:left;">
+    <h3 class="text text-info" style="border-bottom:2px solid #FFB812;"><i class='icon-dashboard'></i> Dashboard</h3>
+    <div style="width:100%">
+        <div style="width:70%;float:left">
+                    <table border="0" class="table well" style="width:70%">
+                        <tr><th colspan="2"><h4 class="text-success">Welcome {{user.username}},</h4></th></tr>
+                        <tr>
+                            <td>Company Name</td>
+                            <td>{{user.companyname}}</td>
+                        </tr>
+                        <tr>
+                            <td>Email id</td>
+                            <td>{{user.email}}</td>
+                        </tr>
+                    </table>
+        </div>
+
+        <div style="width:30%;float:right">
+                  <div><h4 class="text text-info" style="text-align:center;">Profile 
+                                          Completion</h4></div>
+                  <div  style="text-align:right;float:left">
+                <div class="wrap row">
+                    
+                    <div class="progress-radial progress-{{progress}}" style="margin:10px 0px 20px 70px;float:left">
+                    		 <!--div class="overlay">5%</div-->
+
+                  <div class="overlay" >{{progress}}%</div>                    </div>
+                  </div>
+                </div>
+        </div>
+    </div>
+  </div>
+</div>
+           
+           
+            <div class="row">
+                <div class="span12" style="text-align:left;">
+                    <h4 class="text text-info" style="border-bottom:2px solid #FFB812;">Active Jobs</h4>
+                    <table class="table well">
+                        {% if ActJobList or InactJobList %}
+                        <tr>
+                            <th width="20%">JobCode</th>
+                            <th width="20%">Position</th>
+                            <th width="20%">Status</th>
+                        </tr>
+                        {% for joblist in ActJobList %}
+                        <tr>
+                            <td>
+                                <label><a style="text-decoration:none;" href="/accounts/JobFullDescription_emp/{{joblist.id}}/">{{ joblist.referencecode }}</a></label>
+                            </td>
+                            <td>
+                                <label>{{ joblist.title }}</label>
+                            </td>
+                            <td>
+                                <label>Active</label>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% for joblist in InactJobList %}
+                        <tr>
+                            <td><label><a style="text-decoration:none;" href="/accounts/JobFullDescription_emp/{{joblist.id}}/">{{ joblist.referencecode }}</a></label></td>
+                            <td><label>{{ joblist.title }}</label></td>
+                            <td><label>InActive</label></td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td colspan="3"> You have not posted any jobs. Please click <a href="/accounts/PostJob/" id="postjobs">here</a> to post new job.</td>
+                        </tr>
+                        {% endif %}
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="well span6" style="text-align:left;">
+                    <h4 class="text text-info" style="border-bottom:2px solid #FFB812;">Search Agent</h4>
+                    <div style="height:320px;overflow:auto;text-align:left;">
+                        {% if savesearch %}
+                        {% for s in savesearch %}
+                        <p><a href="{{s.savedsearch}}">{{s.searchname}}</a>&emsp;</p>
+                        {% endfor %}
+                        {% else %}
+                        <p class="text-error">You can search <a href="/accounts/SearchResumeAdvanced/">here</a> and create your search agent.</p>
+                        {% endif %}
+                    </div>
+                </div>
+                           
+                <div class="well span6" style="text-align:left;">
+                    <h4 class="text text-info" style="border-bottom:2px solid #FFB812;">Scratch Pad</h4>
+                        <div style="height:250px;overflow:auto;text-align:left;">
+                            {% if folders %}
+                            {% for folder in folders %}
+                            <p>
+                                <a style="text-decoration:none;" href="/accounts/RecruiterFolder/{{ folder.id }}/" ><img style="width:25px;height:25px;" src="{{ STATIC_URL }}images/Folder.png">{{ folder.foldername }}</a>
+                            </p>
+                            {% endfor %}
+                            {% else %}
+                            <p class="text-error">You didn't create any folder</p>
+                            {% endif %}
+                        </div>                        
+                    <p style="text-align:left;">Create New Folder&nbsp;<sup style="color:red;">*</sup></p>
+                    <form class="form-search" action="/accounts/RecruiterDashboard/" name="CreateFolderForm" method="post">{% csrf_token %}
+                    {{form.foldername}}
+                    <button type="submit" class="btn btn-success">Create Folder</button>
+                    <p>{% if form.foldername.errors %}<sub class="text text-error"><strong>{{form.foldername.errors|join:", "}}</strong></sub>{% endif %}</p>
+                    </form>                   
+                </div>
+            </div>
+            <div class="row">
+                <div class="span12" style="text-align:left;">
+                    <h4 class="text text-info" style="border-bottom:2px solid #FFB812;">Subscribed Packs</h4>
+                    <p style="text-align:left;">{{msgpack}}</p>
+                    <table  class="table well">
+                       {% if activatedpacks %}
+                        <tr>
+                            <th>Pack Name</th>
+                            <th>Activated Date</th>
+                            <th>Expire date</th>
+                            <th>No of jobpost</th>
+                            <th>No of C.V access</th>
+                        </tr>
+                        {% for a in activatedpacks%}
+                        <tr>
+                            <td>{{a.pack.pack_name}}</td>
+                            <td>{{a.subscribed_pack.pack_activate|date:'M d, Y'}}</td>
+                            <td>{{a.subscribed_pack.pack_expire|date:'M d, Y'}}</td>
+                            <td>{{a.totaljobpost}}</td>
+                            <td>{{a.totalresume}}</td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <p>You can select your packs <a href="/accounts/EmpPackname/">Here</a></p>
+                        {% endif %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extrajavascript %}
+<script type="text/javascript">
+$(function(){
+    $("#dashboard").click(function(){window.location = '/accounts/RecruiterDashboard/';});
+    $("#myprofile").click(function(){$('.rightside').load('/accounts/EmployerProfile/');});
+    $("#updateprofile").click(function(){$('.rightside').load('/accounts/UpdateEmployerProfile/');});
+   
+    $("#addbook").click(function(){$('.rightside').load('/employer/addressbook/');});
+    $("#sentmessages").click(function(){$('.rightside').load('/employer/sendletter/');});
+    $("#lettertemplates").click(function(){$('.rightside').load('/employer/manageletters/');});
+    $("#createtemplate").click(function(){$('.rightside').load('/employer/manageletters/add/');});
+});
+</script>
+{% endblock %}

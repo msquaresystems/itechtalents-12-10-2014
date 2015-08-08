@@ -1,0 +1,252 @@
+<h4 style="border-bottom:2px solid #FFB812;">Address Book</h4>    
+<div id="main">     
+  <div class="c1">                    
+    <div id="contacts">
+      <div class="span6">
+      <form action="/employer/composeletter/" method="post">{% csrf_token %}
+        <input type="hidden" name="selkeys" id="selCombos">
+        <input type="submit" class="btn btn-primary" value="Compose Mail">        
+      </form>
+      </div>
+      <div class="span6"><lable class="text-info">Filter below contacts : </lable><input type="text" class="search input-xlarge" placeholder="Search contact" /></div>
+      <div class="row-fluid">
+      <table class="table" id="tableaddressbook">
+        <thead>
+          <tr style="border-bottom:2px solid #39C2F7;">
+            <th class="span1"></th>               
+            <th class="sort span4" data-sort="name">Name</th>
+            <th class="sort span4" data-sort="email">Email</th>
+            <th class="sort span3" data-sort="phone">Phone</th>
+            <th class="sort span3" data-sort="fax">Fax</th>
+            <th class="sort span2" data-sort="desc">Action</th>
+                                    
+          </tr>
+        </thead>
+        <tbody class="list">
+          {% for ad in addressitems %}
+          <tr>
+              <td><input type="checkbox" class="cmbadd" name="cmbaddress" value="{{ ad.pk }}"></td>                 
+              <!--<td class="id" style="display:none;">{{forloop.counter}}</td>-->
+              <td class="fid" style="display:none;">{{ ad.pk }}</td>
+
+              <td class="name">{{ ad.name }}</td>
+              <td class="email">{{ ad.email }}</td>
+               <td class="phone">{{ ad.phone }}</td>
+              <td class="fax">{{ ad.fax }}</td>
+              <!-- <td class="desc">{{ ad.desc }}</td> -->
+              <td><span class="edit"><button class="btn edit-item-btn btn-warning"><i class="icon-edit"></i></button></span> <span class="remove"><button class="btn btn-danger remove-item-btn"><i class="icon-trash"></i></button></span></td>              
+          </tr>                                
+          {% endfor %}                                
+        </tbody>
+      </table>
+      <h4 style="border-bottom:2px solid #FFB812;">Add/Edit contact</h4>
+      <table id="AddEditForm">
+        <tr>
+        <td class="fid" style="display:none;">
+            <input type="text" id="fid-field" disabled="disabled"/>
+        </td>
+        <td class="name">
+            <!--<input type="hidden" id="id-field" />-->
+            <input type="text" id="name-field" placeholder="Name" required/>
+        </td>
+        
+        <td class="email">
+            <input type="email" id="email-field" placeholder="Email" />
+        </td>
+        <td class="phone">
+            <input type="text" id="phone-field" maxlength="10" onkeypress="return isNumberKey(event)" placeholder="Phone Number" />
+        </td>
+        <td class="fax">
+            <input type="text" id="fax-field" maxlength="10" onkeypress="return isNumberKey(event)" placeholder="Fax" />
+        </td>
+        <!--
+        <td class="desc">
+            <input type="text" id="desc-field" placeholder="Description" />
+        </td>-->
+        <td class="add" style="vertical-align:top;">
+            <input type="hidden" id="errtxt" value="1">
+            <button class="btn" id="add-btn">Add</button>
+            <button class="btn" id="edit-btn">Edit</button>
+        </td>
+        </tr>
+        <tr>
+          <td colspan="6"><p id="errmsg" class="text-error"></p></td>
+        </tr>
+      </table>
+      </div>
+    </div><!--contacts-->
+  </div><!--c1-->
+</div><!--main-->
+  
+<!-- Start of List.js stuff -->
+<script src="/static/js/list.min.js"></script>
+<script type="text/javascript">
+  // Define value names
+$( document ).ready(function(){
+  var options = {
+    valueNames: ['fid', 'name', 'email', 'phone','fax']//, 'desc' ]
+  };
+
+  // Init list
+  var contactList = new List('contacts', options);
+
+  //idField = $('#id-field'),
+  var fidField = $('#fid-field'),
+      nameField = $('#name-field'),            
+      emailField = $('#email-field'),
+      phoneField = $('#phone-field'),            
+      faxField = $('#fax-field'),
+      addBtn = $('#add-btn'),
+      editBtn = $('#edit-btn').hide(),
+      removeBtns = $('.remove-item-btn'),
+      editBtns = $('.edit-item-btn');
+
+  // Sets callbacks to the buttons in the list
+  refreshCallbacks();  
+  function validateEmail(email) {    
+    var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+    if(!emailReg.test(email)){      
+      return false;
+    } else {
+      return validateName(email);
+    }
+  }
+  function validateName(name){
+    var tname=$.trim(name);
+    if(tname.length<2){
+      return false;
+    }else{
+      return true;
+    }
+  }
+
+  addBtn.click(function() {
+    //var x=$("#AddEditForm").validate();
+    //alert(JSON.stringify(x));//console.log(x);
+    var tname=$("#name-field").val();
+    var temail=$("#email-field").val();
+    if($('#errtxt').val()==0){return false;}
+    if (validateName(tname) && validateEmail(temail)){
+      var addnew=$.get("/employer/addressbook/", {task:'add', name:nameField.val(), email:emailField.val(),phone:phoneField.val(),fax:faxField.val()});
+
+      addnew.done(function(data){ 
+        var rowCount = $('#tableaddressbook tr').length;    
+        //if (contactList.size()==0)
+        if (rowCount==1 )
+        { 
+          //location.reload(true); 
+          window.location="/accounts/RecruiterDashboard/";     
+        }else{
+          contactList.add({               
+             fid: data,
+             name: nameField.val(),
+             email: emailField.val(),
+             phone: phoneField.val(),
+             fax:faxField.val()              
+          });
+          clearFields();
+          refreshCallbacks();
+          $(".cmbadd:last").val(data);
+          $(".cmbadd:last").attr('checked', false);
+        }
+        $('#errmsg').html('');
+      }); //addnew        
+    }else{    
+           $('#errmsg').html('Name required atleast 2 chars. Email must be an email field');
+    }      
+  });
+
+  editBtn.click(function(){
+    var tname=nameField.val();
+    var temail=emailField.val();
+    if($('#errtxt').val()==0){return false;}
+    if (validateName(tname) && validateEmail(temail)){        
+     var editing = $.get("/employer/addressbook/", {task:'edit',fid:fidField.val(),name:nameField.val(), email:emailField.val(),phone:phoneField.val(),fax:faxField.val()});
+     editing.done(function(data){      
+        setResult(data);
+        $('#errmsg').html('');
+    });
+    }else{
+      $('#errmsg').html('Name required atleast 2 chars. Email must be an email field');
+    }
+  });
+  $('#email-field').on('keyup',function(){
+    if($(this).val()!=''){
+      fid=fidField.val()
+      $.ajax({
+        url : '/employer/addressbook/',
+        type : 'GET',
+        data : {task:'exist',vals:$(this).val(),fid:fid},
+        success:function(data){$('#errtxt').val(data.vals);$('#errmsg').html(data.msg);}
+      })
+    }
+  });
+
+  function setResult(data){
+    if (data==''){
+      alert("Update Unsuccessful" );
+    }else{
+      var item = contactList.get('fid', data);
+      item.values({                   
+             fid: data,
+             name: nameField.val(),
+             email: emailField.val(),
+             phone:phoneField.val(),
+             fax:faxField.val()   
+          });
+       clearFields();
+       editBtn.hide();
+       addBtn.show();           
+     }               
+  }
+
+  function refreshCallbacks(){
+      // Needed to add new buttons to jQuery-extended object
+      removeBtns = $(removeBtns.selector);
+      editBtns = $(editBtns.selector);
+
+      removeBtns.click(function() {
+         var itemId = $(this).closest('tr').find('.fid').text();
+         //alert(itemId);
+         $.get("/employer/addressbook/", {fid:itemId,task:'del'});
+         contactList.remove('fid', itemId);
+      });
+
+      editBtns.click(function() {
+        $('#errmsg').html('');
+         var itemId = $(this).closest('tr').find('.fid').text();
+         var itemValues = contactList.get('fid', itemId).values();              
+         fidField.val(itemValues.fid);
+         nameField.val(itemValues.name);
+         emailField.val(itemValues.email);
+         phoneField.val(itemValues.phone);
+         faxField.val(itemValues.fax);
+         editBtn.show();
+         addBtn.hide();
+      });
+  }
+
+  function clearFields() {
+    fidField.val('');
+    nameField.val('');
+    emailField.val('');
+    phoneField.val('');
+    faxField.val('');
+  }  
+
+function getCheckedval() {
+  var array = [];
+  $("input:checkbox[name=cmbaddress]:checked").each(function(){
+    array.push($(this).val());
+    });
+  $("#selCombos").val(array.join(','));    
+}
+$("input[type=checkbox]").on("click",getCheckedval);
+});
+function isNumberKey(evt){
+  var charCode = (evt.which) ? evt.which : event.keyCode
+  if (charCode > 31 && (charCode < 48 || charCode > 57))
+    return false;
+  return true;
+}
+</script>

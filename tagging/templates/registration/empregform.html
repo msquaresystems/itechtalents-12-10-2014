@@ -1,0 +1,721 @@
+{% extends "registration/base/headerbasenosearch.html" %}
+{% block extrahead %}
+<style type="text/css">
+sup{color: red;}
+</style>
+{% endblock %}
+{% block content %}
+<div class="container" style="min-height:580px;">
+            <div class="row">
+                <div class="span9">
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                {{message}}
+                </div>
+                {% endfor %}
+                {% endif %}
+
+                <div class="alert alert-info" style="text-align:left;">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a href="#login" data-toggle="tab">Employer Login</a>
+
+                            </li>
+                            <li><a href="#create" data-toggle="tab">Create an Account</a>
+
+                            </li>
+                        </ul>
+                        <div id="myTabContent" class="tab-content">
+                            <div class="tab-pane active in" id="login">
+                                <form class="form-horizontal" action='/accounts/EmpLogin/' method="POST">{% csrf_token %}
+                                    <fieldset>
+                                        <div id="legend">
+                                            <legend class=""><strong><span class="icon-lock icon-large"></span>&emsp;Employer Login</strong></legend>
+                                        </div>
+                                        {% if msg %}
+                                        <div class="alert alert-error">
+                                            <a class="close" data-dismiss="alert" href="#">×</a>{{msg}}
+                                        </div>
+                                        {% endif %}
+                                        <div class="control-group">
+                                            <!-- Username -->
+                                            <label class="control-label" for="username" id="lusername"><sup>*</sup>Username</label>
+                                            <div class="controls"><div class="input-prepend"><span class="add-on"><i class="icon-user"></i></span><input type="text" id="username1" name="username" placeholder="Username" class="input-xlarge" autocomplete=off></div>
+                                            </div>
+                                        </div>
+                                        <div class="control-group">
+                                            <!-- Password-->
+                                            <label class="control-label" for="password"><sup>*</sup>Password</label>
+                                            <div class="controls"><div class="input-prepend"><span class="add-on"><i class="icon-lock"></i></span><input type="password" id="lpassword" name="password" placeholder="Password" class="input-xlarge"></div>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" name="usertype" value="employer" />
+                                        <div class="control-group">
+                                            <!-- Button -->
+                                            <div class="controls">
+                                                <button class="btn btn-success">Login</button>&emsp;<a class="btn" href="/accounts/ForgotPasswordEmp/">Forget Username/Password</a>
+
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </form>
+                            </div>
+                            <div class="tab-pane fade" id="create">
+                                <form id="tab" class="form-horizontal" method="POST" action="">{% csrf_token %}
+                                    <fieldset style="padding-left:30px;">
+                                        <legend><strong>Employer Sign Up</strong></legend>
+                                        <p>
+                                            <label for="username"><strong>Username<sup>*</sup></strong></label>
+                                            <input id="rusername" name="username" type="text" placeholder="Username" class="input-xlarge required" autocomplete=off><span id="validateusername"></span>
+                                        </p>
+                                        
+                                        <p>
+                                            <label><strong>Password<sup>*</sup></strong></label>
+                                            <input id="password1" name="password1" type="password" placeholder="Password" class="input-xlarge required"><span id="validatepass1"></span>
+                                        </p>
+                                        <p>
+                                            <label><strong>Confirm Password<sup>*</sup></strong></label>
+                                            <input id="password2" name="password2" type="password" placeholder="Confirm Password" class="input-xlarge required"><span id="validatepass2"></span>
+                                        </p>
+                                        <p>
+                                            <label><strong>Company Name<sup>*</sup></strong></label>
+                                            <input id="companyname" name="companyname" type="text" placeholder="Company Name" class="input-xlarge required" autocomplete=off /><span id="validatecompanyname"></span>
+                                        </p>
+                                        <p>
+                                            <label><strong>Email<sup>*</sup></strong></label>
+                                            <input id="email" name="email" type="text" placeholder="Email Address" autocomplete=off class="input-xlarge required"><span id="validateemail"></span>
+                                        </p>
+                                        <p>
+                                            <label><strong>Company Type<sup>*</sup></strong></label>
+                                            
+                                            <label class="radio">
+                                            <input type="radio" id="id_companytype_0" value="Company" class="required" name="companytype" checked="checked"  />Corporate</label>
+
+                                            <label class="radio">
+                                            <input type="radio" id="id_companytype_1" class="required" value="Consultancy" name="companytype" />Staffing</label>
+                                            <span id="validatectype"></span>
+                                        </p>
+
+                                            
+                                        <p>    
+                                            <label><strong>Company URL<sup>*</sup></strong></label>
+                                            <div class="input-prepend input-append"><span class="add-on">http://</span><input id="companyurl" name="companyurl" type="text" placeholder="Company URL"autocomplete=off class="required" /><span id="validatecompanyurl"></span>
+                                            </div>
+                                        </p>
+                                        <p>
+                                            <label><strong>Phone Number<sup>*</sup></strong></label>
+                                            <div class="input-prepend input-append"><span class="add-on">+1</span><input id="contactno" name="contactno" type="text" placeholder="Phone Number" autocomplete=off maxlength="10" class="required" onkeypress="return isNumberKey(event)" /><span id="validatecno"></span>
+                                            </div>
+                                        </p>
+                                        <p>
+                                            <label><strong>Contact Person<sup>*</sup></strong></label>
+                                            <input id="contactperson" name="contactperson" type="text" autocomplete=off placeholder="Contact Person" class="input-xlarge required"><span id="validatecperson"></span>
+                                        </p>
+                                        <p>
+                                            <label for="selectquestion">Security Questions<sup>*</sup></label>
+                                            <select name="selectquestion" id="selectquestion" class="input-xxlarge required">
+                                                <option value="">Select Security Question</option>
+                                                <option value="1">What is your first grade class teacher name?</option>
+                                                <option value="2">What is your best friend's last name?</option>
+                                                <option value="3">What street name you lived when you born?</option>
+                                                <option value="4">What is your grand father's last name?</option>
+                                                <option value="5">Set your own security questions</option>
+                                            </select>
+                                            <p><input type="text" name="question" id="question" placeholder="Your security questions" class="input-xxlarge required"><span id="validatequestion"></span>
+                                            </p>
+                                        </p>
+                                        <p><label for="answer">Answer<sup>*</sup></label><input id="answer" name="answer" type="text" autocomplete=off placeholder="Your answer" class="input-xxlarge required">
+                                            <span id="validateanswer"></span></p>
+                                        <input type="hidden" value="employer" name='usertype' />
+                                        <p>
+                                            <input id="id_tos" type="checkbox" class="required" name="tos" /><sup>*</sup>&nbsp;I have read and agree to the <a class="clickedit" href="#myModal" role="button" class="btn" data-toggle="modal">Terms of Service</a><span id="validatetc"></span>
+                                        </p>
+                                    </fieldset>
+                                    <br>
+                                    <button type="submit" id="sub" class="btn btn-primary">Create an Account</button>
+                                    <div id="validatealert"></div>
+                                    </fieldset>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--span6-->
+            </div>
+        </div>
+
+
+
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <form action="" method="post">{% csrf_token %}
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+      <h4 id="myModalLabel">Terms of Service</h4>
+    </div>
+
+    <div class="modal-body">
+      <div style="border:0px solid green;text-align:justify;margin:15px;">
+
+<span><strong>Understanding your rights and responsibilities as a iTechTalents user</strong></strong> <br />
+  <br />
+  <strong>Privacy Reminder</strong><br />
+Protect your personal information by never providing credit card, bank account numbers or any other personal information open to misuse, to prospective employers. <a href="#"  title="Safe Search">Learn more</a><br />
+<br />
+<strong>Service Terms</strong><br />
+This page states the &quot;Terms of Use&quot; under which you (&ldquo;You&rdquo;) may use iTechTalents.com, an on-line service to post and search employment opportunities and user resumes (&quot;iTechTalents.com&quot; or &quot;Web Site&quot;). <br />
+
+<br />
+These Terms of Use include the iTechTalents Privacy Statement which is incorporated into these Terms of Use by reference. By using iTechTalents.com, You are indicating your acceptance to be bound by these Terms of Use, including the iTechTalents Privacy Statement.<br />
+<br />
+Please read this page carefully. If You do not accept the Terms of Use stated herein, do not use the Web Site and its services. By using iTechTalents.com, You are indicating your acceptance to be bound by the provisions of these Terms of Use. iTechTalents.com Private Limited (&quot;iTechTalents&quot; or the &quot;Company&quot;) may revise these Terms of Use at any time by updating this posting. You should visit this page periodically to review the Terms of Use, because they are binding on You. The terms &quot;You&quot; and &quot;User&quot; as used herein refer to all individuals and/or entities accessing this web site for any reason. <br />
+
+<br />
+iTechTalents may revise these Terms at any time by posting an updated version to this Web page. You should visit this page periodically to review the most current Terms because they are binding on You. <br />
+<br />
+<strong>Users who violate these Terms may have their access and use of the iTechTalents Sites suspended or terminated, at iTechTalents.s discretion.</strong><br />
+<br />
+<strong>1. Eligibility</strong><br />
+You must be 18 years of age or older to visit or use iTechTalents.com in any manner. By visiting iTechTalents.com or accepting these Terms of Use, You represent and warrant to the Company that You are 18 years of age or older, and that You have the right, authority and capacity to use the Web Site and agree to and abide by these Terms of Use. You also represent and warrant to the Company that You will use iTechTalents.com in a manner consistent with any and all applicable laws and regulations. <br />
+<br />
+<strong>2. Use of iTechTalents Content</strong><br />
+iTechTalents authorizes You, subject to these Terms, to view and a single copy of the content available on or from iTechTalents.com and to access and use the iTechTalents Sites and the iTechTalents Content (as defined below) and to download and print a single copy of the content available on or from the iTechTalents Sites solely for Your personal, non-commercial use. The contents of iTechTalents.com, and of all other websites under the Company's control, whether partial or otherwise (iTechTalents.com and such other websites are sometimes collectively referred to as the &ldquo;iTechTalents Sites&rdquo;), such as designs, text, graphics, images, video, information, logos, button icons, software, audio files and other iTechTalents content (collectively, &quot;iTechTalents Content&quot;), are protected under both India and foreign copyright, trademark and other laws. <br />
+
+<br />
+Any code that iTechTalents creates to generate or display any iTechTalents Content or the pages making up any iTechTalents Site is also protected by iTechTalents's copyright and You may not copy or adapt such code. <br />
+<br />
+
+<br />
+<strong>3. iTechTalents Site Restrictions</strong><br />
+Users shall  not use any iTechTalents Site in order to host, display, upload, modify, publish, transmit, update, distribute, share, store or destroy material, including without limitation iTechTalents Content, <ul>
+  <li> in violation of any applicable law or regulation,</li>
+  <li>in a manner that will infringe the copyright, trademark, trade secret or other intellectual property or proprietary rights of others or violate the privacy, publicity or other personal rights of others,</li>
+
+  <li> that belongs to another person and to which the user does not have any right to,</li>
+  <li>that is grossly harmful, harassing, blasphemous, defamatory, obscene, pornographic, paedophilic, libelous, invasive of another.s privacy,  threatening, abusive or hateful or racially, ethnically objectionable, disparaging, relating encouraging money laundering or gambling or otherwise unlawful in any manner whatsoever,</li>
+  <li>harm minors in any way,</li>
+  <li>deceives or misleads the addressee about the origin of such message or communicates any information which is grossly offensive or menacing in nature,</li>
+  <li>impersonate another person or entity,</li>
+  <li>contains software viruses or any other computer code, files or programs designed to interrupt, destroy or limit the functionality of iTechTalents.s computer systems or site or iTechTalents.s users, customer.s computer systems or site,</li>
+
+  <li>threatens the unity, integrity, defence, security or sovereignty of India, friendly relations with foreign states or of public order or causes incitement to the commission of any cognizable offence or prevents investigation of any offence or insulting any other nation.</li>
+</ul>
+<strong>4. Registration Information</strong><br />
+When You register with any iTechTalents Site, You will be asked to provide the Company with certain information including, without limitation, a valid email address (your &quot;Information&quot;). In addition to the Terms of Use and any privacy policy applicable to any iTechTalents Web Site, You understand and agree that the Company may disclose to third parties, on an anonymous basis, certain aggregate information contained in your registration application. The Company will not disclose to any third party your name, address, e-mail address or telephone number without your prior consent, except to the extent necessary or appropriate to comply with applicable laws or in legal proceedings where such information is relevant. <br />
+<br />
+The Company reserves the right to offer third party services and products to You based on the preferences that You identify in your registration and at any time thereafter; such offers may be made by the Company or by third parties. Please see the Company's Privacy Statement for further details regarding your Information. <br />
+<br />
+Without limiting any of the other disclaimers of warranty set forth in these Terms of Use, iTechTalents does not provide or make any representation as to the quality or nature of any of the third party products or services purchased through the iTechTalents.com or any other iTechTalents Site, or any other representation, warranty or guaranty. Any such undertaking, representation, warranty or guaranty would be furnished solely by the provider of the applicable class, or learning material, product or service, under the terms agreed to by the provider. <br />
+<br />
+
+<strong>5. Use of the iTechTalents Services</strong><br />
+The job posting, resume database (&ldquo;iTechTalents Resume Database&rdquo;) and other features of the iTechTalents Sites may be used only by individuals seeking employment and/or career information and by employers seeking employees. In addition, the iTechTalents Communities may be used by individuals for permitted professional and personal networking purposes. Your use of the iTechTalents Services is also subject to any other contracts You may have with iTechTalents. In the case of any conflict between these Terms and any contract you have with iTechTalents, the terms of your contract will prevail. The term &ldquo;post&rdquo; as used herein shall mean information that You submit, publish or display on a iTechTalents Site.<br />
+<br />
+<strong>6. Specific Prohibited Uses</strong><br />
+The job posting and resume database features of iTechTalents.com may be used only for lawful purposes by individuals seeking employment and career information and employers seeking employees. <br />
+<br />
+The Company specifically prohibits any other use of iTechTalents.com, and all Users agree not to do any of the following:
+<ol>
+
+  <li>Transmit, post, distribute, store or destroy material, including without limitation iTechTalents Content, in violation of any applicable law or regulation, including but not limited to laws or regulations governing the collection, processing, or transfer of personal information, or in breach of iTechTalents.s privacy policy;</li>
+  <li>Post any resume or apply for any job on behalf of another party;</li>
+  <li>Defer any contact from an employer to any agent, agency, or other third party;</li>
+  <li>Set more than one copy of the same resume to public at any one time;</li>
+  <li>Solicit passwords or personally identifiable information from other Users;</li>
+  <li>Post any jobs on any iTechTalents Site for any competitor of iTechTalents or posting jobs or other content that contains links to any site competitive with iTechTalents;</li>
+
+  <li>Post jobs or content on any iTechTalents Site that contain any hyperlinks, email addresses, HTML Tags, &quot;hidden&quot; keywords or any keywords that are irrelevant to the job or are otherwise misleading contained in a job posting are prohibited;</li>
+  <li>Post jobs for modeling or talent or talent scouting positions on any iTechTalents Site;</li>
+  <li>Use any iTechTalents Site Resume Database for any purpose other than as an employer seeking employees, including but not limited to using the information in the Resume Database to sell or promote any products or services;</li>
+  <li>Post or submit to any iTechTalents Site any incomplete, false or inaccurate biographical information or information which is not your own;</li>
+
+<strong>7. User Content and Submissions</strong><br />
+You are solely responsible for your My iTechTalents Account information, content, messages or other information (&quot;User Content&quot;) that You submit, publish or display (hereinafter, &quot;post&quot;) on any iTechTalents Site or transmit to other Users. By posting User Content to any iTechTalents Site, You automatically grant, and You represent and warrant that You have the right to grant, to iTechTalents an irrevocable, perpetual, non-exclusive, fully paid, worldwide license to use, copy, perform, display, and distribute such User Content and to prepare derivative works of, or incorporate into other works, such User Content, and to grant and authorize sublicenses thereof. <br />
+
+<br />
+By posting User Content to any public or non-public area of any iTechTalents Site, including message boards, forums, contests and chat rooms, You grant the Company and its parent company and affiliates the loyalty-free, perpetual, irrevocable, sublicenseable (through multiple tiers), non-exclusive right (including any moral rights) and license to use, reproduce, modify, adapt, publish, translate, create derivative works from, distribute, communicate to the public, perform and display the User Content (in whole or in part) worldwide and/or to incorporate it in other works in any form, media, or technology now known or later developed, for the full term of any rights that may exist in such content. You also warrant that the holder of any rights, including moral rights in such content, has completely and effectively waived all such rights and validly and irrevocably granted to You the right to grant the license stated above. You also permit any User to access, display, view, store and reproduce such User Content for personal use. Subject to the foregoing, the owner of such User Content placed any iTechTalents Site retains any and all rights that may exist in such User Content.<br />
+<br />
+You agree that any email send by an employer to a jobseeker for any prospective job opportunity through iTechTalents website may be stored at the iTechTalents account of the said jobseeker for at least a period of 7 days, to enable the said jobseeker to access the email, as send by the employer, to take a conscious decision about the job offer in the said email. <br />
+
+<strong>8. Registration and Password</strong><br />
+You are responsible for maintaining the confidentiality of your account access information and passwords. You shall be responsible for all uses of your Web Site registrations and passwords, whether or not authorized by You. You are not authorized to share your password or other account access information with any other party, temporarily or permanently, and breach of this obligation may tantamount to disabling the iTechTalents account and iTechTalents Services. You agree to immediately notify the Company of any unauthorized use of your Account, and passwords. <br />
+<br />
+<strong>9. Additional Terms Applicable to Employers</strong><br />
+You are responsible for maintaining the confidentiality of Your employer account, Profile and passwords, as applicable. You may not share Your password or other account access information with any other party, temporarily or permanently, and You shall be responsible for all uses of Your iTechTalents Site registrations and passwords, whether or not authorized by You. You agree to immediately notify iTechTalents of any unauthorized use of Your employer account, Profile, or passwords. <br />
+<br />
+Employers are solely responsible for their postings on iTechTalents Sites. iTechTalents is not to be considered to be an employer with respect to Your use of any iTechTalents Site and iTechTalents shall not be responsible for any employment decisions, for whatever reason, made by any entity posting jobs on any iTechTalents Site.<br />
+
+
+
+
+<br />
+<strong>10. Additional terms applicable to Job Seekers</strong><br />
+When You register with any iTechTalents Site, You will be asked to create an account and provide iTechTalents with certain information including, without limitation, a valid email address (Your &quot;Information&quot;). <br />
+<br />
+Any Profile You submit must be accurate and describe You, an individual person. The Profile requires standard fields to be completed and you may not include in these fields any telephone numbers, street addresses, email addresses or other means of contacting You, other than Your last name and URLs.<br />
+<br />
+
+You acknowledge and agree that You are solely responsible for the form, content and accuracy of any resume or material contained therein placed by You on the iTechTalents Sites. <br />
+<br />
+iTechTalents reserves the right to offer third party services and products to You based on the preferences that You identify in Your registration and at any time thereafter or you have agreed to receive, such offers may be made by iTechTalents or by third parties. Please see iTechTalents's <a href="#">Privacy</a> Policy, for further details regarding Your Information. <br />
+<br />
+ You understand and acknowledge that You have no ownership rights in Your account and that if You cancel Your iTechTalents account or Your iTechTalents account is terminated, all Your account information from iTechTalents, including resumes, Profiles, cover letters, saved jobs, questionnaires will be marked as deleted in and may be deleted from iTechTalents's databases and will be removed from any public area of the iTechTalents Sites. Information may continue to be available for some period of time because of delays in propagating such deletion through iTechTalents.s web servers. In addition, third parties may retain saved copies of Your Information.<br />
+ <br />
+iTechTalents reserves the right to delete Your account and all of Your Information after a significant duration of inactivity.<br />
+<br />
+
+
+</div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Close</button>&emsp;
+    </div>
+  </form>
+</div>
+
+{% endblock %}
+{% block extrajavascript %}
+
+<script type="text/javascript">
+    $( "#selectquestion" ).change(function (){
+            $( "select option:selected" ).each(function(){
+                str= $(this).val();
+            });
+            if(str==1){$("#question").hide().val("What is your first grade class teacher name?");}
+            else if(str==2){$("#question").hide().val("What is your best friend's last name?");}
+            else if(str==3){$("#question").hide().val("What street name you lived when you born?");}
+            else if(str==4){$("#question").hide().val("What is your grand father's last name?");}
+            else if(str==5){$("#question").show().val("");}
+            else{$( "#question" ).hide().val("");}
+            
+        }).change();
+    function isNumberKey(evt)
+            {
+                var charCode = (evt.which) ? evt.which : event.keyCode
+                if (charCode > 31 && (charCode < 48 || charCode > 57))
+                    return false;
+
+                return true;
+            }
+
+    $(document).ready(function()
+        {
+            function capitalizeFirst(string){
+            return string.charAt(0).toUpperCase()+string.slice(1);
+        }
+            function validateEmail(email)
+            {
+                var emailReg = /^([\w-\.]+@(?!gmail)(?!yahoo)(?!hotmail)([\w-]+\.)+[\w-]{2,4})?$/;
+                if (!emailReg.test(email))
+                    {
+                        return false;
+                    }
+                else
+                    {
+                        return validateName(email);
+                    }
+            }
+            function validateName(name)
+            {
+                var tname = $.trim(name);
+                if (tname.length < 2)
+                    {
+                        return false;
+                    }
+                else
+                    {
+                        return true;
+                    }
+            }
+
+            function validatePass(name, pass)
+            {
+                if ((name.length > 4) && (name == pass))
+                    {
+                        return true;
+                    }
+                else
+                    {
+                        return false;
+                    }
+            }
+
+
+
+            // Ajax Validatino tings
+            function setResult(x)
+            {
+                var msg;
+                if (x.already)
+                    {
+                        if (x.fname =='companyurl')
+                        {
+                            msg='&emsp;<span class="label label-important">Sorry Company URL already exists</span>';
+                            $('#sub').attr("disabled", "true");
+                        }
+                        else if(x.fname =='companyname')
+                        {
+                            msg='&emsp;<span class="label label-important">Sorry Company Name already exists</span>';
+                            $('#sub').attr("disabled", "true");
+                        }
+                        else
+                        {
+                            msg='&emsp;<span class="label label-important">'+capitalizeFirst(x.fname)+' already exists</span>';
+                            $('#sub').attr("disabled", "true");
+                        }
+                    }
+                else
+                    {
+                        if (x.fname =='companyurl')
+                        {
+                            msg='&emsp;<span class="label label-success">Company URL available</span>';
+                            $('#sub').removeAttr("disabled");
+                        }
+                        else if (x.fname =='companyname')
+                        {
+                            msg='&emsp;<span class="label label-success">Company Name available</span>';
+                            $('#sub').removeAttr("disabled");
+                        }
+                        else
+                        {
+                            msg='&emsp;<span class="label label-success">'+capitalizeFirst(x.fname)+' available</span>';
+                            $('#sub').removeAttr("disabled");
+                        }
+                    }
+                $("#validate"+x.fname).html(msg);
+            }
+
+            function ajaxthing(type, val)
+            {
+                $.ajax({ url: "/accounts/EmpReg/",
+                    dataType: "json",
+                    data: {param1: type,param2:val},
+                    success: setResult
+                });
+            }
+            //end of ajax validation funcitons
+
+
+            $("form#tab input[type=text],input[type=password],input[type=checkbox],select").focusout( function()
+            {
+                if ($(this).attr('id')=='rusername')
+                    {
+                        var un = $("#rusername").val();
+                        var tst = new RegExp("^(?=([` -.]|\\w)*?[a-zA-Z])([` -.]|\\w){5,}$");
+                        if(un=='')
+                            {
+                                $("#validateusername").html('&emsp;<span class="label label-important">This Field is Required</span>');
+                            }
+                        else if(!tst.test(un))
+                            {
+                                $("#validateusername").html('&emsp;<span class="label label-important">Min 5 chars, atleast 1 char should be a alphabet</span>');
+                            }
+                        else
+                            {
+                                ajaxthing('username',$(this).val());
+                            }
+                    }
+
+                if ($(this).attr('id')=='password1')
+                    {
+                        var ps1 = $("#password1").val();
+                        var tst1 = new RegExp("((?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,})");
+                        if(ps1=='')
+                            {
+                                $("#validatepass1").html('&emsp;<span class="label label-important">This Field is Required</span>');
+                            }
+                        else if(!tst1.test(ps1))
+                            {
+                                $("#validatepass1").html('&emsp;<span class="label label-important">Min 6 chars, atleast 1 uppercase, lowercase and numeric required</span>');
+                            }
+                        else
+                        {
+                            $("#validatepass1").html('&emsp;<span class="label label-success">Valid</span>');
+                        }
+
+                    }
+                if ($(this).attr('id')=='password2')
+                    {
+                        var ps2 = $("#password2").val();
+                        var ps1 = $("#password1").val();
+                        
+                        if(ps2=='')
+                            {
+                                $("#validatepass2").html('&emsp;<span class="label label-important">This Field is Required</span>');
+                            }
+                        else if(ps1!=ps2)
+                            {
+                                $("#validatepass2").html('&emsp;<span class="label label-important">Password Mismatched</span>');
+                                $("#password1").val("");
+                                $("#validatepass1").html('&emsp;<span class="label label-important">This Field is Required</span>');
+                            }
+                        else
+                        {
+                            $("#validatepass2").html('&emsp;<span class="label label-success">Valid</span>');
+                        }
+
+                    }
+                if ($(this).attr('id')=='companyname')
+                    {
+                        var cn = $("#companyname").val();
+                        if(cn=='')
+                            {
+                                $("#validatecompanyname").html('&emsp;<span class="label label-important">This Field is Required</span>');
+                            }
+                        
+                        else
+                            {
+                                ajaxthing('companyname',$(this).val());
+                            }
+                    }
+
+                 if ($(this).attr('id')=='email')
+                    {
+                        var em = $("#email").val();
+                        var emailReg =/^([\w-\.]+@(?!gmail)(?!yahoo)(?!hotmail)(?!facebook)(?!aim)(?!outlook)(?!zoho)(?!facebook)(?!mail)(?!google)(?!rediff)(?!sify)(?!ymail)(?!rocketmail)(?!yahoomail)(?!googlemail)(?!gmx)(?!Maktoob)(?!bigstring)(?!canada)(?!email)(?!go)(?!orkut)(?!twitter)(?!linkedin)(?!github)(?!linux)(?!mailpanda)(?!netscape)(?!quickmail)(?!usa)(?!icloud)([\w-]+\.)+[\w-]{2,4})$/;
+                        
+                        if(em=='')
+                            {
+                                $("#validateemail").html('&emsp;<span class="label label-important">This Field is Required</span>');
+                            }
+                        else if (!emailReg.test(em))
+                            {
+                                $("#validateemail").html('&emsp;<span class="label label-important">Not a valid Email, allows only corporate Email</span>');
+                            }
+                        else
+                            {
+                                ajaxthing('email',$(this).val());
+                            }
+
+                    }
+
+                    
+                    if ($(this).attr('id')=='companyurl')
+                    {
+                        var cn = $("#companyurl").val();
+                        var urlregex =/^(www\.)[a-z0-9\-\.]{3,}\.[a-z]{2,4}$/;
+                        
+                        if(cn=='')
+                            {
+                                $("#validatecompanyurl").html('&emsp;<span class="label label-important">This Field is Required</span>');
+                            }
+
+                        else if(!urlregex.test(cn))
+                            {
+                               $("#validatecompanyurl").html('&emsp;<span class="label label-important">Not a valid Company URL</span>'); 
+                            } 
+                        else
+                            {
+                                ajaxthing('companyurl',$(this).val());
+                            }
+                    }
+
+                    if ($(this).attr('id')=='contactno')
+                    {
+                        var cn = $("#contactno").val();
+                        if(cn=='')
+                            {
+                                $("#validatecno").html('&emsp;<span class="label label-important">This Field is Required</span>');
+                            }
+                        else if(cn.length!=10)
+                            {
+                                $("#validatecno").html('&emsp;<span class="label label-important">Enter 10 digit number</span>');
+                            }                       
+                        else
+                            {
+                                $("#validatecno").html('&emsp;<span class="label label-success">Valid</span>');
+                            }
+                    }
+
+                    if ($(this).attr('id')=='contactperson')
+                    {
+                        var cn = $("#contactperson").val();
+                        if(cn=='')
+                            {
+                                $("#validatecperson").html('&emsp;<span class="label label-important">This Field is Required</span>');
+                            }
+                                        
+                        else
+                            {
+                                $("#validatecperson").html('&emsp;<span class="label label-success">Valid</span>');
+                            }
+                    }
+                     if ($(this).attr('id')=='selectquestion')
+                {
+                    var qs=$("#question").val();
+                    if(qs=='')
+                    {
+                        $("#validatequestion").html('&emsp;<span class="label label-important">This Field is Required</span>');
+                    }
+                    else
+                    {
+                        $("#validatequestion").html('&emsp;<span class="label label-success">Valid</span>');
+                    }
+                }
+
+                 if ($(this).attr('id')=='question')
+                {
+                    var qs=$("#question").val();
+                    if(qs=='')
+                    {
+                        $("#validatequestion").html('&emsp;<span class="label label-important">This Field is Required</span>');
+                    }
+                    else
+                    {
+                        $("#validatequestion").html('&emsp;<span class="label label-success">Valid</span>');
+                    }
+                }
+
+                if ($(this).attr('id')=='answer')
+                {
+                    var qs=$("#answer").val();
+                    if(qs=='')
+                    {
+                        $("#validateanswer").html('&emsp;<span class="label label-important">This Field is Required</span>');
+                    }
+                    else
+                    {
+                        $("#validateanswer").html('&emsp;<span class="label label-success">Valid</span>');
+                    }
+                }
+
+                    if ($(this).attr('id')=='id_tos')
+                    {
+                        var tc = $("#id_tos").prop('checked');
+                        if(tc=='')
+                        {
+                            $("#validatetc").html('&emsp;<span class="label label-important">This Field is Required</span>');
+                        }
+                        else
+                        {
+                            $("#validatetc").html('&emsp;<span class="label label-success">Valid</span>');
+
+                        }
+                    }
+            });
+
+
+          
+                $("form#tab").submit(function() {
+                    //e.preventDefault();
+
+                    var un = $("#rusername").val();
+                    var tst = new RegExp("^(?=([` -.]|\\w)*?[a-zA-Z])([` -.]|\\w){5,}$");
+                    var ps1 = $("#password1").val();
+                    var tst1 = new RegExp("((?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,})");
+                    var ps2 = $("#password2").val();
+                    var cn = $("#companyname").val();
+                    var em = $("#email").val();
+                    var emailReg =/^([\w-\.]+@(?!gmail)(?!yahoo)(?!hotmail)(?!facebook)(?!aim)(?!outlook)(?!zoho)(?!facebook)(?!mail)(?!google)(?!rediff)(?!sify)(?!ymail)(?!rocketmail)(?!yahoomail)(?!googlemail)(?!gmx)(?!Maktoob)(?!bigstring)(?!canada)(?!email)(?!go)(?!orkut)(?!twitter)(?!linkedin)(?!github)(?!linux)(?!mailpanda)(?!netscape)(?!quickmail)(?!usa)(?!icloud)([\w-]+\.)+[\w-]{2,4})$/;
+                    var cu = $("#companyurl").val();
+                    var urlregex =/^(www\.)[a-z0-9\-\.]{3,}\.[a-z]{2,4}$/;
+                    var cno = $("#contactno").val();
+                    var cp = $("#contactperson").val();
+                    var tc = $("#id_tos").prop('checked');
+                    var question = $("#question").val();
+                    var answer = $("#answer").val();
+
+                    if ((un=='') || (!tst.test(un)) || (ps1=='') || (!tst1.test(ps1)) || (ps2=='') || (ps1!=ps2) || (cn=='') || (em=='') || (!emailReg.test(em)) || (cu=='') || (!urlregex.test(cu)) || (cno=='') || (cno.length!=10) || (cp=='') || (tc=='')||(question=='') || (answer=='')) {
+                        $("#validatealert").html('<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">×</button>&nbsp;Please Fill all the fields!.</div>');
+
+                    };
+
+                    if(un=='')
+                    {
+                        $("#validateusername").html('&emsp;<span class="label label-important">This Field is Required</span>');
+                        return false;
+                    }
+                    if(!tst.test(un))
+                    {
+                        $("#validateusername").html('&emsp;<span class="label label-important">Min 5 chars, atleast 1 char should be a alphabet</span>');
+                        return false;
+                    }
+                   
+                    if(ps1=='')
+                    {
+                        $("#validatepass1").html('&emsp;<span class="label label-important">This Field is Required</span>');
+                        return false;
+                    }
+                    if(!tst1.test(ps1))
+                    {
+                        $("#validatepass1").html('&emsp;<span class="label label-important">Min 6 chars, atleast 1 uppercase, lowercase and numeric required</span>');
+                        return false;
+                    }
+                    if(ps2=='')
+                    {
+                        $("#validatepass2").html('&emsp;<span class="label label-important">This Field is Required</span>');
+                        return false;
+                    }
+                    if(ps1!=ps2)
+                    {
+                        $("#validatepass2").html('&emsp;<span class="label label-important">Password Mismatched</span>');
+                        $("#password1").val("");
+                        $("#validatepass1").html('&emsp;<span class="label label-important">This Field is Required</span>');
+                        return false;
+                    }
+                    if(cn=='')
+                    {
+                        $("#validatecompanyname").html('&emsp;<span class="label label-important">This Field is Required</span>');
+                        return false;
+                    }
+                    
+                    if(em=='')
+                    {
+                        $("#validateemail").html('&emsp;<span class="label label-important">This Field is Required</span>');
+                        return false;
+                    }
+                    if (!emailReg.test(em))
+                    {
+                        $("#validateemail").html('&emsp;<span class="label label-important">Not a valid Email, allows only corporate email</span>');
+                        return false;
+                    }
+                    if(cu=='')
+                    {
+                        $("#validatecompanyurl").html('&emsp;<span class="label label-important">This Field is Required</span>');
+                        return false;
+                    }
+
+                    if(!urlregex.test(cu))
+                    {
+                        $("#validatecompanyurl").html('&emsp;<span class="label label-important">Not a valid Company URL</span>'); 
+                        return false;
+                    }
+                    if(cno=='')
+                    {
+                        $("#validatecno").html('&emsp;<span class="label label-important">This Field is Required</span>');
+                        return false;
+                    }
+                     if(cno.length!=10)
+                    {
+                        $("#validatecno").html('&emsp;<span class="label label-important">Enter 10 digit number</span>');
+                        return false;
+                    } 
+                    if(cp=='')
+                    {
+                        $("#validatecperson").html('&emsp;<span class="label label-important">This Field is Required</span>');
+                        return false;
+                    }
+                    if(question=='')
+                {
+                    $("#validatequestion").html('&emsp;<span class="label label-important">This Field is Required</span>');
+                    return false;
+                }
+                if(answer=='')
+                {
+                    $("#validateanswer").html('&emsp;<span class="label label-important">This Field is Required</span>');
+                    return false;
+                }
+                    if(tc=='')
+                    {
+                        $("#validatetc").html('&emsp;<span class="label label-important">This Field is Required</span>');
+                        return false;
+                    }
+
+                });
+      
+
+            });
+        </script>
+
+
+{% endblock %}

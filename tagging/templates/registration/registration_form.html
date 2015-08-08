@@ -1,0 +1,116 @@
+{% extends "registration/base/jobseekerbase.html" %}
+
+{% block extrahead %}
+	
+<style type="text/css">
+.required
+{
+	width: 250px;
+	height: 30px;
+}
+</style>
+{% endblock %}
+{% block content %}
+<div style="width:1200px;padding:0px;margin:auto;" class="outerdiv">
+
+<div style="padding:20px;" >
+
+<table border="0" width="100%">
+
+<p align="right"><a href="/accounts/login/">Already registered? Sign In </a>&emsp;|&emsp;<a href="#">Forget Password</a>&emsp;</p>
+<h2> To Get Instant Job Alerts, Register On iTechTalents For Free! </h2> 
+
+<tr>
+<td width="60%" style=" border-right:1px solid grey;">
+
+<h2><p align="left"><b><i><u>Account Information</u></i></b></p></h2>
+
+<form method="POST" action="" if="regform">
+{% csrf_token %}
+<table class="t1" cellpadding="5">
+
+<tr>
+<td><label for="id_first_name">First name<sup>&nbsp;*</sup></label></td>
+<td>{{ form.first_name }}</td>
+{% if form.first_name.errors %}
+<td><span class="error">{{ form.first_name.errors|join:", " }}</span></td>
+{% endif %}
+
+<tr>
+<td><label for="id_last_name">Last name<sup>&nbsp;*</sup></label></td>
+<td>{{ form.last_name }}</td>
+{% if form.last_name.errors %}
+<td><span class="error">{{ form.last_name.errors|join:", " }}</span></td>
+{% endif %}
+
+<tr>
+<td><label for="id_username">User name <sup>&nbsp;*</sup></label></td>
+<td>{{ form.username }}</td>
+{% if form.username.errors %}
+<td><span class="error">{{ form.username.errors|join:", " }}</span></td>
+{% endif %}
+</tr>
+<tr>
+	<td><label for="id_email">Email address<sup>&nbsp;*</sup></label></td>
+	<td>{{ form.email }}</td>
+	{% if form.email.errors %}
+	<td><span class="error">{{ form.email.errors|join:", " }}</span></td>
+	{% endif %}
+</tr>
+
+<tr>
+	<td><label for="id_password1">Password<sup>&nbsp;*</sup></label></td>
+	<td>{{ form.password1 }}</td>
+	{% if form.password1.errors %}
+	<td><span class="error">{{ form.password1.errors|join:", " }}</span></td>
+	{% endif %}
+</tr>
+<tr>
+	<td><label for="id_password2">Confirm Password<sup>&nbsp;*</sup></label></td>
+	<td>{{ form.password2 }}</td>
+	{% if form.password2.errors %}
+	<td><span class="error">{{ form.password2.errors|join:", " }}</span></td>
+	{% endif %}
+</tr>
+
+<tr>
+	<td></td>
+	
+	<td><input type="hidden" value="jobseeker" name='usertype' /></td>
+	<td></td>
+</tr>
+<tr>
+	<td colspan="2">{{ form.tos }}&nbsp;<label for="id_tos" class ="term_condition">I have read and agree to the <a href="/accounts/TermsOfUse/">Terms of Service</a></label><sup>&nbsp;*</sup></td>
+	{% if form.tos.errors %}
+	<td><span class="error">{{ form.tos.errors|join:", " }}</span></td>
+	{% endif %}
+</tr>
+<tr>
+	<p>
+	<td colspan="2" style="text-align:right;"><input type="submit" value="Register" style="width:100px;height:35px;" /></td>
+	</p>
+	
+</tr>
+</table>
+</form>
+</td>
+<td>
+<table border="0" width="99%" style="float:top;">
+<td>
+<h3><p align="center"><b><i><u>Why Join iTechTalents?</u></i></b></p></h3></br>
+<p style="text-align:left; padding-left:40px;">&emsp;&rArr;&emsp;&emsp;Access 1000 Jobs daily </p>
+<p style="text-align:left;padding-left:40px;">&emsp;&rArr;&emsp;&emsp;Search Relavent jobs And Apply </p>
+<p style="text-align:left;padding-left:40px;">&emsp;&rArr;&emsp;&emsp;Get Daily Jobs Alerts on Mobile and Email</p>
+<p style="text-align:left;padding-left:40px;">&emsp;&rArr;&emsp;&emsp;You can view Employer visited ypur profile</p>
+<p style="text-align:left;padding-left:40px;">&emsp;&rArr;&emsp;&emsp;Track jobs you've viewed and apllied</p>
+<p style="text-align:left;padding-left:40px;">&emsp;&rArr;&emsp;&emsp;Keep Your jobs Search secret</p>
+<br/>
+</td>
+</table>
+</td>
+</tr>
+</table>
+</div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,113 @@
+{% extends "registration/base/jobseekerbase.html" %}
+{% block extrahead %}
+<style type="text/css">
+  .bs-docs-sidenav a.section-head {
+    background-image: linear-gradient(#5D71B8, #B5BFE4);
+    background-repeat: repeat-x;
+    border-bottom: 1px solid #CCCCCC;
+    border-left: 0 none;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
+    color: #FFFFFF;
+    cursor: default;
+    display: block;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 20px;
+    padding: 10px;
+    text-decoration: none;
+}
+.bs-docs-sidenav > li > a {
+    border: 1px solid #E5E5E5;
+    display: block;
+    margin: 0 0 -1px;
+    padding: 8px 14px;
+}
+.bs-docs-sidenav > li > a:hover {
+    background: none repeat scroll 0 0 #CED6F2;
+}
+
+</style>
+{% endblock %}
+{% block content %}
+<div class="container" style="min-height:575px; padding-bottom:20px;">
+  <div class="row">
+    <div class="span12" style="text-align:left;">
+      <h3 class="text text-info" style="border-bottom:2px solid #FFB812;">Frequently Asked Questions</h3>
+    </div>
+  </div>
+  <div class="row" style="margin-top:20px;">
+    <div class="span4" style="text-align:left;">
+      <ul class="nav nav-list bs-docs-sidenav">
+        <li><a href="#" id="faq1" >Why should I register with iTechTalents.com?</a></li>
+        <li><a href="#" id="faq2">How can I post my Resume?</a></li>
+        <li><a href="#" id="faq3">How can I update/edit my Profile?</a></li>
+        <li><a href="#" id="faq4">How do I search for relevant jobs?</a></li>
+        <li><a href="#" id="faq5">Security Advice</a></li>
+        <li><a href="#" id="faq6">I forgot my username/password. How can I retrieve it?</a></li>
+        <li><a href="#" id="faq7">Why do I keep getting logged out of my account?</a></li>
+        <li><a href="#" id="faq8">What are Job Postings? What all can I do with your Job Postings solution?</a></li>
+        <li><a href="#" id="faq9">How do I search the displayed resumes at iTechTalents.com?</a></li>
+        <li><a href="#" id="faq10">How can I hide my CVNotes from recruiters ?</a></li>
+      </ul>
+    </div>
+    <div class="span8 rigthside" style="text-align:left;"></div>
+  </div>
+</div>
+{% endblock %}
+{% block extrajavascript %}
+<script type="text/javascript">
+  $(function()
+    {
+        $("#faq1").click(function()
+            {
+                $('.rigthside').load('/accounts/FAQ1/');
+            });
+
+        $("#faq2").click(function()
+            {
+                $('.rigthside').load('/accounts/FAQ2/');
+            });
+
+        $("#faq3").click(function()
+            {
+                $('.rigthside').load('/accounts/FAQ3/');
+            });
+
+        $("#faq4").click(function()
+            {
+                $('.rigthside').load('/accounts/FAQ4/');
+            });
+
+        $("#faq5").click(function()
+            {
+                $('.rigthside').load('/accounts/FAQ5/');
+            });
+
+        $("#faq6").click(function()
+            {
+                $('.rigthside').load('/accounts/FAQ6/');
+            });
+
+        $("#faq7").click(function()
+            {
+                $('.rigthside').load('/accounts/FAQ7/');
+            });
+
+        $("#faq8").click(function()
+            {
+                $('.rigthside').load('/accounts/FAQ8/');
+            });
+        $("#faq9").click(function()
+            {
+                $('.rigthside').load('/accounts/FAQ9/');
+            });
+
+        $("#faq10").click(function()
+            {
+                $('.rigthside').load('/accounts/FAQ10/');
+            });
+    });
+
+</script>
+{% endblock %}
+

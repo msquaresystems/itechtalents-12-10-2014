@@ -1,0 +1,165 @@
+ {% load jsprofile_extras %}
+<style>
+	.editable form {
+	    background-color: #F8F8F8;
+	    border: 1px solid #EAD9CE;
+	    cursor: default;
+	    margin: 0;
+	    padding: 13px;
+	}
+	hr {
+	  margin: 5px;
+	}
+	.xgap{
+	  margin-top:60px;
+	}
+	
+	.item_tittle h1 span {
+	    background: none repeat scroll 0 0 #74767A;
+	    border-radius: 3px 3px 3px 3px;
+	    color: #ffffff;
+	    float: right;
+	    font-size: 16px;
+	    font-weight: bold;
+	    margin: 7px 0 0;
+	    padding: 0 5px;
+	  margin-right: 0;
+	 
+	}
+	.item_tittle h2 {
+	  font-size: 18px;
+	  font-weight:normal;
+	  text-align: left;
+	  color:#000;
+	}
+	.item_tittle h3{
+	  font-size: 14px;
+	  font-weight:normal;
+	  text-align: right;
+	  color:#000;
+	}
+</style>
+<div id="skills" class="xgap">
+	<h4 style="border-bottom:2px solid #FFB812;">Technical Skills</h4>
+	<br>
+	<div id="skillsview">				
+		{% if skills %}
+		<table class="table table-striped" id="SkillTable">
+			<tr class="info"><th>Skill</th><th>Version</th><th>Last Used</th><th>Experience</th><th></th></tr>
+			{% for l in skills %}
+			<tr id="skill{{l.pk}}">
+			<td>
+<a href="#" class="editskill" data-type="text" data-title="Enter skill" data-pk="{{l.pk}}" data-url="/ajax/update/" data-name="skill" data-params="{curtable:'skilltable'}">{{ l.skill }}</a>
+			</td>
+			<td>
+<a href="#" class="editskill" data-type="text" data-title="Enter the Version" data-pk="{{l.pk}}" data-url="/ajax/update/" data-name="version" data-params="{curtable:'skilltable'}">{{ l.version }}</a>
+			</td>
+			<td>
+<a href="#" class="editskill" data-type="select" data-source="/ajax/fillcombo/lastused/" data-title="last Used Year?" data-pk="{{l.pk}}" data-url="/ajax/update/" data-name="lastused" data-params="{curtable:'skilltable'}">{{l.lastused}}</a></td>
+			<td>
+<a href="#" class="editskill" data-type="select" data-source="/ajax/fillcombo/skillyear/" data-title="Years of Experience." data-pk="{{l.pk}}" data-url="/ajax/update/" data-name="skillyear" data-params="{curtable:'skilltable'}">{{l.skillyear}}</a> Year(s) <a href="#" class="editskill" data-type="select" data-source="/ajax/fillcombo/skillmon/" data-title="Months" data-pk="{{l.pk}}" data-url="/ajax/update/" data-name="skillmon" data-params="{curtable:'skilltable'}">{{l.skillmon}}</a> Month(s)
+			</td>
+
+			<td><a class="btn btn-mini btn-danger deleteskill" data-skillid="{{ l.pk }}" href="#">delete</a>
+			</td>	</tr>
+			{% endfor %}
+		</table>
+		{% else %}
+		<div style="background-color:#ffa; padding:20px">
+			<strong>Please Add Skills you Know</strong>
+		</div>
+		{% endif %}
+	</div>
+	<div class="toggleview"> 
+		<a class="btn btn-success toggle-button" href="javascript:void(0);" data-sec='skills'>add skill</a>			    
+	</div>
+	<div class="editable toggleform" style="display:none;">
+		<form action="" class="form-horizontal" id="skillForm">	{% csrf_token %}
+		<!-- curform value can be used to check which form is ajaxpost in a python view -->
+			<input type="hidden" name="curform" value="skillform">
+			<div class="control-group">
+				<label class="control-label">Skill</label>
+				<div class="controls">
+					<input id="skilladd" maxlength="100" name="skill" type="text" required/>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Verison</label>
+				<div class="controls">
+					<input id="verison" maxlength="5" name="version" type="text" required/>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Last Used: </label>
+				<div class="controls">
+				{% create_select 'lastused' %}
+					
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Experience: </label>
+				<div class="controls">Years:						
+					{% create_select 'skillyear' %}Months:{% create_select 'skillmon' %}
+									
+				</div>
+			</div>			
+			<br>
+		    <input class="btn btn-success" type="submit" value="save" />
+		    <a href="javascript:void(0);"  rel="skills" data-sec='skills' class="btn btn-warning toggle-button">cancel</a>
+	  </form>
+ 	</div><!-- .editable toggle form-->
+</div>
+
+<script>
+function CreateRow(jdata) { 
+	if($("#SkillTable").length == 0) {
+		$("#skillsview").html('<table class="table table-striped" id="SkillTable"><tr class="info"><th>Skill</th><th>Version</th><th>Last Used</th><th>Experience</th><th></th></tr></table>');		
+	}
+	
+	//$('#SkillTable').append(fulltr);
+	$('#SkillTable tr:last').after(jdata);
+    //$('#skillsview').fadeIn(1500);        
+	$('#skills .toggleview').toggle();
+	$('#skills .toggleform').toggle();	
+	$('.editskill').editable();
+} 
+
+$(document).ready(function(){
+	$.fn.editable.defaults.mode = 'popup';
+    $.fn.editable.defaults.ajaxOptions = {type: "GET"};
+    $('.editskill').editable();
+
+	$('body').on('click','.toggle-button',function () {
+    	var section=$(this).data('sec');
+        $('#'+section+' .toggleview').toggle();
+        $('#'+section+' .toggleform').toggle();
+        if ($(this).hasClass('btn-success')){	        	
+        	$('#'+section+' .toggleform').find("input[type=text], select").val("");
+        }	        
+    });
+	$('document').on("click",".deleteskill", function(e){   	
+   		e.preventDefault();
+   		//alert('dele'); 
+   		var answer = confirm ("Are you sure you want to delete from the database?");
+   		if (answer)  		
+   			$.ajax({
+		 		type: "GET",
+				url: "/ajax/del/",
+				data: { skillid: $(this).data('skillid')}
+			}).done(function(msg) {
+				var tdname='#skill'+msg;
+				$('#skill'+msg).remove();
+				//i want to set the table hidden if there is no skills
+				if ($('#SkillTable tr').length == 1){
+				$("#skillsview").html('<div style="background-color:#ffa; padding:20px"><strong>Please Add Skills you Know</strong></div>');
+			}
+ 		});
+	});
+	$("body").on("submit","#skillForm",function(event){	
+		$.post('/ajax/views/', $(this).serialize(),	function(data){
+			CreateRow(data);
+		});	
+		event.preventDefault();		
+	});
+}); 
+</script>

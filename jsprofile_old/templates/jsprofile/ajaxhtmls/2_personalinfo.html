@@ -1,0 +1,562 @@
+    <style type="text/css">
+
+    .ui-autocomplete {
+            position: absolute;
+            cursor: default;
+        }
+        .ui-menu {
+            list-style:none;
+            padding: 2px;
+            margin: 0;
+            display:block;
+            float: left;
+            z-index: 1;
+            top: 467.867px;
+            left: 263px;
+            display: none;
+            width: 302px;
+            border: 1px solid #aaaaaa;
+            background: #ffffff;
+        }
+        .ui-menu .ui-menu {
+            margin-top: -3px;
+        }
+        .ui-menu .ui-menu-item {
+            margin:0;
+            padding: 0;
+            zoom: 1;
+            float: left;
+            clear: left;
+            width: 100%;
+        }
+        .ui-menu .ui-menu-item a {
+            text-decoration:none;
+            display:block;
+            padding:.2em .4em;
+            line-height:1.5;
+            zoom:1;
+        }
+        .ui-menu .ui-menu-item a.ui-state-hover, .ui-menu .ui-menu-item a.ui-state-active {
+            font-weight: normal;
+            margin: -1px;
+        }
+        .ui-helper-hidden-accessible {
+            display: none;
+        }
+    </style>    
+
+<div id="summary" class="xgap">
+	<h4 style="border-bottom:2px solid #FFB812;">Personal Details</h4><br>
+	<div class="toggleview"> 
+		
+		<table id="profTable" class="table table-striped">
+			<tr>		
+				<th>First Name</th>
+				<td id="user_first_name">{{ user.first_name }}</td>
+				<th>Last Name </th>
+				<td id="user_last_name">{{ user.last_name }}</td>
+			</tr>
+			<tr>
+				<th>Date of Birth</th>
+				<td id="prof_dob">{{personal.dob}}</td>
+				<th>Primary Mail</th>
+				<td>{{user.email}}</td>
+			</tr>
+			<tr>
+				<th>Secondary Email</th>
+				<td id="prof_sec_email">{{personal.sec_email}} </td>
+				<th>Address</th>
+				<td id="prof_address1">{{personal.address1}}</td>		
+			</tr>	
+			<tr>
+				<th>Country Code</th>
+				<td id="prof_address2">{{personal.address2}}</td>
+				<th>Country</th>
+				<td id="prof_country">{{personal.country}}</td>		
+			</tr>	
+			<tr>
+				<th>State</th>
+				<td id="prof_state">{{personal.state}}</td>
+				<th>City</th>
+				<td id="prof_city">{{personal.city}}</td>
+			</tr>
+			<tr>
+				<th>Zipcode</th>
+				<td id="prof_zipcode">{{personal.zipcode}}</td>
+				<th>Mobile Number</th>
+				<td id="prof_handno">{{personal.handno}}</td>
+			</tr>
+			<tr>
+				<th>Home Number</th>
+				<td id="prof_homeno">{{personal.homeno}}</td>
+				<th>Work Number</th>
+				<td id="prof_workno">{{personal.workno}}</td>
+			</tr>
+			<tr>
+				<th>Preferred Time to call</th>
+				<td id="prof_prefertime">{{personal.prefertime}}</td>
+				<th>Gender</th>
+				<td id="prof_gender">{{personal.gender}}</td>		
+			</tr>
+
+			<tr>
+				<th>Marital Status</th>
+				<td id="prof_maritalstatus">{{personal.maritalstatus}}</td>
+				<th>Total Experience</th>
+				<td><span id="prof_work_expyears">{{personal.work_expyears}}</span> Years <span id="prof_work_expmonths">{{personal.work_expmonths}}</span> Months</td>
+			</tr>
+
+			<tr>
+				<th>Annual Salary</th>
+				<td id="prof_salaryrange">{{personal.salaryrange}}</td>
+				<th>Current Industry</th>
+				<td id="prof_industry">{{personal.industry}}</td>				
+			</tr>
+			<tr>
+				<th>Functional Area</th>
+				<td id="prof_functional_area">{{personal.functional_area}}</td>
+				<th>Linkedin URL</th>
+				<td id="prof_profileurl">{{personal.profileurl}}</td>
+			</tr>
+			<tr><td><a href="javascript:void(0);"  rel="prof" class="btn btn-warning toggle-button">Update</a></td></tr>
+		</table>
+		<br>
+	</div>
+
+	<div class="editable toggleform" style="display:none;">
+	    <form id="profForm" action="" method="post" enctype="multipart/form-data">{% csrf_token %}	<span><input type="hidden" name="curform" value="profform">
+	        <div style="width:1000px;margin:auto;padding:0px;">
+	        <div id="geocodedet">
+	            <table width="100%" align="center" style="border-collapse:separate;" cellpadding="10">	               
+	                <tr>
+	                    <td>First Name</td>
+	                    <td>
+	                        <input type="text" name="first_name" value="{{ user.first_name }}">
+	                    </td>
+	                    <td>Last Name</td>
+	                    <td>
+	                        <input type="text" name="last_name" value="{{ user.last_name }}">
+	                    </td>
+	                </tr>
+	                <tr>
+	                    <td>Date of Birth</td>
+	                    <td>
+	                    <input id="dob" type="text" name="dob" value="{{ personal.dob }}" readonly>
+	                       <!-- <input id="dob" type="text" name="dob" value="{{ personal.dob }}" readonly>-->
+	                    </td>
+	                    <td>Primary Email</td>
+	                    <td>
+	                        <label>{{ user.email }}</label>
+	                    </td>
+	                </tr>
+	                <tr>
+	                    <td>Secondary Email</td>
+	                    <td>
+	                        <input type="text" name="sec_email" value="{{ personal.sec_email }}">
+	                    </td>
+	                    <td>Marital Status</td>
+	                    <td>
+	                        <select id="id_marital" name="maritalstatus" required>
+	                            <option value="">Select</option>
+	                            <option value="Single/Unmarried">Single/Unmarried</option>
+	                            <option value="Married">Married</option>
+	                            <option value="Widowed">Widowed</option>
+	                            <option value="Divorced">Divorced</option>
+	                            <option value="Separated">Separated</option>
+	                            <option value="Other">Other</option>
+	                        </select>
+	                    </td>
+	                </tr>
+	                <tr>
+	                    <td>Total Experience</td>
+	                    <td>
+	                        <select id="id_expyears" name="work_expyears" style="width:90px;" required>
+	                            <option value="">Year</option>
+	                            {% for i in '..............................' %}
+	                            <option value="{{ forloop.counter0 }}">{{ forloop.counter0 }}</option>
+	                            {% endfor %}
+	                           
+	                        </select>Years
+	                        <select id="id_expmonths" name="work_expmonths" style="width:90px;" required>
+	                            <option value="">Month</option>
+	                            <option value="0">0</option>
+	                            <option value="1">1</option>
+	                            <option value="2">2</option>
+	                            <option value="3">3</option>
+	                            <option value="4">4</option>
+	                            <option value="5">5</option>
+	                            <option value="6">6</option>
+	                            <option value="7">7</option>
+	                            <option value="8">8</option>
+	                            <option value="9">9</option>
+	                            <option value="10">10</option>
+	                            <option value="11">11</option>
+	                        </select>Months</td>
+	                    <td>Annual Salary</td>
+	                    <td>
+	                        <select id="id_salaryrange" name="salaryrange" required>
+	                            <option value="">Select</option>
+	                            <optgroup label="Month Wise">
+	                                <option value="Lessthan 20,000$">Lessthan 20,000$</option>
+	                                <option value="20,000$ - 30,000$">20,000$ - 30,000$</option>
+	                                <option value="30,000$ - 40,000$">30,000$ - 40,000$</option>
+	                                <option value="40,000$ - 50,000$">40,000$ - 50,000$</option>
+	                                <option value="50,000$ - 60,000$">50,000$ - 60,000$</option>
+	                                <option value="60,000$ - 70,000$">60,000$ - 70,000$</option>
+	                                <option value="Above 70,000$">Above 70,000$</option>
+	                                <option value="<optgroup label='Hour Wise'>"></option>
+	                            </optgroup>
+	                            <optgroup label="Hour Wise">
+	                                <option value="Lessthan 40$/hr">Lessthan 40$/hr</option>
+	                                <option value="40$/hr - 50$/hr">40$/hr - 50$/hr</option>
+	                                <option value="50$/hr - 60$/hr">50$/hr - 60$/hr</option>
+	                                <option value="60$/hr - 70$/hr">60$/hr - 70$/hr</option>
+	                                <option value="70$/hr - 80$/hr">70$/hr - 80$/hr</option>
+	                                <option value="80$/hr - 90$/hr">80$/hr - 90$/hr</option>
+	                                <option value="90$/hr - 100$/hr">90$/hr - 100$/hr</option>
+	                                <option value="Above 100$/hr">Above 100$/hr</option>
+	                            </optgroup>
+	                        </select>
+	                    </td>
+	                </tr>
+	                <tr>
+	                    <td>Current Industry</td>
+	                    <td>
+	                        <select id="id_industry" name="industry">
+	                            <option value="">Select</option>
+	                            <option value="Accounting/Finance">Accounting/Finance</option>
+	                            <option value="Advertising/PR/MR/Events">Advertising/PR/MR/Events</option>
+	                            <option value="Agriculture/Dairy">Agriculture/Dairy</option>
+	                            <option value="Animation">Animation</option>
+	                            <option value="Architecture/Interior Designing">Architecture/Interior Designing</option>
+	                            <option value="Auto/Auto Ancillary">Auto/Auto Ancillary</option>
+	                            <option value="Aviation / Aerospace Firms">Aviation / Aerospace Firms</option>
+	                            <option value="Banking/Financial Services/Broking">Banking/Financial Services/Broking</option>
+	                            <option value="BPO/ITES">BPO/ITES</option>
+	                            <option value="Brewery / Distillery">Brewery / Distillery</option>
+	                            <option value="Ceramics /Sanitary ware">Ceramics /Sanitary ware</option>
+	                            <option value="Chemicals/PetroChemical/Plastic/Rubber">Chemicals/PetroChemical/Plastic/Rubber</option>
+	                            <option value="Construction/Engineering/Cement/Metals">Construction/Engineering/Cement/Metals</option>
+	                            <option value="Consumer Durables">Consumer Durables</option>
+	                            <option value="Courier/Transportation/Freight">Courier/Transportation/Freight</option>
+	                            <option value="Defence/Government">Defence/Government</option>
+	                            <option value="Education/Teaching/Training">Education/Teaching/Training</option>
+	                            <option value="Education/Teaching/Training">Education/Teaching/Training</option>
+	                            <option value="Electricals / Switchgears">Electricals / Switchgears</option>
+	                            <option value="Export/Import">Export/Import</option>
+	                            <option value="Facility Management">Facility Management</option>
+	                            <option value="Fertilizers/Pesticides">Fertilizers/Pesticides</option>
+	                            <option value="FMCG/Foods/Beverage">FMCG/Foods/Beverage</option>
+	                            <option value="Food Processing">Food Processing</option>
+	                            <option value="Fresher/Trainee">Fresher/Trainee</option>
+	                            <option value="Gems & Jewellery">Gems & Jewellery</option>
+	                            <option value="Glass">Glass</option>
+	                            <option value="Heat Ventilation Air Conditioning">Heat Ventilation Air Conditioning</option>
+	                            <option value="Hotels/Restaurants/Airlines/Travel">Hotels/Restaurants/Airlines/Travel</option>
+	                            <option value="Industrial Products/Heavy Machinery">Industrial Products/Heavy Machinery</option>
+	                            <option value="Insurance">Insurance</option>
+	                            <option value="IT-Hardware & Networking">IT-Hardware & Networking</option>
+	                            <option value="IT-Software/Software Services">IT-Software/Software Services</option>
+	                            <option value="KPO / Research /Analytics">KPO / Research /Analytics</option>
+	                            <option value="Legal">Legal</option>
+	                            <option value="Media/Dotcom/Entertainment">Media/Dotcom/Entertainment</option>
+	                            <option value="Internet/Ecommerce">Internet/Ecommerce</option>
+	                            <option value="Medical/Healthcare/Hospital">Medical/Healthcare/Hospital</option>
+	                            <option value="Mining">Mining</option>
+	                            <option value="NGO/Social Services">NGO/Social Services</option>
+	                            <option value="Office Equipment/Automation">Office Equipment/Automation</option>
+	                            <option value="Oil and Gas/Power/Infrastructure/Energy">Oil and Gas/Power/Infrastructure/Energy</option>
+	                            <option value="Paper">Paper</option>
+	                            <option value="Pharma/Biotech/Clinical Research">Pharma/Biotech/Clinical Research</option>
+	                            <option value="Printing/Packaging">Printing/Packaging</option>
+	                            <option value="Publishing">Publishing</option>
+	                            <option value="Real Estate/Property">Real Estate/Property</option>
+	                            <option value="Recruitment">Recruitment</option>
+	                            <option value="Retail">Retail</option>
+	                            <option value="Security/Law Enforcement">Security/Law Enforcement</option>
+	                            <option value="Semiconductors/Electronics">Semiconductors/Electronics</option>
+	                            <option value="Shipping/Marine">Shipping/Marine</option>
+	                            <option value="Steel">Steel</option>
+	                            <option value="Strategy /Management Consulting Firms">Strategy /Management Consulting Firms</option>
+	                            <option value="Telcom/ISP">Telcom/ISP</option>
+	                            <option value="Textiles/Garments/Accessories">Textiles/Garments/Accessories</option>
+	                            <option value="Tyres">Tyres</option>
+	                            <option value="Water Treatment / Waste Management">Water Treatment / Waste Management</option>
+	                            <option value="Wellness/Fitness/Sports">Wellness/Fitness/Sports</option>
+	                            <option value="Other">Other</option>
+	                        </select>
+	                    </td>
+	                    <td>Functional Area</td>
+	                    <td>
+	                        <select id="id_functional_area" name="functional_area">
+	                            <option value="">Select</option>
+	                            <option value="Accounts/Finance/Tax/CS/Audit">Accounts/Finance/Tax/CS/Audit</option>
+	                            <option value="Agent">Agent</option>
+	                            <option value="Analytics & Business Intelligence">Analytics & Business Intelligence</option>
+	                            <option value="Architecture/Interior Design">Architecture/Interior Design</option>
+	                            <option value="Banking/Insurance">Banking/Insurance</option>
+	                            <option value="Content/Journalism">Content/Journalism</option>
+	                            <option value="Corporate Planning/Consulting">Corporate Planning/Consulting</option>
+	                            <option value="Engineering Design/R&D">Engineering Design/R&D</option>
+	                            <option value="Export/Import/Merchandising">Export/Import/Merchandising</option>
+	                            <option value="Fashion/Garments/Merchandising">Fashion/Garments/Merchandising</option>
+	                            <option value="Guards/Security Services">Guards/Security Services</option>
+	                            <option value="Hotels/Restaurants">Hotels/Restaurants</option>
+	                            <option value="HR/Administration/IR">HR/Administration/IR</option>
+	                            <option value="IT Software-Client Server">IT Software-Client Server</option>
+	                            <option value="IT Software-Mainframe">IT Software-Mainframe</option>
+	                            <option value="IT Software-Middleware">IT Software-Middleware</option>
+	                            <option value="IT Software-Mobile">IT Software-Mobile</option>
+	                            <option value="IT Software-Other">IT Software-Other</option>
+	                            <option value="IT Software-System Programming">IT Software-System Programming</option>
+	                            <option value="IT Software-Telecom Software">IT Software-Telecom Software</option>
+	                            <option value="IT Software-Application Programming/Maintenance">IT Software-Application Programming/Maintenance</option>
+	                            <option value="IT Software-DBA/Datawarehousing">IT Software-DBA/Datawarehousing</option>
+	                            <option value="IT Software-E-Commerce/Internet Technologies">IT Software-E-Commerce/Internet Technologies</option>
+	                            <option value="IT Software-Embedded/EDA/VLSI/ASIC/Chip Des">IT Software-Embedded/EDA/VLSI/ASIC/Chip Des</option>
+	                            <option value="IT Software-ERP/CRM">IT Software-ERP/CRM</option>
+	                            <option value="IT Software-Network Administration/Security">IT Software-Network Administration/Security</option>
+	                            <option value="IT Software-QA & Testing">IT Software-QA & Testing</option>
+	                            <option value="IT Software-Systems/EDP/MIS">IT Software-Systems/EDP/MIS</option>
+	                            <option value="IT-Hardware/Telecom/Technical Staff/Support">IT-Hardware/Telecom/Technical Staff/Support</option>
+	                            <option value="ITES/BPO/KPO/Customer Service/Operations">ITES/BPO/KPO/Customer Service/Operations</option>
+	                            <option value="Legal">Legal</option>
+	                            <option value="Marketing/Advertising/MR/PR">Marketing/Advertising/MR/PR</option>
+	                            <option value="Packaging">Packaging</option>
+	                            <option value="Pharma/Biotech/Healthcare/Medical/R&D">Pharma/Biotech/Healthcare/Medical/R&D</option>
+	                            <option value="Production/Maintenance/Quality">Production/Maintenance/Quality</option>
+	                            <option value="Purchase/Logistics/Supply Chain">Purchase/Logistics/Supply Chain</option>
+	                            <option value="Sales/BD">Sales/BD</option>
+	                            <option value="Secretary/Front Office/Data Entry">Secretary/Front Office/Data Entry</option>
+	                            <option value="Self Employed/Consultants">Self Employed/Consultants</option>
+	                            <option value="Shipping">Shipping</option>
+	                            <option value="Site Engineering/Project Management">Site Engineering/Project Management</option>
+	                            <option value="Teaching/Education">Teaching/Education</option>
+	                            <option value="Ticketing/Travel/Airlines">Ticketing/Travel/Airlines</option>
+	                            <option value="Top Management">Top Management</option>
+	                            <option value="TV/Films/Production">TV/Films/Production</option>
+	                            <option value="Web/Graphic Design/Visualiser">Web/Graphic Design/Visualiser</option>
+	                            <option value="Other">Other</option>
+	                        </select>
+
+	                    </td>
+	                </tr>
+	                <tr>
+	                    <td>Gender</td>
+	                    <td>
+	                        <select id="id_gender" name="gender" required>
+	                            <option value="">-Select-</option>
+	                            <option value="Male">Male</option>
+	                            <option value="Female">Female</option>
+	                            <option value="General">General</option>
+	                        </select>
+	                    </td>
+	                    <td>Linkedin url</td>
+	                    <td>
+<!-- 	                    	<label id="erroralert1"></label>
+ -->	                       <input type="text" name="profileurl" id="profileurl" value="{{ personal.profileurl }}">
+	                    </td>
+	                </tr>
+	                <tr>
+	                    <th colspan="4">Communication Details</th>
+	                </tr>
+	                <tr>
+	                    <td>Mobile Number</td>
+	                    <td>
+	                        <input type="text" name="handno" value="{{ personal.handno }}" maxlength="10" id="handno" />
+	                    </td>
+	                    <td>Home Number</td>
+	                    <td>
+	                        <input type="text" name="homeno" id="homeno" value="{{ personal.homeno }}" maxlength="10" />
+	                    </td>
+	                </tr>
+	                <tr>
+	                    <td>Work Number</td>
+	                    <td>
+	                        <input type="text" name="workno" value="{{ personal.workno }}" maxlength="10" id="workno" />
+	                    </td>
+	                    <td>Pre. Time to call</td>
+	                    <td>
+	                        <select id="id_prefertime" name="prefertime" style="width:235px;">
+	                            <option value="">Select Time</option>
+	                            <option value="Any Time">Any Time</option>
+	                            <option value="10AM-12PM">10AM-12PM</option>
+	                            <option value="12PM-02PM">12PM-02PM</option>
+	                            <option value="02PM-04PM">02PM-04PM</option>
+	                            <option value="04PM-06PM">04PM-06PM</option>
+	                        </select>
+	                    </td>
+	                </tr>
+	                <tr>
+	                    <td colspan="4"><strong>Search your address here&emsp;:</strong>&emsp;
+	                        <input type="text" class="input-xxlarge" id="addresspicker_map" placeholder="Boylston Avenue, Princeton, MA 01541, USA" />
+	                        <br/>
+	                    </td>
+	                </tr>
+
+
+	                
+	                <tr>
+	                    <td>Address</td>
+	                    <td>
+	                        <input type="text" name="address1" id="formatted_address" value="{{ personal.address1 }}">
+	                    </td>
+	                    <td>Country Code</td>
+	                    <td>
+	                        <input type="text" name="address2" id="country_short" value="{{ personal.address2 }}">
+	                    </td>
+	                </tr>
+	                <tr>
+	                    <td>
+	                        <label>District:</label>
+	                    </td>
+	                    <td>
+	                        <input type="text" id="administrative_area_level_2" name="city" value="{{ personal.city }}">
+	                    </td>
+	                    <td>
+	                        <label>State/Province:</label>
+	                    </td>
+	                    <td>
+	                        <input type="text" id="administrative_area_level_1" value="{{ personal.state }}" name="state">
+	                    </td>
+	                </tr>
+	                <tr>
+	                    <td>
+	                        <label>Country:</label>
+	                    </td>
+	                    <td>
+	                        <input type="text" id="country" value="{{ personal.country }}" name="country">
+	                    </td>
+	                    <td>
+	                        <label>Zip Code:</label>
+	                    </td>
+	                    <td>
+	                        <input type="text" id="postal_code" value="{{ personal.zipcode }}" name="zipcode" maxlength="6" required>
+	                        <input type="hidden" id="lat" name="lat" value="{{personal.lat}}">
+	                        <input type="hidden" id="lng" name="lng" value="{{personal.lng}}">
+	                        <input type="hidden" name="typ" id="location_type" value="{{personal.typ}}">
+	                    </td>
+	                </tr>
+	               
+
+
+	                <tr>
+	                    <td colspan="4" style="text-align:center;">
+	                        <p>
+	                            <input class="btn btn-success" type="submit" value="save" />
+	                            <a href="javascript:void(0);" class="btn btn-danger toggle-button">cancel</a>
+	                        </p>
+	                    </td>
+	                </tr>
+	            </table>
+	             </div>
+	    </form>
+	</div>
+</div>
+<script src="{{ STATIC_URL }}js/jquery.geocomplete.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/inputmask.js"></script>
+<script type="text/javascript">
+function initmasks(){
+    $('#workno').mask('+1-999-999-9999');
+    $('#handno').mask('+1-999-999-9999');
+    $('#homeno').mask('+1-999-999-9999');  
+}  
+function Mark_selected_Options(){
+	var marital=$('#prof_maritalstatus').text();    	
+	$('#id_marital option[value="'+marital+'"]').prop('selected', true);
+	var expmonths=$('#prof_work_expmonths').text();
+	$('#id_expmonths option[value="'+expmonths+'"]').prop('selected', true);
+	var expyears=$('#prof_work_expyears').text();
+	$('#id_expyears option[value="'+expyears+'"]').prop('selected', true);
+
+	var salaryrange=$('#prof_salaryrange').text();
+	$('#id_salaryrange option[value="'+salaryrange +'"]').prop('selected', true);
+
+	var industry=$('#prof_industry').text();
+	$('#id_industry option[value="'+ industry+'"]').prop('selected', true);
+	var functional_area =$('#prof_functional_area').text();
+	$('#id_functional_area option[value="'+ functional_area +'"]').prop('selected', true); 
+	var gender=$('#prof_gender').text();
+	$('#id_gender option[value="'+gender +'"]').prop('selected', true);
+	var prefertime =$('#prof_prefertime').text();
+	$('#id_prefertime option[value="'+ prefertime +'"]').prop('selected', true);  
+}
+function CreateRow(jdata) { 
+	$('#prof_profileurl').text(jdata.profileurl);
+	$('#prof_functional_area').text(jdata.functional_area);
+	$('#prof_industry').text(jdata.industry);
+	$('#prof_salaryrange').text(jdata.salaryrange);
+	$('#prof_work_expmonths').text(jdata.work_expmonths);
+	$('#prof_work_expyears').text(jdata.work_expyears);
+	//$('#id_marital option[value="'+jdata.maritalstatus+'"]')
+	$('#prof_maritalstatus').text(jdata.maritalstatus);
+	$('#prof_gender').text(jdata.gender);		
+	$('#prof_prefertime').text(jdata.prefertime);
+	$('#prof_homeno').text(jdata.homeno);
+	$('#prof_workno').text(jdata.workno);
+	$('#prof_handno').text(jdata.handno);
+	$('#prof_zipcode').text(jdata.zipcode);	
+	$('#prof_city').text(jdata.city);
+	$('#prof_state').text(jdata.state);
+	$('#prof_country').text(jdata.country);	
+	$('#prof_address2').text(jdata.address2);
+	$('#prof_address1').text(jdata.address1);
+	$('#prof_sec_email').text(jdata.sec_email);		
+	$('#prof_typ').text(jdata.typ);
+	$('#user_first_name').text(jdata.first_name);
+	$('#user_last_name').text(jdata.last_name);
+	$('#prof_dob').text(jdata.dob);			
+	//$('#prof_').text(jdata.);
+	//$('#prof_').text(jdata.);        
+	$('.toggleview').toggle();
+	$('.toggleform').toggle();	
+} 
+$(document).ready(function() {
+	
+	/*$("#geocode").geocomplete({         
+          details: "#geocodedet",
+          types: ["geocode", "establishment"]
+		     
+        });
+	*/
+	$("#addresspicker_map").geocomplete({
+		details: "#geocodedet",	
+		types: ["geocode", "establishment"],	
+		detailsAttribute:"id"
+	});
+	$('#dob').datepicker({
+	    format: "yyyy-mm-dd",
+	    
+	});
+    $('body').on('click','.toggle-button',function() {
+        //var section=$(this).attr('rel');
+        $('.toggleview').toggle();
+        $('.toggleform').toggle();
+        
+        if ($(this).hasClass('btn-success')) {
+            $('.toggleform').find("input[type=text], select").val("");
+            
+        }else if ($(this).hasClass('btn-warning')) {
+        	Mark_selected_Options()
+        }
+    });
+    $("body").on("submit", "#profForm", function(event){
+    	/*var emailstring = $("#profileurl").val();
+				var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+				if (!emailReg.test(emailstring))
+					{
+						alert("enter a valid email");
+						return false;
+					}
+				else
+					{
+						return true;
+					}	*/
+		$.post('/ajax/views/', $(this).serialize(),	function(data){
+			CreateRow(data);
+		}, "json");	
+		event.preventDefault();		
+	});
+	initmasks();
+});
+    </script>

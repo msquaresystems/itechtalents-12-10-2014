@@ -1,0 +1,26 @@
+{% extends "registration/base/jobseekerbase.html" %}
+
+
+{% block content %}
+  <div style="width:1200px;padding:0px;margin:auto; min-height:495px;">
+    <p style='text-align:right;'><button type="button" class="btn btn-primary" data-toggle="button" id="back">Back</button></p>
+    <div align="center" >
+      <h1>You Can buy your pack here </h1>
+      <h2>Your Total cost to be paid is ${% for a in pack %}{{a.spack_cost}}{% endfor %} </h2>
+      <div style="padding:30px;">
+        <!-- writes out the form tag automatically -->
+        {{ form }}
+      </div>
+    </d
+{% endblock %}
+{% block extrajavascript %}
+
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#back').click(function(){
+        parent.history.back();
+        return false;
+    });
+});
+</script>
+{% endblock %}

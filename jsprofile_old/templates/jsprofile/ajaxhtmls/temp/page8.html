@@ -1,0 +1,28 @@
+
+{% block candidateitemcontent %}
+<div>
+	<p><h3>Security Clearance Section:</h3></p>
+	<div>
+		<table class="table table-striped">
+			<tr>
+				<th >Security Clearance</th>
+				<td>{% for a in jssecclear %}{{a.jssecretclear}}{% endfor %} </td>
+			</tr>
+			<tr>
+				<th>From Date</th>
+				<td>
+					{% for a in jssecclear %}{{a.jsfromdate|date}}{% endfor %}
+					
+				</td>
+			</tr>
+			<tr>
+				<th>Expire Date</th>
+				<td>
+					{% for a in jssecclear %}{{a.jstodate|date}}{% endfor %}
+					
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>
+{% endblock %}

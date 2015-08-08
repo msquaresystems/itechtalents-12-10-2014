@@ -1,0 +1,48 @@
+
+{% extends "registration/base/jobseekerbase.html" %}
+
+
+{% block content %}
+
+
+<div class="container" style="min-height:495px;">
+	<div class="row">
+		<div class="span12">
+			<h1 style="text-align:left;">Hot Jobs</h1>
+
+			
+			 		<table class="table table-striped">
+			 			<tr>
+			 				<th>Job Title</th>
+			 				<th>Company Name</th>
+			 				<th>Location</th>
+			 				<th>Posted Date</th>
+			 			</tr>
+			 	{% if hotjobs %}
+				 {% for a in hotjobs %}
+			 			<tr>
+			 				<td>
+			 					<a href="/accounts/JobFullDescription/{{ a.id }}/">{{ a.title }}</a>
+			 				</td>
+			 				<td>
+			 					{{a.emp.companyname}}
+			 				</td>
+			 				<td>
+			 					{{a.city}}
+			 				</td>
+			 				<td>
+			 					{{ a.marklive }}
+			 				</td>
+			 			</tr>
+			 		
+					
+			 	{% endfor %}
+			 {% endif %}
+			 </table>
+
+		</div>
+	</div>
+</div>
+
+
+{% endblock %}

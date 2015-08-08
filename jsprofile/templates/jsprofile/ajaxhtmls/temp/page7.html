@@ -1,0 +1,79 @@
+{% block candidateitemcontent %}
+  <div>
+<p><h3>Other Details</h3></p>
+	<div>
+		<table class="table table-striped">
+			<tr>
+				<td colspan="2"><h4>Desired Job Details</h4></td>
+			</tr>
+			<tr>
+				<th>Employment Type</th>
+				<td>{% for a in other %}{{a.emptype}}{% endfor %}</td>
+			</tr>
+			<tr>
+				<td colspan="2"><h4>Work Authorization</h4></td>
+
+			</tr>
+			<tr>
+				<th>Work Permit for USA</th>
+				<td>{% for a in other %}{{a.workpermit}}{% endfor %}</td>
+			</tr>
+			<tr>
+				<th>Other Countries</th>
+				<td style="word-wrap:break-word;">{% for a in other %}{{a.workother}}{% endfor %}</td>
+			</tr>
+			<tr>
+				<th>Willing to Relocation</th>
+				<td>{% for a in other %}{% if a.relocate %}{{a.relocate}}{% else %}No{% endif %}{% endfor %}</td>
+			</tr>
+			<tr>
+				<th>Willing to Telecommunicate</th>
+				<td>{% for a in other %}{% if a.telecommunicate %}{{a.telecommunicate}}{% else %}No{% endif %}{% endfor %}</td>
+			</tr>
+			<tr>
+				<th>Willing to travel</th>
+				<td>
+				{% for a in other%}
+				{% if a.travel %}
+				{{ a.travel }}
+				{% else %}
+				No
+				{% endif %}
+				{% endfor %}
+				</td>
+			</tr>
+			<tr>
+				<th>ReLocation Choices</th>
+				<td style="word-wrap:break-word;">
+				{% for a in other %}
+				{% if a.relocatechoice %}
+				{{ a.relocatechoice }}
+				{% else %}No{% endif %}
+				{% endfor %}
+				</td>
+			</tr>
+		</table>
+		<div>
+			<h4>Languages Known</h4>
+			<table class="table table-striped">
+			<tr>
+				<td>Language</td>
+				<td>Proficiency</td>
+				<td>Read</td>
+				<td>Write</td>
+				<td>Speak</td>
+			</tr>
+			{% for a in language %}
+			<tr>
+				<td>{{a.language}}</td>
+				<td>{{a.proficiency}}</td>
+				<td>{% if a.read %}Yes{%else%}No{%endif%}</td>
+				<td>{% if a.write %}Yes{%else%}No{%endif%}</td>
+				<td>{% if a.speak %}Yes{%else%}No{%endif%}</td>
+			</tr>
+			{% endfor %}
+			</table>
+		</div>
+	</div>
+</div>
+{% endblock %}

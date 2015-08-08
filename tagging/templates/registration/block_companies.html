@@ -1,0 +1,82 @@
+{% extends "registration/base/jobseekerbase.html" %}
+
+{% block extrahead %}
+<link rel="stylesheet" href="{{ STATIC_URL }}css/style.css"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/jquery-ui.css" />
+{% endblock %}
+{% block content %}
+<div style="width:1200px; border:1px solid black;padding:0px;margin:auto;">
+
+<table  border="1" width="80%" cellspacing="1" cellpadding="1">
+
+<p>You are Here: <a href="">Account Setting</a> > Block Companies</p>
+
+<br />
+
+<h3> Block Companies</h3>
+
+<p>Note: If you block a company, then you profile is not visible to particular recruiter.</p>
+
+<table width="80%">
+
+<tr>
+
+<td>
+
+<br />
+<table align="center" border="1" width="80%">
+<tr>
+<td>
+<p>&emsp;<input type="button" value="Search Companies" /></p>
+<p>&emsp;<input type="text" value="a" /></p>
+<p>&emsp;<input type="checkbox" />&emsp;A & Associate</p>
+<p>&emsp;<input type="checkbox" />&emsp;A & B Corporation</p>
+<p>&emsp;<input type="checkbox" />&emsp;A & B Group</p>
+<p>&emsp;<input type="checkbox" />&emsp;A & B Placements</p>
+<p>&emsp;<input type="checkbox" />&emsp;A & M Communications</p>
+<p>&emsp;<input type="checkbox" />&emsp;A & M Publications Pvt Ltd</p>
+<p>&emsp;<input type="checkbox" />&emsp;A & N Enterprises</p>
+<p>&emsp;<input type="checkbox" />&emsp;A2 Jobs</p>
+<p>&emsp;<input type="checkbox" />&emsp;A2Z Solutions</p>
+<p>&emsp;<input type="checkbox" />&emsp;A4 Solutions </p>
+</td>
+
+<td align="center">
+<p><input type="button" value="block" /></p>
+<br />
+<p><input type="button" value="Unblock" /></p>
+</td>
+
+<td valign="top">
+<p>&emsp;<input type="button" value="Blocked Companies" /></p>
+<p>&emsp;<input type="checkbox" />&emsp;A & Associate</p>
+<p>&emsp;<input type="checkbox" />&emsp;A & B Corporation</p>
+<p>&emsp;<input type="checkbox" />&emsp;A & B Group</p>
+<p>&emsp;<input type="checkbox" />&emsp;A & B Placements</p>
+<p>&emsp;<input type="checkbox" />&emsp;A & M Communications</p>
+<p>&emsp;<input type="checkbox" />&emsp;A & M Publications Pvt Ltd</p>
+<p>&emsp;<input type="checkbox" />&emsp;A & N Enterprises</p>
+</td>
+
+</tr>
+</table>
+
+
+
+</td>
+</tr>
+</table>
+
+
+
+</table>
+
+</div>
+
+{% endblock %}
+{% block extrajavascript %}
+<script src="{{ STATIC_URL }}js/jquery-1.9.1.js"></script>
+    <script src="{{ STATIC_URL }}js/jquery-ui.js"></script>
+    <script src="{{ STATIC_URL }}js/validation.js"></script>
+{% endblock %}
+

@@ -1,0 +1,52 @@
+{% extends "registration/base/jobseekerbase.html" %}
+{% load q_extras %}
+{% block content %}
+<div style="min-height:580px;" class="container">
+	<h3 style="border-bottom: 2px solid #FC5871;">Interview Results</h3><br>
+	<table class="well table table-striped">
+		<tr>
+			<th colspan="7" class="text text-success">
+				{% for e in inter %}
+				<span>Employer Name : </span><span>{{ e.emp.companyname }}</span>&emsp;|&emsp;
+				<span>Desired Position : </span><span>{{ e.Job.title }}</span>&emsp;|&emsp;
+				<span>Total no. of rounds : </span><span>{{ e.rounds }}</span>&emsp;|&emsp;
+				{% endfor %}
+				<span >Your Score : </span><span>{{ roundresults|find_total_score }}/{{ outof }}</span>
+			</th>
+		</tr>
+	   	<tr>
+			<th width="14%">Round No.</th>
+			<th width="14%">Interviewer Name</th>
+			<th width="14%">Interviewed Date</th>
+			<th width="14%">Score</th>
+			<th width="14%">Information</th>
+			<th width="14%">Next Round</th>
+			<th width="14%">Status</th>
+		</tr>
+		{% if roundresults %}
+		{% for rr in roundresults %}
+		<tr>
+			<td>{{ rr.roundno }}</td>
+			<td>{{rr.interviewby}}</td>
+			<td>{{rr.interviewdate}}</td>
+			<td>{{rr.score}}</td>
+			<td>{{rr.tips}}</td>
+			<td>{{rr.nextrounddate}}</td>
+			<td style="color:{% if rr.status %}green{%else%}red{%endif%};">{% if rr.status %}Cleared{%else%}Not Cleared{%endif%}</td>
+		</tr>
+		{% endfor %}
+		{%else%}
+		<tr><td style="text-align:center;" colspan="7">You doesn't attend this interview....</td></tr>
+		{%endif%}		
+	</table>
+	<div style="padding:20px 0px 20px 0px;float:right;"><button class="btn btn-primary btn-back">Back</button></div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('.btn-back').click(function(){
+        parent.history.back();
+        return false;
+    });
+});
+</script>
+{% endblock %}

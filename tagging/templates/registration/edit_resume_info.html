@@ -1,0 +1,116 @@
+{% extends "registration/base/jobseekerbase.html" %}
+
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-wysihtml5-0.0.2.css"></link>
+{% endblock %}
+{% block content %}
+<div style="width:1200px;padding:0px;margin:auto;" class="outerdiv">
+        <form name="edit_personal_info_form" action="." method="post" enctype="multipart/form-data">{% csrf_token %}
+            <div>
+                <span>
+                    <input type="hidden" value="{{ user.id }}" name="user_id" >
+                </span>
+                <p><h3>Resume Upload</h3></p>
+                <div>
+                    <table border="0" width="100%" cellspacing="10" cellpadding="10" >
+                        <tr>
+                            <td></td>
+                            <th style="text-align:left;">Resume Title<sub>(250 words max)</sub></th>
+                            <th style="text-align:left;">Resume Document<sub>(.doc/.docx, .rtf, .pdf, .txt)</sub></th>
+                        </tr>
+
+                        <tr>
+                            <th rowspan="{{rescount}}">Uploaded Resume</th>
+                            {% for a in details1 %}
+                            <td>
+                                {% if a.resumeTitle %}
+                                <input type="text"  name="jsResumeTitle{{forloop.counter}}" value="{{a.resumeTitle}}">
+                                {% else %}
+                                <input type="text"  name="jsResumeTitle{{forloop.counter}}" value="">
+                                {% endif %}
+                                <input type="hidden" name="jsResumeID{{forloop.counter}}" value="{{a.id}}">
+                            </td>
+                            <td>
+                                {% if a.resumeFile %}
+                                <input type="file"  name="jsResumeFile{{forloop.counter}}" value="{{a.resumeFile}}">
+                                <label>{{a.resumeFile|cut:"documents/"}}</label>
+                                {% else %}
+                                <input type="file"  name="jsResumeFile{{forloop.counter}}" value="">
+                                {% endif %}
+                                
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                        <tr>
+                            <th>Text Resume</th>
+                            {% for a in details2 %}
+                            <td>
+                                {% if a.resumeTitle %}
+                                <input type="text" name="textResumeTitle" value="{{a.resumeTitle}}" >
+                                {% else %}
+                                <input type="text" name="textResumeTitle" value="" >
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if a.resumeFile %}
+                                <textarea rows="8" cols="45" id="res1" name="textResumeFile">{{a.resumeFile|safe}}</textarea>
+                                <script type="text/javascript">
+                                    $('#res1').wysihtml5();
+                                </script>
+
+                                {% else %}
+                                <textarea rows="8" cols="45" id="res2" name="textResumeFile"></textarea>
+                                <script type="text/javascript">
+                                    $('#res2').wysihtml5();
+                                </script>
+                                {% endif %}
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        {% for a in videoresume %}
+                        <tr>
+                            <th>Video Resume</th>
+                            <td>
+                                <video width="320" height="240" controls >
+
+                                  <source src="{{ STATIC_URL }}{{ a.videoresume }}" type="video/ogg">
+                                  <source src="{{ STATIC_URL }}{{ a.videoresume }}" type="video/mp4">
+                                  <source src="{{ STATIC_URL }}{{ a.videoresume }}" type="video/webm">
+
+
+                                   Your browser does not support the video tag.
+                       
+                                </video>
+                            </td>
+                            
+                            <td>
+                                <input type="file" accept="video/*" name="videoresume" ><label>{{ a.videoresume|cut:"image/" }}</label>
+                                <br><sub>(only mp4,ogg,ogv,webm acceptable)</sub> 
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td colspan="3" style="text-align:center;">
+                                <input type="submit" value="Update" class="btn btn-success">&nbsp;&nbsp;
+                                <input type="reset" value="Reset" class="btn btn-info">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+{% block extrajavascript %}
+<script src="{{ STATIC_URL }}js/wysihtml5-0.3.0_rc2.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-wysihtml5-0.0.2.js"></script>
+<script type="text/javascript">
+     $(function()
+        {
+            $( "#datepicker" ).datepicker({ dateFormat: 'mm-dd-yy' });
+        });
+  
+</script>
+{% endblock %}
+

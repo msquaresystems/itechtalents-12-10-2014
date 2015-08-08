@@ -1,0 +1,21 @@
+<div>
+  <h4 style="border-bottom:2px solid #FFB812;">Cancelled Interview</h4>
+  <table class="table table-striped">
+    <tr>
+      <th>Candidate Name</th>
+      <th>Date of Interview</th>
+      <th>Position</th>
+    </tr>
+    {%if cancel%}
+    {%for interview in cancel%}
+    <tr>     
+      <td><a href="/accounts/RoundsJS/{{ interview.id}}/">{{ interview.emp.companyname}}</a></td>
+      <td>{{ interview.reschedule.empschedule_date1 }}</td>
+      <td>{{ interview.Job.title }}</td>
+    </tr>
+    {%endfor%}
+    {%else%}
+    <tr><td colspan="3" style="text-align:center;">There is no interview cancelled for you !</td></tr>
+    {%endif%}
+  </table>
+</div>

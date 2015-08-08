@@ -1,0 +1,35 @@
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+      <a class="brand" href="/">iTechTalents</a>
+
+      <div class="nav-collapse collapse navbar-responsive-collapse">
+        <ul class="nav nav-li-a">
+          <li class="dropdown"><a class="dropdown-toggle" href='/accounts/CareerPlus/'><span></span></a></li>
+          <li class="dropdown"><a class="dropdown-toggle" href='/accounts/EmpPackname/'><span>Subscription Packs</span></a></li>
+          <li class="dropdown"><a class="dropdown-toggle" href="/accounts/BlogTopics/">Blog</a></li>
+          <li class="dropdown"><a class="dropdown-toggle" href="/feeds/guest/">Techno Feeds</a></li>
+          <li class="dropdown"><a class="dropdown-toggle" href='/forum/'>Forum</a></li>
+          <li class="dropdown"><div id="google_translate_element" style="padding-top:15px;"></div></li>
+        </ul>
+        <ul class="nav pull-right" style="margin-right:30px;">
+          <li style="padding:10px 10px 0px 10px;"><a href="/accounts/EmpReg/"><button class="btn btn-success">Employer</button></a></li>
+          <li style="padding:10px 10px 0px 10px;"><a href="/accounts/login/"><button class="btn btn-success">Job seeker</button></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid" style="background-color:#6E6E6E;">
+    <div class="row-fluid" style="color:#E6E6E6">
+      <div class="span9"><div class="ticker1 modern-ticker mt-round"><div class="mt-label">Tech News :</div><div class="mt-news"><ul><li><a href="/accounts/TechNews/" target="_self">Google Open Source Program Manager Chris DiBona: Best of Both Worlds</a></li><li><a href="/accounts/TechNews/" target="_self">The Cloud: It's Not Just a Technology - It's a Catalyst</a></li><li><a href="/accounts/TechNews/" target="_self">IBM Builds Traffic Cop for Internet of Things</a></li><li><a href="/accounts/TechNews/" target="_self">Improving IT Ops Service Levels and Efficiency</a></li></ul></div></div></div>
+      <div class="span3">
+        {% if user.is_authenticated %}{% if user.usertype == 'jobseeker' %}<a class="btn btn-success bttn btn-mini" href="/accounts/SecretClearedJobs/"><span class="blink">Secret Cleared Jobs</span></a><a class="btn btn-warning bttn btn-mini" href="/accounts/HotJobs/"><span class="blink">Hot Jobs</span></a>{% else %}<a class="btn btn-success bttn btn-mini" href="/accounts/SecretClearedResumes/"><span class="blink">Secret Cleared Resumes</span></a><a class="btn btn-warning bttn btn-mini" href="/accounts/HotResumes/"><span class="blink">Hot Resumes</span></a>{% endif %}{% endif %}
+      </div>
+    </div>        
+  </div>
+</div>

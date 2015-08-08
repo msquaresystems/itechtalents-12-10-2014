@@ -1,0 +1,49 @@
+#changes
+
+ADDED FILES AND FOLDER
+======================
+added a new folder
+#tagging/templates/registration/test
+
+
+
+
+EDITED FILES
+============
+
+#registration/views.py
+----------------------
+@login_required(login_url='/accounts/login/')
+def subprofilepages(request,num):
+    #if num not in '12345678':
+    #    raise Http404()
+
+    temp=['personalinfo','educationdetails','profilesummary',
+    'itskills','employmentdetails','projectDetails','otherDetails',
+    'resumeupload']
+    details = User.objects.filter(id=request.user.id)
+    details1 = js_details.objects.filter(user_id=request.user.id)
+    if not details1:
+        return HttpResponseRedirect("/accounts/ProfileDetails/")
+    else:
+        return render_to_response('registration/test/'+temp[int(num)-1]+'.html', {"details":details, "details1":details1}, context_instance=RequestContext(request))
+
+
+
+#registration/urls.py
+---------------------
+(r'^profilepages/p(?P<num>\d{1})/$', subprofilepages),
+
+
+
+
+#tagging/templates/registration/headerjs.html
+---------------------------------------------
+<li><a href="/accounts/profilepages/p1/"><span>Personal Information</span></a></li>
+<li><a href="/accounts/profilepages/p2/"><span>Education Details</span></a></li>
+  <li><a href="/accounts/profilepages/p3/"><span>Profile Summary</span></a></li>
+  <li><a href="/accounts/profilepages/p4/"><span>It Skills</span></a></li>
+  <li><a href="/accounts/profilepages/p5/"><span>Employment Details</span></a></li>
+  <li><a href="/accounts/profilepages/p6/"><span>Project Details</span></a></li>
+  <li><a href="/accounts/profilepages/p7/"><span>Other Details</span></a></li>
+  <li><a href="/accounts/profilepages/p8/"><span>Resume upload</span></a></li>

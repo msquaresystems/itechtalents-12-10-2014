@@ -1,0 +1,31 @@
+.clipwrapper {
+    position:relative;
+    height: 200px;
+    overflow: hidden;
+}
+.clip{
+  position:absolute;
+  clip:rect(0px 220px 200px 0px);
+}
+.blackcaption {
+  position: relative;
+  left: 0;
+  bottom: 60px;
+  width: 200px;
+  padding: 10px 10px;  
+  height: 40px;
+  background-color: rgba(0, 0, 0, 0.6);  
+}
+  
+.blackcaption p {
+  color: white;
+  font-size: 12px;
+  text-decoration: none;
+  outline: none;
+  font-family:georgia;
+}
+.wrapper{
+  width:220px;
+  height: 200px;
+  clear:both;
+}

@@ -1,0 +1,97 @@
+{% extends "registration/base/jobseekerbase.html" %}
+{% block content %}
+<div style="margin:auto; padding:0px; width:1200px;" class="outerdiv">
+<p>Your Order Here.</p>
+<div style="border:1px solid black;">
+    <p>*Reach out to top consultants hiring in your domain.</p>
+    <p>*Become eligible for unadvertised job openings with headhunters.</p>
+    <p>*Automatically forward your resume to most relevant jobs posted on <b>iTechTalents.com</b></p>
+<form action="." method="post" name="EmpPackForm"  >{% csrf_token %}
+    <div style="border:2px solid green; margin:auto; padding:0px; width:900px;">    
+        {% for a in pack %}
+        
+        <div style="width:800px; border:4px solid pink;">
+        
+            <p>
+                <h2>{{a.pack_name}}</h2>
+                    
+            </p>
+
+            <p style="text-align:justify;margin-left:40px;"><font size="3">
+
+                {{a.pack_description}}
+                <br/><br/>
+                
+                "{{a.pack_name}}" pack is valid for <b>{{a.pack_duration}}</b> days.
+                <br/><br/>
+                Pack costs only  <b>$</b><b>{{a.pack_cost}}</b> per "{{a.pack_name}}".
+            </font></p>
+
+<table align="center" width="60%">
+    <tr>
+        <td><input type="text" name="pckid" value="{% for a in pack %}{{a.id}}{% endfor %}">
+        </td>
+    </tr>
+    <tr>
+        <td width='30%' style="text-align: left;">No of Packs:</td>
+        <td width='30%' style="text-align: left;">
+            <select name="quantity" id="quantity" onChange="quantitychange();" style="width:80px;" >
+                
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+            </select>
+        </td>
+        </tr>
+        <tr>
+            <td style="text-align: left;">Amount to be paid::</td>
+            <td style="text-align: left;">
+                $<label id="oc">{{a.pack_cost}}</label>
+                <input type="hidden" id="c" name="spack_cost" value="{{a.pack_cost}}">
+                <input type="hidden" id="cv" value="{{a.pack_cost}}">
+            </td>
+        </tr>
+</table>
+ {% endfor %}
+                <input type="hidden" name="pckid" value="{% for a in pack %}{{a.id}}{% endfor %}">
+                <input type="hidden" name="jobseeker_id" value="{{request.user.id}}">
+                
+               <p style="text-align:center"> <input type="submit" align="center" value="Continue"/>
+           
+               </p>
+
+        </div>
+        </div>
+        </form>
+
+
+</div>
+</div>
+
+{% endblock %}
+{% block extrajavascript %}
+<script type="text/javascript">
+
+function quantitychange()
+{
+    var qty = EmpPackForm.quantity.value;
+    var cost = document.getElementById("cv").value;
+    var scost = cost*qty;
+
+    document.getElementById("oc").innerHTML=scost;
+    document.getElementById("c").value=scost;
+
+}
+
+
+</script>
+
+
+{% endblock %}

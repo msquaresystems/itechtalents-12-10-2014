@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Job Seeker - Profile Update</title>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/jquery-ui.css" />
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui.js"></script>
+    <!--<script type="text/javascript" src="{{ STATIC_URL }}js/validation.js"></script>-->
+    <script type="text/javascript">
+     $(function()
+        {
+            $( "#datepicker" ).datepicker({ dateFormat: 'mm-dd-yy' });
+        });
+     $(function()
+        {
+            $( "#datepicker1" ).datepicker({ dateFormat: 'mm-dd-yy' });
+        });
+
+</script>
+</head>
+
+<body>
+{% if user.is_authenticated %}
+  {% ifequal user.usertype  "employer" %}
+    {% include "registration/headeremployer.html" %}
+  {% else %}
+    {% include "registration/headerjs.html" %}
+  {% endifequal %}
+{% else %}
+  {% include "registration/headerhome.html" %}
+{% endif %}
+
+{% block candidateitemcontent %}
+
+{% endblock %}
+
+{% include "registration/footer.html" %}
+
+</body>
+</html>

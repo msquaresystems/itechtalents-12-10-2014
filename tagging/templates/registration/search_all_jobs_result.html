@@ -1,0 +1,34 @@
+{% extends "registration/base/jobseekerbase.html" %}
+{% load mytaghelper %}
+{% block content %}
+<div class="container" style="min-height:560px;">
+    <div class="row">
+        <div class="span12" style="text-align:left;">
+            <h3 class="text-info" style="border-bottom:2px solid #FFB812;">Your Resulting Jobs</h3>
+            <table class="table table-striped well">
+                <tr>
+                    <th width="15%">JobCode</th>
+                    <th width="25%">Position</th>
+                    <th width="50%">Key Skills</th>
+                    <th width="10%">Status</th>
+                </tr>
+                {% if searchresults %}
+                {% for joblist in searchresults %}
+                <tr>
+                    <td><a href="/accounts/JobFullDescription_emp/{{joblist.id}}/">{{ joblist.referencecode }}</a></td>
+                    <td>{{ joblist.title }}</td>
+                    <td>{% for skill in joblist.employerkeyskills_set.all %}{{skill.keyskills}}{% if not forloop.last %},&nbsp;{% endif %}{% endfor %}</td>
+                    <td>{% jobstatus joblist.id %}</td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="4" style="text-align:center;">There is no job maching for this criteria ...</td>
+                </tr>
+                {% endif %}
+            </table>
+        </div>        
+    </div>    
+</div>    
+{% endblock %}
+

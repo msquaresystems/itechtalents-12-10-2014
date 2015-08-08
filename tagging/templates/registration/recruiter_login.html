@@ -1,0 +1,145 @@
+{% extends "registration/base/headerbasenosearch.html" %}
+
+{% block extrahead %}
+<link rel="stylesheet" href="{{ STATIC_URL }}css/style.css"/>
+<link rel="stylesheet" href="{{ STATIC_URL }}css/jquery-ui.css" />
+<style type="text/css">
+.success
+    {
+      color: green;
+      font-weight: bold;
+      font-size: 12px;
+      text-align: center;
+      font-family: "Lucida Sans Unicode","Lucida Grande",Sans-Serif;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div style="width:1200px;padding:0px;margin:auto;min-height:540px;">
+
+		{% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            <img style="width:20px;height:20px;" src="{{ STATIC_URL }}images/success.jpeg" >&nbsp;&nbsp;{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+		<div>
+			<table border="0">
+				<tr>
+					<td width="45%">
+						<h4>The Latest at the Employer Resource Center Tips, Trends and tools for Tech hiring </h4>
+						<p><a href="">Latest News1</a></p>
+						<ul>
+							<li></li>
+						</ul>
+						<p><a href="">Latest News1</a></p>
+						<ul>
+							<li></li>
+						</ul>
+						<p><a href="">Latest News1</a></p>
+						<ul>
+							<li></li>
+						</ul>
+					</td>
+					<br />
+					<td width="45%">
+						<form action="" method="POST" name="employer_login" onsubmit="return emplogin_validation()">{% csrf_token %}
+						
+							<table border="0" cellspacing="15" id="emplogin_tbl">
+								<tr style="background-color:#66CCFF;">
+									<td colspan="2" style="text-align:left; height: 30px;"><label style="padding-left:15px;color:#0033CC; font-size:20px;">Employer Login</label></td>
+								</tr>
+								<tr>
+									<td colspan="2" style="height:20px;text-align:left; "><label style="color:red;">{{msg}} </label></td>
+								</tr>
+								<tr>
+									<td >Username</td>
+									<td><input type="text" name="username" id="em" style="border:1px solid grey;" /></td>
+								</tr>
+								<input type="hidden" name="usertype" value="employer">
+								<tr>
+									<td>Password</td>
+									<td><input type="password" name="password" id="pass" style="border:1px solid grey;" /></td>
+								</tr>
+								<tr>
+									<td></td>
+									<td><input type="submit" value="Login" />&nbsp;<input type="reset" value="Clear" /></td>
+								</tr>
+								<tr>
+									<td colspan="2">
+										<a href="/accounts/ForgotPasswordEmp/" >Forget Password</a>
+									</td>
+								</tr>
+							</table>
+						</form>
+					</td>
+				</tr>
+			</table>
+			<br />
+			<br />
+			<table width="99%" border="0">
+				<tr>
+					<td width="30%">
+						<p><b><u>Employer Resources</u></b></p>
+						<p><a href="">Employer Login</a></p>
+						<p><a href="">Post jobs</a></p>
+						<p><a href="">Why ITech</a></p>
+						<p><a href="">ITech Talent Resource Center</a></p>
+					</td>
+					<td width="30%">
+						<p><b><u>About ITech Talent</u></b></p>
+						<p><a href="">Company Profile</a></p>
+						<p><a href="">Contact Sales</a></p>
+						<p><a href="">Media Content</a></p>
+						<p><a href="">ITech Report</a></p>
+					</td>
+					<td width="30%">
+						<p><b><u>Related ITech Sites</u></b></p>
+						<p><a href="">Site1</a></p>
+						<p><a href="">Site2</a></p>
+						<p><a href="">Site3</a></p>
+						<p><a href="">Site4</a></p>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+	</div>
+{% endblock %}
+{% block extrajavascript %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.9.1.js"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui.js"></script>
+	<!--<script type="text/javascript" src="{{ STATIC_URL }}js/validation.js"></script>-->
+<script type="text/javascript">
+    function emplogin_validation()
+    {
+    	var a=document.forms["employer_login"]["username"].value;
+    	var b=document.forms["employer_login"]["password"].value;
+    	if ((a==""||a==null) && (b==""||b==null))
+	      {
+	      document.employer_login.username.style.borderColor = "#FF0000";
+	      document.employer_login.password.style.borderColor = "#FF0000";
+	      return false;
+	      }
+      else if (a==""||a==null)
+      	{
+      		document.employer_login.username.style.borderColor = "#FF0000";
+      		return false;
+      	}
+      else if (b==""||b==null)
+      	{
+      		document.employer_login.password.style.borderColor = "#FF0000";
+      		return false;
+      	}
+      else
+      {
+      	return true;
+      }
+
+    }
+
+</script>
+{% endblock %}

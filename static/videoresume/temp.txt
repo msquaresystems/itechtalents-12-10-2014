@@ -1,0 +1,1 @@
+This file was used by scriptcam.com to determine if a file upload could be done and can safely be deleted.

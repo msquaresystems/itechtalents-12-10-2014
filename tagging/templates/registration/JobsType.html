@@ -1,0 +1,33 @@
+{% extends "registration/base/jobseekerbase.html" %}
+{% block extrahead %}<style type="text/css">.type{border-bottom: 2px solid #FFAF21;}</style>{% endblock %}
+{% block content %}
+<div style="min-height:590px;" class="container">
+  <div class="row">
+    <div class="span8 offset2" style="text-align:left;">
+      <h3 class="text text-info type">Jobs by Type</h3>
+      <table class="table table-striped well">
+        <thead>
+          <tr>
+            <th>Job Type</th>
+            <th>Number of Jobs</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if jobtypes %}
+          {% for jt in jobtypes %}
+          <tr>
+            <td><a style="text-decoration:none;" href="/accounts/CompanyList/{{jt.jobtype}}/">{{ jt.jobtype}}</a></td>
+            <td>{{ jt.count }} jobs</td>
+          </tr>
+          {% endfor %}
+          {% else %}
+          <tr>
+            <td colspan="2" style="text-align:center;">There is no jobs posted ...</td>
+          </tr>
+          {% endif %}
+          </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

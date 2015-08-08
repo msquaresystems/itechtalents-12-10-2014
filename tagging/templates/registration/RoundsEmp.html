@@ -1,0 +1,182 @@
+{% extends "registration/base/jobseekerbase.html" %}
+{% block extrahead %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/datepicker/bootstrap-datepicker.js"></script>
+<link rel="stylesheet" href="{{ STATIC_URL }}js/datepicker/datepicker.css" />
+ 
+	<style>
+.wizard a {padding: 12px 12px 10px 12px; margin-right:5px; background:#efefef; position:relative; display:inline-block; }
+.wizard a:before {width:0px; height:0px; border-top: 20px inset transparent; border-bottom: 20px inset transparent; border-left: 20px solid #fff; position: absolute; content: ""; top: 0; left: 0;}
+.wizard a:after {width:0px; height:0px; border-top: 20px inset transparent; border-bottom: 20px inset transparent; border-left: 20px solid #efefef; position: absolute; content: ""; top: 0; right: -20px; z-index:2;}
+.wizard a:first-child:before {border:none;}
+.wizard a:last-child:after {border:none;}
+
+.wizard a:first-child {-moz-border-radius: 4px 0 0 4px; -webkit-border-radius: 4px 0 0 4px; border-radius:   4px 0 0 4px;}
+.wizard a:last-child {-moz-border-radius: 0 4px 4px 0; -webkit-border-radius: 0 4px 4px 0; border-radius:   0 4px 4px 0;}
+
+.wizard .badge {margin:0 5px 0 18px; position:relative; top:-1px;}
+.wizard a:first-child .badge {margin-left:0;}
+
+.wizard .current {background:green; color:#fff;}
+.wizard .current:after {border-left-color:green;}
+
+.wizard .notclear {background:red; color:#fff;}
+.wizard .notclear:after {border-left-color:red;}
+.wizard {padding: 20px;}
+.datepicker{z-index:1200;width: 230px;}
+.datepicker td span{width: 50px;}
+</style>
+{% endblock %}
+{% block content %}
+<div style="min-height:495px;" class="container" >
+	<div>
+		<h3 class="text text-info">{% for js in inter %}{{ js.JSId.user.first_name }} {{ js.JSId.user.last_name }}{% endfor %}</h3>
+		<p><b>Desired Position : </b>{% for job in inter %}{{ job.Job.title }}{% endfor %}</p>
+		<p><b>Total no. of Rounds : </b>{{ inter.0.rounds }}</p>
+	</div>
+	
+	<input type="hidden" name="rem" value="{{remcount}}">
+			{% for a in inter %}
+				{% if a.interviewfailed %}
+				{% elif a.interviewpassed %}
+				{% else %}
+					<div style="float:right; margin:20px;">
+						<a href="#myModal" role="button" class="btn" data-toggle="modal">Add Results</a>
+					</div>
+				{% endif %}
+			{% endfor %}
+	{% load q_extras %}
+	<div class="wizard">&emsp;&emsp;
+		{% for i in inter.0.rounds|nrounds %}
+		<a {% ifequal forloop.counter roundcount %}class="current"
+		{% else %}
+		{% if forloop.counter < roundcount %}
+		class="current"
+		{% endif %}
+		{% endifequal %}>
+		<span class="badge"></span> Round&emsp;{{ forloop.counter }}</a>
+		{% endfor %}
+		<div>
+		</div>
+	</div>
+	<div style="clear:both;"></div>
+
+<!--   *********************** Round Result ******************************* -->
+
+	<div style="padding:20px;">
+		<table class="table table-striped">
+			<tr>
+				<th colspan="6">Overall Result&emsp;:&emsp;{% for a in inter %}{% if a.interviewfailed %}<span style="color:red;">Not Cleared</span>{% elif a.interviewpassed %}<span style="color:green;">Cleared</span>{% else %}<span style="color:grey;">Interview Not Yet Completed</span>{% endif %}{% endfor %}</th>
+			</tr>
+			<tr>
+				<th>Round No</th>
+				<th>Interviewed By</th>
+				<th>Interview Date</th>
+				<th>Next Round Date</th>
+				<th>Comments</th>
+				<th>Result</th>
+			</tr>
+
+			{% for rr in roundresults %}
+			<tr>
+				<td>{{ rr.roundno }}</td>
+				<td>{{rr.interviewby}}</td>
+				<td>{{rr.interviewdate}}</td>
+				<td>{{rr.nextrounddate}}</td>
+				<td>{{rr.tips}}</td>
+				
+					{% if rr.status %}
+					<td style="color:green;">Cleared</td>
+					{% else %}
+					<td style="color:red;">Not Cleared</td>
+					{% endif %}
+				
+			</tr>
+			{% endfor %}
+		</table>
+	</div>
+	<div style="padding-bottom:20px;">
+		<button id="back" type="button" class="btn btn-primary" data-toggle="button">Back</button>
+	</div>
+
+</div>
+
+<!--  --------------- ADD RESULT POPUP WINDOW  ---------------  -->
+
+
+
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<form action="/accounts/RoundResult/" method="post"  >{% csrf_token %}
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+			<h3 id="myModalLabel">
+			<p><strong>Result for Round {% if roundcount %}{{roundcount|add:"1"}}{% else %}{%ifequal roundcount 0 %}{{roundcount|add:"1"}}{%endifequal%}{%endif%}</strong></p>
+			</h3>
+		</div>
+		<div class="modal-body">
+			<input type="hidden" name="empid" value="{% for e in inter %}{{ e.emp_id }}{% endfor %}" >	<input type="hidden" name="jsid" value="{% for js in inter %}{{ js.JSId_id }}{% endfor %}" >
+			<input type="hidden" name="interviewid" value="{% for interview in inter %}{{ interview.id }}{% endfor %}" >
+			<input type="hidden" name="jobid" value="{% for job in inter %}{{ job.Job.id }}{% endfor %}" >
+			<input type="hidden" name="roundno" value='{{ roundcount|add:"1" }}' min='1'  max='10' >
+			<p><input type="text" name="score" placeholder="Enter Score (out of 10)" id="score" required="true" >
+			<div id="scoreerr"  style="color : #f2652d" >
+				
+			</div>
+			</p>
+			<p><input type="text" name="interviewby" placeholder="Interviewed by (eg:Paul Thamous)" required="true" ></p>
+			<p><input type="text" class="from" name="interviewdate" placeholder="Interviewed Date (MM/DD/YYYY)" required="true" readonly value="{% for rr in roundresults %}{% if forloop.last %}{{rr.nextrounddate}}{% endif %}{% endfor %}"></p>
+			<p><input type="text" name="description" placeholder="Your Comments or tips" required="true"></p>
+			<p><input type="text" class="nxtrndrslt" name="nextround" placeholder="Next Round Date" ><sub>(Need to specify if there is next round)</sub></p>	
+			<p><input type="radio" value="True" name="status" required="true">Pass<input type="radio" value="False" name="status" required="true">Fail</p>
+		</div>
+		<div class="modal-footer">
+			<input type="submit" value="Save" id="sav" class="btn btn-primary">
+			<input type="reset" value="Reset" class="btn btn-primary">
+		</div>
+	</form>
+</div>
+{% endblock %}
+{% block extrajavascript %}
+<script type="text/javascript">
+$(function()
+	{
+		
+		
+	    $(".from").datepicker( {
+        format: "mm-dd-yyyy",
+        viewMode: 2,
+	startDate: '0d',
+	
+    });
+	    $('.nxtrndrslt').datepicker({
+	    	format: "mm-dd-yyyy",
+	    	viewMode: 2,
+	    	startDate:'0d',
+	    });
+	    
+	    	    
+	    $('#back').click(function()
+	    	{
+	    		parent.history.back();
+	    		return false;
+	    	});
+	    $('#sav').click(function(){
+		
+		scva = document.getElementById('score').value
+		if (scva>10) {
+		event.preventDefault();	//code
+		document.getElementById('scoreerr').innerHTML = "enter scoure out of 10 only";
+		}
+	    	alert(done);
+	    	$(this).html("<lable>saving....</label>");
+	    });
+	});
+
+	
+
+</script>
+<style type="text/css">
+.datepicker{
+        z-index: 1151;
+    }
+</style>
+{% endblock %}

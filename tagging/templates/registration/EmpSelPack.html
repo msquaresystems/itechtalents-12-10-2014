@@ -1,0 +1,32 @@
+{% extends "registration/base/jobseekerbase.html" %}
+{% block content %}
+<div style="min-height:495px;" class="container">
+    <div class="row">
+        <div class="span12" style="text-align:left;">
+            <h3 class="text text-info">Subscribed Packs</h3>
+            <p>Totally you subscribed {{subscribed_packcount}} packs</p>
+            <p>Totally you have activated {{totactjob}} job(s) and viewed {{totviewres}} resume</p>
+            <p>Remaining you can activate {{remjobcnt}} job(s) and view {{remrescnt}} resume</p>
+            <table class="table table-striped">
+                <tr>
+                    <th>Pack Name</th>
+                    <th>Activated Date</th>
+                    <th>Expire date</th>
+                    <th>No of jobpost</th>
+                    <th>No of C.V access</th>
+
+                </tr>
+                {% for a in subscribed%}
+                <tr>
+                    <td>{{a.pack.pack_name}}</td>
+                    <td>{{a.pack_activate}}</td>
+                    <td>{{a.pack_expire}}</td>
+                    <td>{{a.pack.no_jobpost}}</td>
+                    <td>{{a.pack.no_resume}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,821 @@
+{% extends "registration/base/jobseekerbase.html" %}
+{% block extrahead %}
+<link rel="stylesheet" href="{{ STATIC_URL }}css/style.css"/>
+	<link rel="stylesheet" href="{{ STATIC_URL }}css/jquery-ui.css" />
+<style type="text/css">
+	.success
+    {
+      color: green;
+      font-weight: bold;
+      font-size: 12px;
+      text-align: center;
+      font-family: "Lucida Sans Unicode","Lucida Grande",Sans-Serif;
+    }
+	</style>
+{% block content %}
+<body onload="disabletextarea()">
+	<div style="width:1200px; padding:0px;margin:auto;" class="outerdiv">
+<div style="padding:20px;">
+	{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+        <img style="width:20px;height:20px;" src="{{ STATIC_URL }}images/success.jpeg" >&nbsp;&nbsp;{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+	<span><input type="hidden" value="{{ user.id }}" name="user_id" ></span>
+	<p><h3> Personal Information</h3></p>
+	
+	<div>
+	<table width="100%" align="center">
+		<p style="cursor:pointer;color:blue; text-align:right;"><a href='/accounts/Editpersonalinfo/'> EDIT</a></p>
+	<tr>
+		<td>First Name</td>
+		<td>{{ user.first_name }}</td>
+		<td>Last Name </td>
+		<td>{{ user.last_name }}</td>
+	</tr>
+
+	<tr>
+		<td>Date of Birth</td>
+		<td>
+			{% for a in personal %}{{a.dob}}{% endfor %}
+			
+		</td>
+		<td>Primary Mail</td>
+		<td>{{user.email}}</td>
+	</tr>
+
+	<tr>
+		<td>Secondary Email</td>
+		<td>{% for a in personal %}{{a.sec_email}}{% endfor %} </td>
+		<td>Address 1</td>
+		<td>{% for a in personal %}{{a.address1}}{% endfor %}</td>
+		
+	</tr>
+	
+	<tr>
+		<td>Address 2</td>
+		<td>{% for a in personal %}{{a.address2}}{% endfor %}</td>
+		
+		<td>City</td>
+		<td>
+			{% for a in personal %}{{a.city}}{% endfor %}
+		</td>
+		
+	</tr>
+	
+	<tr>
+		<td>State</td>
+		<td>{% for a in personal %}{{a.state}}{% endfor %}
+		</td>
+
+		<td>Country</td>
+		<td>
+			{% for a in personal %}{{a.country}}{% endfor %}
+	  	</td>
+
+	</tr>
+
+	<tr>
+		<td>Zipcode</td>
+		<td>{% for a in personal %}{{a.zipcode}}{% endfor %}</td>
+		<td>Mobile Number</td>
+		<td>{% for a in personal %}{{a.handno}}{% endfor %}</td>
+	</tr>
+
+	<tr>
+		<td>Home Number</td>
+		<td>{% for a in personal %}{{a.homeno}}{% endfor %}</td>
+		<td>Work Number</td>
+		<td>{% for a in personal %}{{a.workno}}{% endfor %}</td>
+	</tr>
+
+	<tr>
+		<td>Preferred Time to call</td>
+		<td>{% for a in personal %}{{a.prefertime}}{% endfor %}</td>
+		<td>Gender</td>
+		<td>{% for a in personal %}{{a.gender}}{% endfor %}</td>
+		
+	</tr>
+
+	<tr>
+		<td>Marital Status</td>
+		<td>{% for a in personal %}{{a.maritalstatus}}{% endfor %}</td>
+		<td>Total Experience</td>
+		<td>{% for a in personal %}{{a.work_expyears}}{% endfor %} Years {% for a in personal %}{{a.work_expmonths}}{% endfor %} Months</td>
+				
+	</tr>
+
+	<tr>
+		<td>Annual Salary</td>
+		<td>{% for a in personal %}{{a.salaryrange}}{% endfor %}</td>
+		<td>Current Industry</td>
+		<td>{% for a in personal %}{{a.industry}}{% endfor %}
+		</td>
+				
+	</tr>
+	<tr>
+		<td>Functional Area</td>
+		<td>{% for a in personal %}{{a.functional_area}}{% endfor %}
+		</td>
+		<td>Linkedin Profile Url</td>
+		<td><a href="{% for a in personal %}{{a.profileurl}}{% endfor %}">{% for a in personal %}{{a.profileurl}}{% endfor %}</a>
+		</td>
+	</tr>
+	</table>
+	</div>
+	
+	<p><h3>Education Details</h3></p>
+	
+
+	<div>
+		<p style="cursor:pointer;color:blue; text-align:right;"><a href='/accounts/Editeducationinfo/'> EDIT</a></p>
+		{% for a in qualification %}
+		{% if a.pg %}
+	<fieldset style="border:2px solid green;">
+
+  	<legend style="border:2px solid green;color:green;">POST GRADUATION DETAILS</legend>
+	<table width="100%" border="0" >
+	<tr>
+		
+		<td width="25%">Degree</td>
+		<td width="25%">{{a.pg}}
+		</td>
+	
+		<td width="25%">Specialization</td>
+		<td width="25%">{{a.pg_special}}</td>
+	</tr>
+
+	<tr>
+		<td>University/Board</td>
+		<td>{{a.pg_institution}}</td>
+		<td>Location</td>
+		<td>{{a.pg_location}}</td> 
+	</tr>
+	<tr>
+		
+		<td>Year of Passing</td>
+		<td>{{a.pg_year}}
+		</td>
+
+	</tr>
+</table>
+	</fieldset>
+	{% endif %}
+	{% if a.ug %}
+	<fieldset style="border:2px solid green;">
+  	<legend style="border:2px solid green;color:green;">GRADUATION DETAILS</legend>
+	<table width="100%" border="0">
+	<tr>
+		<td width="25%">Degree</td>
+		<td width="25%">{{a.ug}}
+		</td>
+	
+		<td width="25%">Specialization</td>
+		<td width="25%">{{a.ug_special}}</td>
+	</tr>
+
+	<tr>
+		<td>University/Board</td>
+		<td>{{a.ug_institution}}</td>
+		<td>Location</td>
+		<td>{{a.ug_location}}</td> 
+	</tr>
+	<tr>
+		<td>Year of Passing</td>
+		<td>{{a.ug_year}}
+		</td>
+	</tr>
+</table>
+	</fieldset>
+	{% endif %}
+	{% if a.other %}
+
+	<fieldset style="border:2px solid green;">
+  	<legend style="border:2px solid green;color:green;">OTHER DETAILS</legend>
+	<table width="100%" border="0">
+	<tr>
+		<td width="25%">Degree</td>
+		<td width="25%">{{a.other}}</td>
+	
+		<td width="25%">Specialization</td>
+		<td width="25%">{{a.other_special}}</td>
+	</tr>
+
+	<tr>
+		<td>University/Board</td>
+		<td>{{a.other_institution}}</td>
+		<td>Location</td>
+		<td>{{a.other_location}}</td> 
+	</tr>
+	<tr>
+	
+		<td>Year of Passing</td>
+		<td>{{a.other_year}}
+		</td>
+	</tr>
+</table>
+	</fieldset>
+	{% endif %}
+
+	<p><h3>Certificates</h3></p>
+
+	{% if a.certificate1 %}
+	<p>{{ a.certificate1 }}</p>
+	{% endif %}
+
+	{% if a.certificate2 %}
+	<p>{{ a.certificate2 }}</p>
+	{% endif %}
+
+	{% if a.certificate3 %}
+	<p>{{ a.certificate3 }}</p>
+	{% endif %}
+
+	{% if a.certificate4 %}
+	<p>{{ a.certificate4 }}</p>
+	{% endif %}
+
+	{% if a.certificate5 %}
+	<p>{{ a.certificate5 }}</p>
+	{% endif %}
+
+	{% if a.certificate6 %}
+	<p>{{ a.certificate6 }}</p>
+	{% endif %}
+
+	{% if a.certificate7 %}
+	<p>{{ a.certificate7 }}</p>
+	{% endif %}
+
+	{% if a.certificate8 %}
+	<p>{{ a.certificate8 }}</p>
+	{% endif %}
+
+	{% if a.certificate9 %}
+	<p>{{ a.certificate9 }}</p>
+	{% endif %}
+
+	{% if a.certificate10 %}
+	<p>{{ a.certificate10 }}</p>
+	{% endif %}
+
+	{% endfor %}
+</div>
+
+<p><h3>Profile Summary</h3></p>
+	<div>
+		<p style="cursor:pointer; text-align:right;"><a href='/accounts/Editprofileinfo/'> EDIT</a></p>
+		<table width="100%">
+			<tr>
+				<td width="20%">Profile Summary</td>
+				<td>{% for a in profilesum %}{{ a.profile_summary|safe }}{% endfor %}</td>
+			</tr>
+		</table>
+	</div>
+<p><h3>TECHNICAL SKILL SET</h3></p>
+<div>
+		<p style="cursor:pointer;color:blue; text-align:right;"><a href='/accounts/Edititskillsinfo/'> EDIT</a></p>
+		<table width="100%" border="0">
+			
+			<tr>
+				<td width="20%"><b>Skill</b></td>
+				<td width="20%"><b>Version</b></td>
+				<td width="20%"><b>Last Used</b></td>
+				<td width="20%"><b>Experience</b></td>
+				<td width="20%"></td>
+			</tr>
+	{% for a in skills %}
+		<tr >
+			{% if a.skill1 %}
+				<td width="20%">{{a.skill1}}</td>
+				<td width="20%">{{a.version1}}
+				</td>
+				<td width="20%">{{a.lastused1}}
+				</td>
+				<td width="20%">{{a.skillyear1}} Year {{a.skillmon1}} Month
+				</td>
+			{% endif %}
+		</tr>
+		<tr >
+			{% if a.skill2 %}
+				<td width="20%">{{a.skill2}}</td>
+				<td width="20%">{{a.version2}}
+				</td>
+				<td width="20%">{{a.lastused2}}
+				</td>
+				<td width="20%">{{a.skillyear2}} Year {{a.skillmon2}} Month
+				</td>
+			{% endif %}
+		</tr>
+		<tr >
+			{% if a.skill3 %}
+				<td width="20%">{{a.skill3}}</td>
+				<td width="20%">{{a.version3}}
+				</td>
+				<td width="20%">{{a.lastused3}}
+				</td>
+				<td width="20%">{{a.skillyear3}} Year {{a.skillmon3}} Month
+				</td>
+			{% endif %}
+		</tr>
+		<tr >
+			{% if a.skill4 %}
+				<td width="20%">{{a.skill4}}</td>
+				<td width="20%">{{a.version4}}
+				</td>
+				<td width="20%">{{a.lastused4}}
+				</td>
+				<td width="20%">{{a.skillyear4}} Year {{a.skillmon4}} Month
+				</td>
+			{% endif %}
+		</tr>
+		<tr >
+			{% if a.skill5 %}
+				<td width="20%">{{a.skill5}}</td>
+				<td width="20%">{{a.version5}}
+				</td>
+				<td width="20%">{{a.lastused5}}
+				</td>
+				<td width="20%">{{a.skillyear5}} Year {{a.skillmon5}} Month
+				</td>
+			{% endif %}
+		</tr>
+		<tr >
+			{% if a.skill6 %}
+				<td width="20%">{{a.skill6}}</td>
+				<td width="20%">{{a.version6}}
+				</td>
+				<td width="20%">{{a.lastused6}}
+				</td>
+				<td width="20%">{{a.skillyear6}} Year {{a.skillmon6}} Month
+				</td>
+			{% endif %}
+		</tr>
+		<tr >
+			{% if a.skill7 %}
+				<td width="20%">{{a.skill7}}</td>
+				<td width="20%">{{a.version7}}
+				</td>
+				<td width="20%">{{a.lastused7}}
+				</td>
+				<td width="20%">{{a.skillyear7}} Year {{a.skillmon7}} Month
+				</td>
+			{% endif %}
+		</tr>
+		<tr >
+			{% if a.skill8 %}
+				<td width="20%">{{a.skill8}}</td>
+				<td width="20%">{{a.version8}}
+				</td>
+				<td width="20%">{{a.lastused8}}
+				</td>
+				<td width="20%">{{a.skillyear8}} Year {{a.skillmon8}} Month
+				</td>
+			{% endif %}
+		</tr>
+		<tr >
+			{% if a.skill9 %}
+				<td width="20%">{{a.skill9}}</td>
+				<td width="20%">{{a.version9}}
+				</td>
+				<td width="20%">{{a.lastused9}}
+				</td>
+				<td width="20%">{{a.skillyear9}} Year {{a.skillmon9}} Month
+				</td>
+			{% endif %}
+		</tr>
+		<tr >
+			{% if a.skill10 %}
+				<td width="20%">{{a.skill10}}</td>
+				<td width="20%">{{a.version10}}
+				</td>
+				<td width="20%">{{a.lastused10}}
+				</td>
+				<td width="20%">{{a.skillyear10}} Year {{a.skillmon10}} Month
+				</td>
+			{% endif %}
+		</tr>
+	{% endfor %}
+		</table>
+	</div>
+
+<p><h3>Employment Details</h3></p>
+	<div>
+		<p style="cursor:pointer;color:blue; text-align:right;"><a href='/accounts/Editemploymentinfo/'> EDIT</a></p>
+		<table width="100%" border="0">
+			<tr>
+				<td width="20%">Employer Name</td>
+				<td>
+					{% for a in employer %}{{a.employer_name}}{% endfor %}&nbsp;&nbsp;&nbsp;&nbsp;{% for a in employer %}{{a.empstatus}}{% endfor %}
+				</td>
+			</tr>
+			<tr>
+				<td>Duration</td>
+				<td>
+					{% for a in employer %}{{a.empstartdate}}{% endfor %}
+					&nbsp;&nbsp;to&nbsp;&nbsp;
+					{% for a in employer %}{{a.emptodate}}{% endfor %}
+				</td>
+			</tr>
+			<tr>
+				<td>Designation</td>
+				<td>{% for a in employer %}{{a.designation}}{% endfor %}</td>
+			</tr>
+			<tr>
+				<td>Job Profile</td>
+				<td >
+					{% for a in employer %}{{a.jobprofile|safe}}{% endfor %}
+				</td>
+			</tr>
+		</table>
+	</div>
+	<p><h3>Projects Details</h3></p>
+	<div>
+		<p style="cursor:pointer;color:blue; text-align:right;"><a href='/accounts/Editprojectinfo/'> EDIT</a></p>
+		<table border="0" width="100%">
+			{% for a in project %}
+			<tr>
+				<td width="20%">Client</td>
+				<td>{{a.client}}&emsp;&emsp;
+				Project Title :&emsp;{{a.project_title}}
+			</tr>
+			<tr>
+				<td>Duration</td>
+				<td>
+					{{a.projstartdate}}
+					&emsp;to&emsp;
+					{{a.projtodate}}
+
+				</td>
+			</tr>
+			<tr>
+				<td>Project Location</td>
+				<td>
+					{{a.project_loc}} &emsp;&emsp; {{a.on_offsite}}
+				</td>
+			</tr>
+			<tr>
+				<td>Employment Type</td>
+				<td>
+					{{a.emp_type}}
+				</td>
+			</tr>
+			<tr>
+				<td>Project Details</td>
+				<td>
+					{{a.project_details|safe}}
+				</td>
+			</tr>
+			<tr>
+				<td>Role Description</td>
+				<td>
+					{{a.role_desc|safe}}
+			</tr>
+			<tr>
+				<td>Skills Used</td>
+				<td>
+					{{a.skill_used|safe}}
+				</td>
+			</tr>
+			<tr>
+				<td>Role</td>
+				<td>{{a.role}}&emsp;&emsp;
+				Team Size&emsp;&emsp;
+				{{a.teamsize}}
+				</td>
+			</tr>
+			{% endfor %}
+		</table>
+	</div>
+	<p><h3>Security Clearance Section:</h3></p>
+	<div>
+		<p style="cursor:pointer;color:blue; text-align:right;"><a href='/accounts/Editjssecurity/'> EDIT</a></p>
+		<table border="0" width="100%">
+			<tr>
+				<td width="20%">Security Clearance</td>
+				<td>{% for a in jssecurity %}{{a.jssecretclear}}{% endfor %} </td>
+			</tr>
+			<tr>
+				<td>From Date</td>
+				<td>
+					{% for a in jssecurity %}{{a.jsfromdate|date}}{% endfor %}
+					
+				</td>
+			</tr>
+			<ttr>
+				<td>Expire Date</td>
+				<td>
+					{% for a in jssecurity %}{{a.jstodate|date}}{% endfor %}
+					
+				</td>
+			</tr>
+		</table>
+	</div>
+	<p><h3>Other Details</h3></p>
+	<div>
+		<p style="cursor:pointer;color:blue; text-align:right;"><a href='/accounts/Editotherinfo/'> EDIT</a></p>
+		<table width="100%" border="0">
+			<tr>
+				<td colspan="6"><h3>Languages Known</h3></td>
+			</tr>
+			<tr>
+				<td style="width:250px;"><b>Language</b></td>
+				<td style="width:150px;"><b>Proficiency</b></td>
+				<td style="width:100px;"><b>Read</b></td>
+				<td style="width:100px;"><b>Write</b></td>
+				<td style="width:100px;"><b>Speak</b></td>
+			</tr>
+	{% for a in other %}
+			<tr >
+			{% if a.language1 %}
+				<td width="20%">{{a.language1}}</td>
+				<td width="20%">{{a.proficiency1}}
+				</td>
+
+				<td width="20%">
+					{% if a.read1 %}
+					<label>Yes</label>
+					{%else%}
+					<label>No</label>
+					{%endif%}
+				</td>
+				<td width="20%">
+					{% if a.write1 %}
+					<label>Yes</label>
+					{%else%}
+					<label>No</label>
+					{%endif%}
+				</td>
+				<td width="20%">
+					{% if a.speak1 %}
+					<label>Yes</label>
+					{%else%}
+					<label>No</label>
+					{%endif%}
+				</td>
+			
+			{%endif%}
+			</tr>
+
+			<tr>
+			{% if a.language2 %}
+				<td>{{a.language2}}</td>
+				<td>{{a.proficiency2}}
+				</td>
+				<td>
+					{% if a.read2 %}
+					<label>Yes</label>
+					{%else%}
+					<label>No</label>
+					{%endif%}
+				</td>
+				<td>
+					{% if a.write2 %}
+					<label>Yes</label>
+					{%else%}
+					<label>No</label>
+					{%endif%}
+				</td>
+				<td>
+					{% if a.speak2 %}
+					<label>Yes</label>
+					{%else%}
+					<label>No</label>
+					{%endif%}
+				</td>
+				
+			{%endif%}
+			</tr>
+			<tr>
+			{% if a.language3 %}
+				<td>{{a.language3}}</td>
+				<td>{{a.proficiency3}}
+				</td>
+				<td>
+					{% if a.read3 %}
+					<label>Yes</label>
+					{%else%}
+					<label>No</label>
+					{%endif%}
+				</td>
+				<td>
+					{% if a.write3 %}
+					<label>Yes</label>
+					{%else%}
+					<label>No</label>
+					{%endif%}
+				</td>
+				<td>
+					{% if a.speak3 %}
+					<label>Yes</label>
+					{%else%}
+					<label>No</label>
+					{%endif%}
+				</td>
+				
+			{%endif%}
+			</tr>
+			<tr>
+			{% if a.language4 %}
+				<td>{{a.language4}}</td>
+				<td>{{a.proficiency4}}
+				</td>
+				<td>
+					{% if a.read4 %}
+					<label>Yes</label>
+					{%else%}
+					<label>No</label>
+					{%endif%}
+				</td>
+				<td>
+					{% if a.write4 %}
+					<label>Yes</label>
+					{%else%}
+					<label>No</label>
+					{%endif%}
+				</td>
+				<td>
+					{% if a.speak4 %}
+					<label>Yes</label>
+					{%else%}
+					<label>No</label>
+					{%endif%}
+				</td>
+				
+			{%endif%}
+			</tr>
+			<tr>
+			{% if a.language5 %}
+				<td>{{a.language5}}</td>
+				<td>{{a.proficiency5}}
+				</td>
+				<td>
+					{% if a.read5 %}
+					<label>Yes</label>
+					{%else%}
+					<label>No</label>
+					{%endif%}
+				</td>
+				<td>
+					{% if a.write5 %}
+					<label>Yes</label>
+					{%else%}
+					<label>No</label>
+					{%endif%}
+				</td>
+				<td>
+					{% if a.speak5 %}
+					<label>Yes</label>
+					{%else%}
+					<label>No</label>
+					{%endif%}
+				</td>
+				
+			{%endif%}
+			</tr>
+
+	{% endfor %}
+			<tr>
+				<td colspan="6"><h3>Desired Job Details</h3></td>
+			</tr>
+
+			<tr>
+				<td>Employment Type</td>
+				<td colspan="5">{% for a in other %}{{a.emptype}}{% endfor %}
+				</td>
+			</tr>
+
+			<tr>
+				<td colspan="6"><h3>Work Authorization</h3></td>
+
+			</tr>
+
+			<tr>
+				<td>Work Permit for USA</td>
+				<td colspan="5">{% for a in other %}{{a.workpermit}}{% endfor %}
+				</td>
+			</tr>
+
+			<tr>
+				<td>Other Countries</td>
+				<td colspan="5">{% for a in other %}{{a.workother}}{% endfor %}</td>
+			</tr>
+
+			<tr>
+				<td>Willing to Relocation</td>
+				<td colspan="5">
+					{% for a in extra %}
+					{% if a.relocate %}
+					{{a.relocate}}
+					{% else %}
+					No
+					{% endif %}
+					{% endfor %}</td>
+			</tr>
+
+			<tr>
+				<td>Willing to Telecommunicate</td>
+				{% for a in extra %}
+				{% if a.telecommunicate %}
+				<td colspan="5">{{a.telecommunicate}}</td>
+				{% else %}
+				<td colspan="5">No</td>
+				{% endif %}
+				{% endfor %}
+			</tr>
+			<tr>
+				<td>Willing to travel</td>
+				<td colspan="5">
+				{% for a in extra%}
+				{% if a.travel %}
+				{{ a.travel }}
+				{% else %}
+				No
+				{% endif %}
+				{% endfor %}
+				</td>
+			</tr>
+			<tr>
+				<td>ReLocation Choices</td>
+				<td colspan="5">
+				{% for a in extra%}
+				{% if a.relocatechoice %}
+				{{ a.relocatechoice }}
+				{% else %}
+				No
+				{% endif %}
+				{% endfor %}
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<p><h3>Resume Upload</h3></p>
+	<div>
+		<p style="cursor:pointer;color:blue; text-align:right;"><a href='/accounts/Editresumeinfo/'> EDIT</a></p>
+
+		<table border="0" width="100%">
+			<tr>
+				<td width="20%">Activated Resume Title</td>
+				<td >{% for a in resume %}{{a.resumeTitle}}{% endfor %}</td>
+			</tr>
+			<tr>
+				<td>Activated Resume</td>
+				<td><textarea id="ta" cols="40" rows="10" style="width:700px;">{% for a in resume %}{{a.resumeFile|safe}}{% endfor %}</textarea></td>
+			</tr>
+			<tr>
+				<td>Resume Uploaded Date</td>
+				{% for a in resume %}
+				{% if a.resumeTitle or a.resumeFile %}
+				<td>{{a.resumeDate}}</td>
+				{% else %}
+				<td></td>
+				{% endif %}
+				{% endfor %}
+			</tr>
+			<tr>
+				<td>Video Resume</td>
+				<td>
+					 <video width="320" height="240" controls >
+
+                          <source src={{ STATIC_URL }}{% for a in videoresume %}{{ a.videoresume }}{% endfor %} type="video/ogg">
+                          <source src={{ STATIC_URL }}{% for a in videoresume %}{{ a.videoresume }}{% endfor %} type="video/mp4">
+                          <source src={{ STATIC_URL }}{% for a in videoresume %}{{ a.videoresume }}{% endfor %} type="video/webm">
+
+
+                           Your browser does not support the video tag.
+                          
+                          </object>
+                        </video>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+   </div>   
+</div>
+{% include "registration/footer.html" %}
+</body>
+
+{% endblock %}
+{% block extrajavascript %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.9.1.js"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui.js"></script>
+	<!--<script type="text/javascript" src="{{ STATIC_URL }}js/validation.js"></script>-->
+	<script type="text/javascript">
+	 $(function()
+        {
+            $( "#datepicker" ).datepicker({ dateFormat: 'mm-dd-yy' });
+        });
+
+
+	 function disabletextarea()
+	 {
+	 	document.getElementById('ta').disabled=true;
+	 }
+	</script>
+{% endblock %}

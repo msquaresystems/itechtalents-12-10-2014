@@ -1,0 +1,21 @@
+<div>
+  <h4 class="text text-info" style="border-bottom:2px solid #FFB812;">Failed Candidates</h4>
+  <table class="table table-striped">
+    <tr>
+      <th>Candidate Name</th>     
+      <th>Position</th>
+      <th>Date of Interview</th>
+    </tr>
+    {%if fail%}
+    {% for interview in fail %}
+    <tr>     
+      <td><a href="/accounts/JSDetails/{{ interview.JSId.user.id }}/">{{ interview.JSId.user.first_name}} {{ interview.JSId.user.last_name }}</a></td>
+      <td>{{ interview.Job.title }}</td>
+      <td>{{ interview.reschedule.empschedule_date1 }}</td>
+    </tr>
+    {% endfor %}
+    {%else%}
+    <tr><td colspan="3" style="text-align:center;">There is no failed candidates !</td></tr>
+    {%endif%}
+  </table>
+</div>

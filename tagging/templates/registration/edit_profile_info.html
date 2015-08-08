@@ -1,0 +1,25 @@
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-wysihtml5-0.0.2.css"></link>
+<script src="{{ STATIC_URL }}js/wysihtml5-0.3.0_rc2.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-wysihtml5-0.0.2.js"></script>
+<script type="text/javascript">
+    $('#some-textarea').wysihtml5();
+</script>
+<form name="edit_personal_info_form" action="/accounts/Editprofileinfo/" method="post" enctype="multipart/form-data">{% csrf_token %}
+	<input type="hidden" value="{{ user.id }}" name="user_id" >
+	<h3 class="text text-info">Profile Summary</h3>
+	<table class="table table-borderless">
+		<tr>
+			<td>Profile Summary</td>
+			<td>
+		
+				<textarea  name="profile_summary" id="some-textarea" style="width:600px;height:200px;" >{% if details1%}{% for a in details1 %}{{a.profile_summary|safe}}{% endfor %}{% endif %}</textarea>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" style="text-align:center;">
+			<input type="submit" class="btn btn-success" value="Update">&emsp;
+			<input type="reset" class="btn btn-info" value="Reset">
+			</td>
+		</tr>
+	</table>
+</form>

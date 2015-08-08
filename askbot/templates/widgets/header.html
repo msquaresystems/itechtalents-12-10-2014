@@ -1,0 +1,26 @@
+<!-- template header.html -->
+{% import "macros.html" as macros %}
+
+<div class="navbar navbar-inverse navbar-fixed-top" style="background-color:#139CD2;" >
+  <div>
+    <div class="container">
+      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      {% if request.user.usertype=='employer' %}
+      <a class="brand" href="/accounts/RecruiterDashboard/" style="font-size:18px;">ItechTalents</a>
+      {% elif request.user.usertype=="jobseeker" %}
+      <a class="brand" href="/js/Dashboard/">ItechTalents</a>
+      {% endif %}
+      <div class="nav-collapse collapse">
+        <ul class="nav">
+        {% include "widgets/user_navigation.html" %}
+        {% include "widgets/meta_nav.html" %}
+          
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

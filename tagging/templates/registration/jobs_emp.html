@@ -1,0 +1,203 @@
+{% extends "registration/base/jobseekerbase.html" %}
+{% block extrahead %}
+<style type="text/css">
+.bs-docs-sidenav a.section-head {
+  text-decoration: none;
+/*background-color: #139cd2;*/
+    background-image: linear-gradient(#5d71b8, #B5BFE4);
+   background-repeat: repeat-x;
+    border-bottom: 1px solid #CCCCCC;
+    border-left: 0 none;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
+    color: #fff;
+    display: block;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 20px;
+    padding: 10px;
+    cursor:default;
+    
+  }
+.bs-docs-sidenav > li > a {
+  display: block;
+  width: 190px \9;
+  margin: 0 0 -1px;
+  padding: 8px 14px;
+  border: 1px solid #e5e5e5;
+}
+.bs-docs-sidenav > li > a:hover {
+  background: #CED6F2;    
+}
+
+</style>
+{% endblock %}
+{% block content %}
+<div class="container-fluid" style="min-height:580px;">
+    <div class="row-fluid">
+      <div class="span3 sidebar">
+        <ul class="nav nav-list bs-docs-sidenav">
+          <a class="section-head">Post Job</a>
+          <li><a href='/accounts/JobsEmp/' id="myjobs">My Jobs</a></li>
+          <li><a href='/accounts/PostJob/'>Post a New Job</a></li>
+          <li><a href='/accounts/JobsEmp/OpenJob/Open/' id="active">Open Jobs</a></li>
+          <li><a href='/accounts/JobsEmp/ExpiredJob/Expired/' id="inactive">Expired Jobs</a></li>
+          <li><a href='/accounts/JobsEmp/FutureJob/Future/' id="pending">Future Jobs</a></li>
+          <li><a href='/accounts/JobsEmp/AllJob/All/'' id="all">All Jobs</a></li>
+          <li><a href='#' id="searchjob">Search Posted Job</a></li>
+          <br>  
+          <a class="section-head">Find Candidates</a>
+          <li><a href='#' id="recapp">Received Application</a></li>
+          <li><a href='#' id="srchagt">Search Agents</a></li>
+          <li><a href='#' id="cndtfdr">Scratch Pad</a></li>          
+        </ul>
+      </div>
+      <div class="span9" id="load">
+      <div>
+      {% if messages %}
+          {% for message in messages %}
+              <div class="alert alert-{{message.tags}}">
+                  {{message}}
+              </div>
+          {% endfor %}
+      {% endif %}
+        <h3> YOUR POSTED JOBS</h3>
+        <table class="table">
+          <thead>
+          <tr>
+            <th>Job code</th>
+            <th>Job title</th>
+            <th>Experience</th>
+            <th>Posted date</th>
+            <th>Expired Date</th>            
+            <th>Job status</th>
+          </tr>
+          </thead>
+          <tbody>
+          {% if job %}
+          {% for job in job %}
+          <tr class="{% if job.is_active %}success{% else %}error{% endif %}">
+            <td><a href="/accounts/JobFullDescription_emp/{{job.id}}/">{{ job.referencecode }}</a></td>
+            <td>{{ job.title }}</td>
+            <td>{{ job.min_exp }} to {{ job.max_exp }} years</td>
+            <td>{{ job.marklive|date }}</td>
+            <td>{{ job.todate|date }}</td>
+            <td>{% if job.is_active %}Open{% else %}Close{% endif %}</td>
+          </tr>
+          {% endfor %}
+          {% else %}
+          <tr>
+            <td colspan="6"> You have not posted any jobs. Please click <a href="/accounts/PostJob/">here</a> to post new job.</td>
+            </tr>
+          {% endif %}
+          </tbody>
+          <!-- {% if ActJobList or InactJobList %}
+          <tr>
+            <th>Job code</th>
+            <th>Job title</th>
+            <th>Experience</th>
+            <th>Posted date</th>
+            <th>Expired Date</th>            
+            <th>Job status</th>
+          </tr>
+          {% for d in ActJobList %}
+          <tr>
+            <td><a href="/accounts/JobFullDescription_emp/{{d.id}}/">{{ d.referencecode }}</a></td>
+            <td>{{ d.title }}</td>
+            <td>{{ d.min_exp }} to {{ d.max_exp }} years</td>
+            <td>{{ d.marklive|date }}</td>
+            <td>{{ d.todate|date }}</td>
+            
+            <td>Open</td>
+          </tr>
+          {% endfor %}
+
+          {% for d in InactJobList %}
+          <tr>
+            <td><a href="/accounts/JobFullDescription_emp/{{d.id}}/">{{ d.referencecode }}</a></td>
+            <td>{{ d.title }}</td>
+            <td>{{ d.marklive }}</td>
+            <td>{{ d.state }}</td>
+            <td>{{ d.min_exp }} to {{ d.max_exp }} years</td>
+            <td>Expired</td>
+          </tr>
+          {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="6"> You have not posted any jobs. Please click <a href="/accounts/PostJob/">here</a> to post new job.</td>
+            </tr>
+          {% endif %}-->
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extrajavascript %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-wysihtml5-0.0.2.css"></link>
+<script type="text/javascript" src="{{ STATIC_URL }}js/wysihtml5-0.3.0_rc2.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap-wysihtml5-0.0.2.js"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.ui.addresspicker.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap-select.min.js"></script>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-select1.min.css">
+<script type="text/javascript">
+$(function()
+        {
+          /* Post jobs sidebar scripts */
+                        
+             $("#searchjob").click(function()
+                {            
+                $('#load').load('/accounts/SearchAllJobs/');
+                
+                });
+             $("#active").click(function()
+                {
+            
+                $('#load').load('/accounts/RecruiterDashboard/1/');
+            
+                });
+             $("#inactive").click(function()
+                {
+            
+                $('#load').load('/accounts/RecruiterDashboard/2/');
+            
+                });
+             $("#pending").click(function()
+                {
+            
+                $('#load').load('/accounts/RecruiterDashboard/3/');
+            
+                });
+             $("#all").click(function()
+                {
+            
+                $('#load').load('/accounts/RecruiterDashboard/4/');
+            
+                });
+
+             /* Find candidates sidebar scripts */
+
+             $("#recapp").click(function()
+                {
+            
+                $('#load').load('/accounts/ReceivedApplication/');
+            
+                });
+
+             $("#srchagt").click(function()
+                {
+            
+                $('#load').load('/accounts/savedsearchresult/');
+            
+                });
+
+             $("#cndtfdr").click(function()
+                {
+            
+                $('#load').load('/accounts/Candidatefolder/');
+            
+                });            
+        });
+</script>
+
+{% endblock %}

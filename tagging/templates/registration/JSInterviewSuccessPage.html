@@ -1,0 +1,91 @@
+<div>
+  <h4 style="border-bottom:2px solid #FFB812;">Passed Interviews</h4>
+  <table class="table table-striped">
+            <tr>
+                <th>Company Name</th>
+                <th>Position</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>LastUpdate</th>
+            </tr>
+            {% if success %}
+            {% for interview in success %}
+            <tr>
+                <td><a href="/accounts/RoundsJS/{{ interview.id}}/">{{ interview.emp.companyname}}</a></td>
+                
+                <td>{{ interview.Job.title }}</td>
+
+                {% if interview.reschedule.jsschedule_date5%}
+                <td>{{ interview.reschedule.jsschedule_date5 }}</td>
+                <td>{{ interview.reschedule.jsschedule_time5 }}</td>
+                <td>{{ interview.reschedule.jsupdate5 }}</td>
+
+                
+                {% elif interview.reschedule.empschedule_date5%}
+                <td>{{ interview.reschedule.empschedule_date5 }}</td>
+                <td>{{ interview.reschedule.empschedule_time5 }}</td>
+                <td>{{ interview.reschedule.empupdate5 }}</td>
+
+
+                {% elif interview.reschedule.jsschedule_date4%}
+                <td>{{ interview.reschedule.jsschedule_date4 }}</td>
+                <td>{{ interview.reschedule.jsschedule_time4 }}</td>
+                <td>{{ interview.reschedule.jsupdate4 }}</td>
+
+                {% elif interview.reschedule.empschedule_date4%}
+                <td>{{ interview.reschedule.empschedule_date4 }}</td>
+                <td>{{ interview.reschedule.empschedule_time4 }}</td>
+                <td>{{ interview.reschedule.empupdate4 }}</td>
+
+                {% elif interview.reschedule.jsschedule_date3%}
+                <td>{{ interview.reschedule.jsschedule_date3 }}</td>
+                <td>{{ interview.reschedule.jsschedule_time3 }}</td>
+                <td>{{ interview.reschedule.jsupdate3 }}</td>              
+
+                {% elif interview.reschedule.empschedule_date3%}
+                <td>{{ interview.reschedule.empschedule_date3 }}</td>
+                <td>{{ interview.reschedule.empschedule_time3 }}</td>
+                <td>{{ interview.reschedule.empupdate3 }}</td>
+
+
+                {% elif interview.reschedule.jsschedule_date2%}
+                <td>{{ interview.reschedule.jsschedule_date2 }}</td>
+                <td>{{ interview.reschedule.jsschedule_time2 }}</td>
+                <td>{{ interview.reschedule.jsupdate2 }}</td>
+              
+                {% elif interview.reschedule.empschedule_date2%}
+                <td>{{ interview.reschedule.empschedule_date2 }}</td>
+                <td>{{ interview.reschedule.empschedule_time2 }}</td>
+                <td>{{ interview.reschedule.empupdate2 }}</td>
+
+                {% elif interview.reschedule.jsschedule_date1 %}
+                <td>{{ interview.reschedule.jsschedule_date1 }}</td>
+                <td>{{ interview.reschedule.jsschedule_time1 }}</td>
+                <td>{{ interview.reschedule.jsupdate1 }}</td>
+
+
+                {% else %}
+                <td>{{ interview.reschedule.empschedule_date1 }}</td>
+                <td>{{ interview.reschedule.empschedule_time1 }}</td>
+                <td>{{ interview.reschedule.empupdate1 }}</td>
+
+                {% endif %}
+            
+              </tr>
+  {% endfor %}
+
+  {% else %}
+
+   <tr >
+        <td colspan="7">
+            
+            <p style="text-align:center;">There is no Interview Confirmed for you..</p>
+
+        </td>
+    </tr>
+
+  {% endif %}
+
+
+  </table>
+</div>

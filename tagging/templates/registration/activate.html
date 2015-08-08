@@ -1,0 +1,24 @@
+
+
+{% extends "registration/base/jobseekerbase.html" %}
+
+{% block content %}
+<div class="container" style="min-height:495px;">
+	<div class="thumbnail alert well well-small text-center" style="height:380px;">
+		<div style="text-align:center;">
+			{% load humanize %}
+			<p><h2 class="text-success">Your account has been activated successfully..</h2></p>
+			{% if account %}
+			<br>
+			<p><h4 class="text-info">Thanks for signing up!</h4></p>
+			<br>
+			<p>Now you can <a href="/">log in</a> and start contributing!</p>
+			{% else %}
+			<br>
+			<p class="text-error">Either your activation link was incorrect, or the activation key for your account has expired; activation keys are only valid for {{ expiration_days }} days after registration.</p>
+			{% endif %}
+		</div>
+	</div>
+</div>
+
+{% endblock %}

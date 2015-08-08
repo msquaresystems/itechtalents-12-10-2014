@@ -1,0 +1,70 @@
+<div class="span12">
+    <h3 class="text text-info">Hi <k class="text text-warning">{{ user.first_name }}</k> welcome to iTechTalents</h3>
+    <div class="row">
+        <div class="span4">
+            <div><a class="btn btn-danger" href="#invite" id="fb" onclick="FacebookInviteFriends();"><i class="icon-group"></i>&nbsp;Invite your friends using Facebook</a></div><br/>
+            <div><img  style="width:140px;height:110px;" src="{{ STATIC_URL }}{% for detail in profilesum %}{{ detail.profile_pic }}{% endfor %}" /></div><br/>
+            <div>{% if profilesum %}{% for detail in profilesum %}<a href="#" id="editpicture">Edit Picture</a>{% endfor %}{% else %}<a href="#myModal" role="button" class="btn" data-toggle="modal" id="p">Upload New</a>{% endif %}</div><br/>
+            <div><h4 class="text text-info">Profile Completion</h4><div style="padding:20px;"><div class="progress progress-warning progress-striped active"><div class="bar" data-percentage="{{progress}}"></div></div></div></div><br/>
+        </div>
+        <div class="span8 well alert alert-info">
+            <table class="table table-borderless">
+                <tr><th>Profile Summary&emsp;</th><td>:&emsp;{% if profilesum %}{% for detail in profilesum %}{{detail.profile_summary|safe}}{% endfor %}{% endif %}</td></tr>
+                <tr><th width="25%">Resume Title&emsp;</th><td>:&emsp;
+                {% if tresume %}
+                    {% for detail in tresume %}
+                        {% if detail.resumeTitle %}
+                            {{ detail.resumeTitle }}
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    {% for detail in resume %}
+                        {% if detail.resumeTitle %}
+                            {{ detail.resumeTitle }}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}</td></tr>
+                <tr><th>Resume Date&emsp;</th><td>:&emsp;
+                {% if tresume %}
+                    {% for detail in tresume %}
+                        {% if detail.resumeTitle %}
+                            {{ detail.resumeDate }}
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    {% for detail in resume %}
+                        {% if detail.resumeTitle %}
+                            {{ detail.resumeDate }}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}</td></tr>
+                <tr><th>Experience&emsp;</th><td>:&emsp;
+                    {% for detail in personal %}
+                        {{ detail.work_expyears }}
+                    {% endfor %} years - {% for detail in personal %}{{ detail.work_expmonths }}{% endfor %} months</td></tr>
+                <tr><th>Location&emsp;</th><td id="editcity" data-name="username">:&emsp;{% for detail in personal %}{{ detail.city }}{% endfor %}</td></tr>
+                <tr><th colspan="2" class="text text-success">Recruiter will reach you at.. </th></tr>
+                <tr><td colspan="2"><i class="icon-envelope icon-large"></i>&nbsp;{{ user.email }}{% for detail in personal %}{% if detail.sec_email%}, {{detail.sec_email}}{%endif%}&emsp;<i class=" icon-phone-sign icon-large"></i>&emsp;{% if detail.handno %}{{ detail.handno }}{% endif %}{% if detail.workno %}, {{detail.workno}}{% endif %}{% if detail.homeno %}, {{detail.homeno}}{% endif %}{% endfor %}</td></tr>
+            </table>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span12">
+            <h4 class="text text-error" style="text-align:center;">Your Active Resume</h4>
+            {% if tresume %}
+            <div style="margin:0 auto; border:1px solid grey;width:800px; padding:20px;">{% for resume in tresume %}{{ resume.resumeFile|safe }}{% endfor %}</div>
+            {% else%}
+            {% for detail in resume %}
+            {% if detail.resumeFile %}
+            <div style="margin:auto;padding:0px;width:800px;"><iframe src="/accounts/doc/" style="margin:0 auto; border:1px solid grey; width:800px; height:800px;" frameborder="0"></iframe></div>
+            {% else %}
+            <div style="margin:0 auto; border:1px solid grey;text-align:center;width:800px; "><h1> Add resume <a href="#" id="add1stresume">here</a> and select a resume to be active.<h1></div>
+            {% endif %}
+            {% endfor %}
+            {% if not resume %}
+            <div style="margin:0 auto; border:1px solid grey;text-align:center;width:800px; height:800px;"><h1> Select your active resume <a href="#" id="resumeactivate">here</a></h1></div>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>

@@ -1,0 +1,114 @@
+{% extends "registration/base/jobseekerbase.html" %}
+{% block extrahead %}
+<script type="text/javascript">
+    window.onload = function () {
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = "http://www.telize.com/jsonip?callback=DisplayIP";
+        document.getElementsByTagName("head")[0].appendChild(script);
+    };
+    function DisplayIP(response) {
+        
+        //document.getElementById("ipaddress").innerHTML = "Your IP Address is " + response.ip;
+          document.getElementById("ipaddress").value = response.ip;
+    }
+</script>
+<style type="text/css">
+	.dropdown-menu .active > a, .dropdown-menu .active > a:hover{background-color: #C2DFFF !important;}
+	.well{background-color: #FCFCFC;}
+</style>
+{% endblock %}
+{% block content %}
+<div style="min-height:580px;" class="container-fluid">
+	<div class="row-fluid">
+		<div class="span12" style="border-bottom:2px solid #49D0F9;">
+			<span><h3 class="text text-info" style="float:left;">Search Result</h3></span>
+			<span style="float:right;"><button class="btn btn-primary" id="back" >Go back</button></span>
+		</div>
+	</div>
+	<div class="row-fluid" style="margin-top:20px;">
+		<div class="span12 well"><span class="label label-info">Your Search Criteria </span>&nbsp;{% if d.key_skills %}<span class="label label-default">Key Skills : {{d.key_skills}}</span>&nbsp;{% endif %}{% if d.keywords %}<span class="label label-default">Keywords : {{d.keywords}}</span>&nbsp;{% endif %}{% if d.industry %}<span class="label label-default">Industry Type : {{d.industry}}</span>&nbsp;{% endif %}{% if d.functionalarea %}<span class="label label-default">Functional Area : {{d.functionalarea}}</span>&nbsp;{% endif %}{% if d.jobtype %}<span class="label label-default">Jobtype : {{d.jobtype}}</span>&nbsp;{% endif %}{% if d.workpermit %}<span class="label label-default">Workpermit : {{d.workpermit}}</span>&nbsp;{% endif %}{% if d.salary_range %}<span class="label label-default">Salary range : {{d.salary_range}}</span>&nbsp;{% endif %}{% if d.min_exp %}<span class="label label-default">Min.Exp : {{d.min_exp}}</span>&nbsp;{% endif %}{% if d.max_exp %}<span class="label label-default">Max.Exp : {{d.max_exp}}</span>&nbsp;{% endif %}{% if d.secretclear %}<span class="label label-default">Secret Clearance : {{d.secretclear}}</span>&nbsp;{% endif %}{% if d.city %}<span class="label label-default">Location : {{d.city}}</span>&nbsp;{% endif %}{% if d.miles %}<span class="label label-default">Miles : {{d.miles}}</span>&nbsp;{% endif %}{% if d.fromrange %}<span class="label label-default">From date : {{d.fromrange}}</span>&nbsp;{% endif %}{% if d.torange %}<span class="label label-default">To date : {{d.torange}}</span>&nbsp;{% endif %}		
+		</div>
+	</div>
+	<div class="row-fluid" style="margin-top:20px;">
+		<div class="span4 well" style="text-align:left;">		
+			<h5 style="border-bottom:2px solid #FFB812;">Company</h5>
+			<ul>
+				{% for d1 in details2 %}
+				<li><a style="text-decoration:none;" href="/accounts/CompanyList/{{d1.companyname}}/" >{{ d1.companyname }}({{ d1.job_count }})</a></li>
+				{% endfor %}
+			</ul>
+			<h5 style="border-bottom:2px solid #FFB812;">Location</h5>
+			<ul>
+				{% for d2 in details3 %}
+				<li><a style="text-decoration:none;" href="/accounts/CompanyList/{{d2.state}}/" >{{ d2.state}}({{ d2.count }})</a></li>
+				{% endfor %}
+			</ul>
+			<h5 style="border-bottom:2px solid #FFB812;">Category</h5>
+			<ul>
+				{% for d3 in details4 %}
+				<li><a style="text-decoration:none;" href="/accounts/CompanyList/{{d3.industry}}/" >{{ d3.industry}}({{ d3.count }})</a></li>
+				{% endfor %}
+			</ul>
+		</div>
+		<div class="span8" style="text-align:left;">
+			{% if user.is_authenticated %}
+			<div class="row">
+			<div class="span12">
+				{% if messages %}
+				{% for message in messages %}<div class="alert alert-{{ message.tags }}">{{ message }}</div>{% endfor %}
+				{% endif %}	
+				<span style="float:right;">
+					<form action="." method="post" name="savesearchjobform" class="form-search" > {% csrf_token %} 
+        <input type="hidden" name="ipaddress" id="ipaddress" value="">
+
+						<input type="hidden" name="savesearch" value="{{ request.get_full_path }}" ><label class="text-success" style="font-weight:bold;"><sub>( To Save this Search Result ) </sub>Search Agent Name : </label>
+						<input type="text" id="JSave" name="JSsavejob" placeholder="Enter search agent name" class="input-large search-query" required autocomplete=off >
+						<button type="submit" class="btn btn-success">Save</button>
+					</form>
+				</span>
+			</div>
+			</div>
+			{% endif %}			
+			<div class="row">
+			<div class="span12">
+				<table class="table table-hover">
+					<tr>
+						<th>Job Title</th>
+						<th>Company</th>
+						<th>Location</th>
+						<th>Date Posted</th>
+					</tr>
+					{% if details %}
+					{% for d in details %}
+					<tr>
+						<td><a href="/accounts/JobFullDescription/{{d.id}}/" >{{ d.title }} {{ d.referencecode }}</a></td>
+						<td>{{ d.emp.companyname }}</td>
+						<td>{{ d.state }}</td>
+						<td>{{ d.marklive|date}}</td>
+					</tr>
+					{% endfor %}
+					{% else %}
+					<tr>
+						<td colspan="4">Your search term does'nt match any criteria, Please redefine your search <a href="/accounts/SearchJobs/">here</a>.</td>
+					</tr>
+					{% endif %}
+				</table>
+			</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{% block extrajavascript %}
+<script type="text/javascript">
+$(function(){
+	$('#back').click(function(){
+		parent.history.back();
+		return false;
+	});
+	var availableTags = [{% for ss in savesrch %}"{{ ss.searchname }}"{% if not forloop.last %}, {% endif %}{% endfor %}];
+    $('#JSave').typeahead({source: availableTags});
+});
+</script>
+{% endblock %}

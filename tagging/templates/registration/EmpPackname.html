@@ -1,0 +1,67 @@
+{% extends "registration/base/jobseekerbase.html" %}
+{% block extrahead %}
+<link rel="stylesheet" href="{{ STATIC_URL }}css/pricingtable.css" />
+<style>
+h1 {color:#2c3e50;}
+h4 a {color:#ff9715; text-decoration:none;}
+h4 a:hover{color:#2c3e50;}
+</style>
+{% endblock %}
+{% block content %}
+<div class="container" style="min-height:495px;">
+  <div class="row">
+    <div class="span12">
+      {% if messages %}
+        {% for message in messages %}<div class="alert alert-{{message.tags}}">{{message}}</div>{% endfor %}
+      {% endif %}
+      <h3 class="text text-info">Available Packages <sub>(For Recruiter)</sub></h3>
+      {%for a in empavailpack%}
+      {%if a.id != 1%}
+      <div class="span4 {% cycle 'tiny' 'small' 'medium' %}" style="width: 365px;">
+                <div class="pricing-table-header-{% cycle 'tiny' 'small' 'medium' %}" >
+                    <h2>${{a.pack_cost}}/{{a.pack_duration}} Days</h2>
+                    <h3>{{a.pack_name}}</h3>
+                </div>
+                <div class="pricing-table-features" style="text-align:left;">
+                <table>
+                <tr><th>Description</th><td>{{a.pack_description}}</td></tr>
+                <tr><th>Job Posting</th><td>{% if a.no_jobpost %}{{a.no_jobpost}} Job Posting{% else %}Unlimited Job Posting{% endif %}</td></tr>
+                <tr><th>Resume Views</th><td>{% if a.no_resume %}View {{a.no_resume}} resumes{% else %}View Unlimited resumes{% endif %}</td></tr>                 
+                </table>    
+                </div>
+                <div class="pricing-table-signup-{% cycle 'tiny' 'small' 'medium' %}">
+                  <p><form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
+                <input id="id_business" name="business" value="suhailvs@capsone.com" type="hidden">
+                <input id="id_amount" name="amount" value="{{a.pack_cost}}" type="hidden">
+
+                <input id="id_item_number" name="item_number" value="{{ a.id }}" type="hidden">
+                <input id="id_custom" name="custom" value="{{ request.user.id }}" type="hidden">
+                
+                <input id="id_item_name" name="item_name" value="{{a.pack_name}}" type="hidden">
+                <input id="id_notify_url" name="notify_url" value="http://ec2-75-101-230-48.compute-1.amazonaws.com/paypal/notify/" type="hidden">
+                <input id="id_cancel_return" name="cancel_return" value="http://ec2-75-101-230-48.compute-1.amazonaws.com/" type="hidden">
+                <input id="id_return_url" name="return" value="http://ec2-75-101-230-48.compute-1.amazonaws.com/" type="hidden">
+                <input id="id_invoice" name="invoice" value="emppack665501{{a.id}}" type="hidden">
+                <input id="id_cmd" name="cmd" value="_xclick" type="hidden">
+                <input id="id_charset" name="charset" value="utf-8" type="hidden">
+                <input id="id_currency_code" name="currency_code" value="USD" type="hidden">
+                <input id="id_no_shipping" name="no_shipping" value="1" type="hidden">
+                <input class="btton" name="submit" alt="Buy it Now" type="submit" value="Buy Now">
+              </form></p>
+                </div>
+                <div>
+                <form action="/accounts/SelectPack/" method="post">{% csrf_token %}
+                <input type="hidden" class="span1" name="packid" value="{{a.id}}">
+                <input type="hidden" class="span1" name="employerid" value="{{user.id}}">
+                <input type="submit" value="buy">
+                    
+                </form>
+            </div>
+            </div>
+            {%endif%}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

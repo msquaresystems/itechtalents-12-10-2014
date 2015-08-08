@@ -1,0 +1,275 @@
+{% extends "registration/base/jobseekerbase.html" %}
+{% block extrahead %}
+<style>
+#example tr:hover {
+    cursor: pointer;
+}
+.btn{
+    padding: 4px 10px !important;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-wysihtml5.css"></link>
+{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="span6">
+    	<legend>Select from Saved Templates</legend>
+	    <table class="table table-hover table-bordered" id="example" style="table-layout: fixed;">
+	        <thead>       
+	        <tr><th>Letter Templates</th></tr>
+	        </thead>
+	        <tbody>	        	
+	        	{% for l in lettertemplates %}
+	        	<tr><td style="word-wrap:break-word;"><strong>Title:</strong><span style="word-wrap:break-word;" class="title">{{ l.title }}</span><br><strong>Subject:</strong><span style="word-wrap:break-word;" class="sub">{{ l.subject }}</span><div class="sbody" style="word-wrap:break-word;">{{ l.body|safe }}</div></td></tr><!--|truncatewords:50-->
+	        	{% endfor %}
+	        </tbody>
+	    </table>
+    </div>
+    <div class="span6" style="text-align:left;">
+    	<legend><strong>OR</strong> Compose a new Letter</legend>
+			{% load crispy_forms_tags %}
+			<div class="well">                
+				<form id="signup" method="post" action="/employer/sendletter/">{% csrf_token %}
+                    <strong>Mail To :</strong>
+                    <input type="text" name="emails" class="tomails" value="{% for mail in selmails %}{{ mail.email }},{% endfor %}">
+					{% crispy form %}
+					<button type="submit" id="sub" class="btn btn-success">Send</button>
+				</form>
+			</div>
+    </div>
+  </div><!--/row-->
+</div>
+{% endblock %} 
+{% block extrajavascript %}
+<script src="{{STATIC_URL}}static/js/jquery.dataTables.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="{{STATIC_URL}}js/jquery.validate.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function (){
+    $('#example tr').click(function() {
+        var body=$(this).closest('tr').find('.sbody').html();       
+        $("form#signup #id_title").val($(this).closest('tr').find('.title').text());
+        $("form#signup #id_subject").val($(this).closest('tr').find('.sub').text());
+        $("form#signup #id_body").val(body);        
+        $('.textarea').data("wysihtml5").editor.setValue(body);
+
+    });
+    });
+    $('#sub').click(function(){
+        alert("Am email is sent successfully");
+    });
+</script>
+<script>
+$.extend($.fn.dataTableExt.oStdClasses, {
+    "sSortAsc": "header headerSortDown",
+        "sSortDesc": "header headerSortUp",
+        "sSortable": "header"
+});
+
+/* API method to get paging information */
+$.fn.dataTableExt.oApi.fnPagingInfo = function (oSettings) {
+    return {
+        "iStart": oSettings._iDisplayStart,
+            "iEnd": oSettings.fnDisplayEnd(),
+            "iLength": oSettings._iDisplayLength,
+            "iTotal": oSettings.fnRecordsTotal(),
+            "iFilteredTotal": oSettings.fnRecordsDisplay(),
+            "iPage": Math.ceil(oSettings._iDisplayStart / oSettings._iDisplayLength),
+            "iTotalPages": Math.ceil(oSettings.fnRecordsDisplay() / oSettings._iDisplayLength)
+    };
+}
+
+/* Bootstrap style pagination control */
+$.extend($.fn.dataTableExt.oPagination, {
+    "bootstrap": {
+        "fnInit": function (oSettings, nPaging, fnDraw) {
+            var oLang = oSettings.oLanguage.oPaginate;
+            var fnClickHandler = function (e) {
+                e.preventDefault();
+                if (oSettings.oApi._fnPageChange(oSettings, e.data.action)) {
+                    fnDraw(oSettings);
+                }
+            };
+
+            $(nPaging).addClass('pagination').append(
+                '<ul>' +
+                '<li class="prev disabled"><a href="#">&larr; ' + oLang.sPrevious + '</a></li>' +
+                '<li class="next disabled"><a href="#">' + oLang.sNext + ' &rarr; </a></li>' +
+                '</ul>');
+            var els = $('a', nPaging);
+            $(els[0]).bind('click.DT', {
+                action: "previous"
+            }, fnClickHandler);
+            $(els[1]).bind('click.DT', {
+                action: "next"
+            }, fnClickHandler);
+        },
+
+            "fnUpdate": function (oSettings, fnDraw) {
+            var iListLength = 5;
+            var oPaging = oSettings.oInstance.fnPagingInfo();
+            var an = oSettings.aanFeatures.p;
+            var i, j, sClass, iStart, iEnd, iHalf = Math.floor(iListLength / 2);
+
+            if (oPaging.iTotalPages < iListLength) {
+                iStart = 1;
+                iEnd = oPaging.iTotalPages;
+            } else if (oPaging.iPage <= iHalf) {
+                iStart = 1;
+                iEnd = iListLength;
+            } else if (oPaging.iPage >= (oPaging.iTotalPages - iHalf)) {
+                iStart = oPaging.iTotalPages - iListLength + 1;
+                iEnd = oPaging.iTotalPages;
+            } else {
+                iStart = oPaging.iPage - iHalf + 1;
+                iEnd = iStart + iListLength - 1;
+            }
+
+            for (i = 0, iLen = an.length; i < iLen; i++) {
+                // Remove the middle elements
+                $('li:gt(0)', an[i]).filter(':not(:last)').remove();
+
+                // Add the new list items and their event handlers
+                for (j = iStart; j <= iEnd; j++) {
+                    sClass = (j == oPaging.iPage + 1) ? 'class="active"' : '';
+                    $('<li ' + sClass + '><a href="#">' + j + '</a></li>')
+                        .insertBefore($('li:last', an[i])[0])
+                        .bind('click', function (e) {
+                        e.preventDefault();
+                        oSettings._iDisplayStart = (parseInt($('a', this).text(), 10) - 1) * oPaging.iLength;
+                        fnDraw(oSettings);
+                    });
+                }
+
+                // Add / remove disabled classes from the static elements
+                if (oPaging.iPage === 0) {
+                    $('li:first', an[i]).addClass('disabled');
+                } else {
+                    $('li:first', an[i]).removeClass('disabled');
+                }
+
+                if (oPaging.iPage === oPaging.iTotalPages - 1 || oPaging.iTotalPages === 0) {
+                    $('li:last', an[i]).addClass('disabled');
+                } else {
+                    $('li:last', an[i]).removeClass('disabled');
+                }
+            }
+        }
+    }
+});
+
+// I am using jquery.validate to validate the fields such as
+// title,'subject',replayto but body required some 
+// extra validateino that is why i am using this
+function validateName(name){
+    var tname=$.trim(name);
+    if(tname.length<10){
+      return false;
+    }else{
+      return true;
+    }
+}
+
+function validateEmail(email) {    
+    var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+    if(!emailReg.test(email)){      
+      return false;
+    } else {      
+      return validateName(email);
+    }
+}
+
+function validateallEmails(emails){    
+    var mailarray= emails.split(',');
+    for (var i=0; i<mailarray.length; i++){
+        if (i==mailarray.length-1 && mailarray[i]=='')
+        {           
+            return true;
+        }
+
+        v=validateEmail(mailarray[i]);
+        if (v==false) return false;
+    }
+    return true;
+}
+
+/* Table initialisation */
+$(document).ready(function () {
+    $('.textarea').wysihtml5();
+    set_menu_activate('7'); 
+    $('#example').dataTable({
+        "sDom": "<'row'<'span8'l><'span8'f>r>t<'row'<'span8'i><'span8'p>>",
+            "sPaginationType": "bootstrap",
+            "oLanguage": {
+            "sLengthMenu": "_MENU_ records per page"
+        }
+    });
+    
+    
+    //on click fill the textboxes from this tr
+    /*$('#example tbody tr').click(function() {
+        alert('dfde');
+        var body=$(this).closest('tr').find('.sbody').html();       
+        $("form#signup #id_title").val($(this).closest('tr').find('.title').text());
+        $("form#signup #id_subject").val($(this).closest('tr').find('.sub').text());
+        $("form#signup #id_body").val(body);        
+        $('.textarea').data("wysihtml5").editor.setValue(body);
+
+    });*///end of example tr click
+
+
+
+    $("#signup").validate({
+         rules: {            
+
+            title: "required",
+            subject: {
+                required: true,
+                minlength: 2
+            },
+            replayto: {
+                required: true,
+                email: true
+            }
+        },
+        messages: {            
+            title: "Please specify your name",
+            subject: {
+                required: "Required subject",
+                minlength: "atleast 2chars required"
+            },            
+            replayto: {
+                required: "Required Replay Email",
+                email: "Your email address must be in the format of name@domain.com"
+            }
+        },
+        submitHandler: function (form) { // for validate the textarea.
+            /*var mailids=$('.tomails').val();
+            var Mailarray= mailids.split(',');
+            var valide=true;
+            for (var i=0; i<Mailarray.length; i++){
+                v=validateEmail(Mailarray[i]);
+                if !v{
+                    valide=false;
+                    break;
+                }
+            }*/
+            var mailids = $('.tomails').val();
+            //alert (mailids);
+            v=validateallEmails(mailids);
+            var tval=$('.textarea').val();
+            if (validateName(tval) && v){
+                form.submit();
+            }else{
+                alert('Message body requires atleast 10characters and Mailto must be a valid email.');
+                return false; 
+            }            
+        }
+    }); //sign up validate  
+});
+</script>
+<script src="{{ STATIC_URL }}js/wysihtml5-0.3.0.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-wysihtml5.js"></script>
+<!--<script type="text/javascript"></script>-->
+
+{% endblock %}

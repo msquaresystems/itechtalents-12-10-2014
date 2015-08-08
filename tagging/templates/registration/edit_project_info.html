@@ -1,0 +1,330 @@
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-wysihtml5-0.0.2.css"></link>
+<script src="{{ STATIC_URL }}js/wysihtml5-0.3.0_rc2.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-wysihtml5-0.0.2.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/datepicker/bootstrap-datepicker.js"></script>
+<link rel="stylesheet" href="{{ STATIC_URL }}js/datepicker/datepicker.css" />
+<script type="text/javascript">
+function isNumberKey(evt)
+    {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57))
+           return false;
+        return true;
+    }
+function formReset()
+	{
+		document.getElementById("frm1").reset();
+	}
+	$('body').on('focus',".from",function(){
+		$(this).datepicker( {
+			format: "mm-yyyy",
+			viewMode: "months",
+			minViewMode: "months"
+		});
+	});
+</script>
+{% load mytaghelper %}
+<div>
+	<div>
+		<form name="edit_personal_info_form" action="/accounts/Editprojectinfo/" method="post" enctype="multipart/form-data" id="frm1">{% csrf_token %}
+	
+		<span><input type="hidden" value="{{ user.id }}" name="user_id" ></span>
+		<p><h3>Projects Details</h3></p>
+
+		<div class="ProjGroup">
+		{% for a in details1 %}
+		<fieldset class="projdet">
+			<legend>Project Details {{forloop.counter}}</legend>
+		<table class="table table-borderless">
+			
+			<tr>
+				<td>Client</td>
+				<td>
+					<input type="text" name="client{{forloop.counter}}" value="{% if a.client %}{{a.client}}{%endif%}" class="input-xlarge">&emsp;Project Title&emsp;
+					<input type="text" name="project_title{{forloop.counter}}"  class="input-xlarge" value="{% if a.project_title %}{{a.project_title}}{%endif%}">
+				</td>
+			</tr>
+			<tr>
+				<td>Duration</td>
+				<td>
+					<input type="text" name="projstartdate{{forloop.counter}}" class="from input-xlarge" value="{% if a.projstartdate %}{{a.projstartdate}}{%endif%}" readonly>&emsp;to&emsp;
+					<input type="text" name="projtodate{{forloop.counter}}" class="from input-xlarge" value="{% if a.projtodate %}{{a.projtodate}}{%endif%}" readonly>
+				</td>
+			</tr>
+			<tr>
+				<td>Project Location</td>
+				<td>
+					<input type="text"  name="project_loc{{forloop.counter}}" value="{% if a.project_loc %}{{a.project_loc}}{% endif %}" class="input-xlarge" />&emsp;
+					<input type="radio"{% ifequal a.on_offsite "Onsite"%} checked {% endifequal %}name="on_offsite{{forloop.counter}}" value="Onsite">&nbsp;Onsite&emsp;
+					<input type="radio" {% ifequal a.on_offsite "Offsite"%}checked {% endifequal %}name="on_offsite{{forloop.counter}}" value="Offsite">&nbsp;Offsite
+				</td>
+			</tr>
+			<tr>
+				<td>Employment Type</td>
+				<td>				
+					<input type="radio" {% ifequal a.emp_type "Full Time" %}checked{% endifequal %} name="emp_type{{forloop.counter}}" value="Full Time" />&nbsp;Full Time&emsp;				
+					<input type="radio" {% ifequal a.emp_type "Part Time" %}checked{% endifequal %} name="emp_type{{forloop.counter}}" value="Part Time" />&nbsp;Part Time&emsp;
+					<input type="radio" {% ifequal a.emp_type "Contractual Project" %}checked{% endifequal %} name="emp_type{{forloop.counter}}" value="Contractual Project" />&nbsp;Contractual Project
+				</td>
+			</tr>
+			<tr>
+				<td>Project Details</td>
+				<td>
+					<textarea  name="project_details{{forloop.counter}}" id="projectdetails{{forloop.counter}}" style="width:600px;height:100px;" >{% if a.project_details %}{{a.project_details|safe}}{% endif %}</textarea>
+				</td>
+			</tr>
+			<tr>
+				<td>Role Description</td>
+				<td>
+					<textarea  name="role_desc{{forloop.counter}}" id="projectdesc{{forloop.counter}}" style="width:600px;height:100px;" >{% if a.role_desc %}{{a.role_desc|safe}}{% endif %}</textarea>
+									
+				</td>
+			</tr>
+			<tr>
+				<td>Skills Used</td>
+				<td>
+					<input type="text" name="skill_used{{forloop.counter}}" class="input-xxlarge" {% if a.skill_used %}value="{{a.skill_used}}"{% endif %} >
+										
+				</td>
+			</tr>
+			
+			<tr>
+				<td>Role</td>
+				<td>
+					{% if a.role %}
+					{% SelectRole a.role forloop.counter %}
+					{% else %}
+					<select name="role{{forloop.counter}}" class="input-xlarge">
+						<option value=""> Select </option>
+						<option value="Domain Expert">Domain Expert</option>
+						<option value="Sr.Project Leader">Sr.Project Leader</option>
+						<option value="Solution Architect">Solution Architect</option>
+						<option value="Quality Analyst">Quality Analyst</option>
+						<option value="Database Architect/DBA">Database Architect/DBA</option>
+						<option value="Network/System Administrator">Network/System Administrator</option>
+						<option value="Project Leader">Project Leader</option>
+						<option value="Module Leader">Module Leader</option>
+						<option value="Sr.Programmer">Sr.Programmer</option>
+						<option value="Programmer">Programmer</option>
+						<option value="Test Engineer">Test Engineer</option>
+						<option value="Other">Other</option>
+					</select>
+					{% endif %}
+				&emsp;Team Size&emsp;
+
+					{% if a.teamsize %}
+					{% SelectTeamSize a.teamsize forloop.counter  %}
+					{% else %}
+					<input type="number" name="teamsize{{forloop.counter}}" min="1" max="1000">
+					<!--
+					<select name="teamsize{{forloop.counter}}" class="input-xlarge">
+						<option value="">Select</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+						<option value="6">6</option>
+						<option value="7">7</option>
+						<option value="8">8</option>
+						<option value="9">9</option>
+						<option value="10">10</option>
+						<option value="11">11</option>
+						<option value="12">12</option>
+						<option value="13">13</option>
+						<option value="14">14</option>
+						<option value="15">15</option>
+						<option value="16">16</option>
+						<option value="17">17</option>
+						<option value="18">18</option>
+						<option value="19">19</option>
+						<option value="20">20</option>
+						<option value="21">21</option>
+						<option value="22">22</option>
+						<option value="23">23</option>
+						<option value="24">24</option>
+						<option value="25">25</option>
+						<option value="26">26</option>
+						<option value="27">27</option>
+						<option value="28">28</option>
+						<option value="29">29</option>
+						<option value="30">30</option>
+						
+					</select>
+				-->
+					{% endif %}
+					
+					
+				</td>
+			</tr>
+		</table>
+		</fieldset>
+		{% endfor %}
+		</div>
+		
+        <div>
+			<input type="hidden" name="projcounter" id="proj-counter" >
+			<i id="addProj" title="Add" class="icon-plus-sign icon-large icon-hover"></i>&emsp;
+			<i id="removeProj" title="Remove" class="icon-minus-sign icon-large icon-hover"></i>
+		</div>
+		<table>
+			<tr>
+				
+				<td colspan="2" style="text-align:center;">
+					<p>
+					<input type="submit" value="Update" class="btn btn-success">&emsp;<input type="button" class="btn btn-info" value="Reset" onclick="formReset()">
+					</p>
+				</td>
+
+			</tr>
+		</table>
+	</form>
+</div>
+</div>
+
+
+<script type="text/javascript">
+$(document).ready(function()
+{
+var proi = $('.projdet').size();
+$("#proj-counter").val(proi);
+$("#addProj").click(function ()
+{
+var proj = $('.projdet').size()+1;
+$("#proj-counter").val(proj);
+$('<fieldset class="projdet">'+
+'<legend>Project Details '+ proj + '</legend>'+
+'<table class="table table-borderless">'+
+'<tr>'+
+'<td>Client</td>'+
+'<td><input type="text" class="input-xlarge" name="client'+ proj + '" >'+
+'&emsp;Project Title&emsp;'+
+'<input type="text" class="input-xlarge" name="project_title'+ proj + '"></td>'+
+'</tr>'+
+'<tr>'+
+'<td>Duration</td>'+
+'<td>'+
+'<input type="text" name="projstartdate'+ proj + '" class="from input-xlarge" readonly>'+
+'&emsp;to&emsp;'+
+'<input type="text" name="projtodate'+ proj + '"  class="from input-xlarge" readonly>'+
+'</td>'+
+'</tr>'+
+'<tr>'+
+'<td>Project Location</td>'+
+'<td>'+
+'<input type="text" class="input-xlarge" name="project_loc'+ proj + '" >&emsp;'+
+'<input type="radio" name="on_offsite'+ proj + '" value="Onsite">&nbsp;Onsite&emsp;'+
+'<input type="radio" name="on_offsite'+ proj + '" value="Offsite">&nbsp;Offsite'+
+'</td>'+
+'</tr>'+
+'<tr>'+
+'<td>Employment Type</td>'+
+'<td>'+
+'<input type="radio"  name="emp_type'+ proj + '" value="Full Time" />&nbsp;Full Time&emsp;'+
+'<input type="radio"  name="emp_type'+ proj + '" value="Part Time" />&nbsp;Part Time&emsp;'+
+'<input type="radio"  name="emp_type'+ proj + '" value="Contractual Project" />&nbsp;Contractual Project'+
+'</tr>'+
+'<tr>'+
+'<td>Project Details</td>'+
+'<td>'+
+'<textarea name="project_details'+ proj + '" id="projectdetails'+ proj + '" style="width:600px;;height:100px;"></textarea>'+
+'</td>'+
+'</tr>'+
+'<tr>'+
+'<td>Role Description</td>'+
+'<td>'+
+'<textarea name="role_desc'+ proj + '" id="projectdesc'+ proj + '" style="width:600px;height:100px;"></textarea>'+
+'</td>'+
+'</tr>'+
+'<tr>'+
+'<td>Skills Used</td>'+
+'<td>'+
+'<input type="text"  name="skill_used'+ proj + '" class="input-xxlarge">'+
+'</td>'+
+'</tr>'+
+'<tr>'+
+'<td>Role</td>'+
+'<td>'+
+'<select class="input-xlarge" name="role'+ proj + '">'+
+'<option value="">Select Role</option>'+
+'<option value="">Select</option>'+
+'<option value="Domain Expert">Domain Expert</option>'+
+'<option value="Sr.Project Leader">Sr.Project Leader</option>'+
+'<option value="Solution Architect">Solution Architect</option>'+
+'<option value="Quality Analyst">Quality Analyst</option>'+
+'<option value="Database Architect/DBA">Database Architect/DBA</option>'+
+'<option value="Network/System Administrator">Network/System Administrator</option>'+
+'<option value="Project Leader">Project Leader</option>'+
+'<option value="Module Leader">Module Leader</option>'+
+'<option value="Sr.Programmer">Sr.Programmer</option>'+
+'<option value="Programmer">Programmer</option>'+
+'<option value="Test Engineer">Test Engineer</option>'+
+'<option value="Other">Other</option>'+
+'</select>'+
+'&emsp;Team Size&emsp;'+
+'<select class="input-xlarge" name="teamsize'+ proj + '">'+
+'<option value="">Select</option>'+
+'<option value="1">1</option>'+
+'<option value="2">2</option>'+
+'<option value="3">3</option>'+
+'<option value="4">4</option>'+
+'<option value="5">5</option>'+
+'<option value="6">6</option>'+
+'<option value="7">7</option>'+
+'<option value="8">8</option>'+
+'<option value="9">9</option>'+
+'<option value="10">10</option>'+
+'<option value="11">11</option>'+
+'<option value="12">12</option>'+
+'<option value="13">13</option>'+
+'<option value="14">14</option>'+
+'<option value="15">15</option>'+
+'<option value="16">16</option>'+
+'<option value="17">17</option>'+
+'<option value="18">18</option>'+
+'<option value="19">19</option>'+
+'<option value="19">19</option>'+
+'<option value="17">17</option>'+
+'<option value="18">18</option>'+
+'<option value="19">19</option>'+
+'<option value="20">20</option>'+
+'<option value="21">21</option>'+
+'<option value="22">22</option>'+
+'<option value="23">23</option>'+
+'<option value="24">24</option>'+
+'<option value="25">25</option>'+
+'<option value="26">26</option>'+
+'<option value="27">27</option>'+
+'<option value="28">28</option>'+
+'<option value="29">29</option>'+
+'<option value="30">30</option>'+
+'</select>'+
+'</td>'+
+'</tr>'+
+'</table>'+
+'</fieldset>').fadeIn('fast').appendTo('.ProjGroup');
+$('#projectdetails'+proj).wysihtml5();
+$('#projectdesc'+proj).wysihtml5();
+            proj++;
+            proi++;
+            $('#projectdetails'+i).wysihtml5();
+    });
+
+$('#removeProj').click(function () {
+        if (proi > 1) {
+            $('.projdet:last').remove();
+            proi--;
+            var proj = $('.projdet').size();
+            $("#proj-counter").val(proj);
+        }
+    });
+
+for (var i = 1; i <= proi; i++)
+	{
+		$('#projectdetails'+i).wysihtml5();
+		$('#projectdesc'+i).wysihtml5();
+	}
+
+
+});
+</script>

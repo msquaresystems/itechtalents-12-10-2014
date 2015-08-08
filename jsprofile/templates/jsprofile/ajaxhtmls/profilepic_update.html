@@ -1,0 +1,143 @@
+{% extends "jsprofile/base.html" %}
+{% block extrahead %} 
+<style>
+.item_tittle h1 span{
+    background: none repeat scroll 0 0 #74767A;
+    border-radius: 3px 3px 3px 3px;
+    color: #ffffff;
+    float: right;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 7px 0 0;
+    padding: 0 5px;
+    margin-right: 0;
+}
+.item_tittle h2 {
+    font-size: 18px;
+    font-weight:normal;
+    text-align: left;
+    color:#000;
+}
+.item_tittle h3{
+    font-size: 14px;
+    font-weight:normal;
+    text-align: right;
+    color:#000;
+}
+.bs-sidebar.affix {
+    position: static;
+}
+.sideheading{
+    background-color: #e0e0e0;
+    background-image: -moz-linear-gradient(#fafafa, #e0e0e0);
+    background-image: -webkit-linear-gradient(#fafafa, #e0e0e0);
+    background-image: linear-gradient(#fafafa, #e0e0e0);
+    background-repeat: repeat-x;
+    display: block;
+    padding: 10px 10px;
+    border-bottom: 1px solid #ccc;
+    color: #222;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 20px;
+    border-left: 0 none;
+}
+.bs-sidenav {
+    padding-top:    10px;
+    padding-bottom: 10px;
+    background-color: #fafafa;
+    border-radius: 5px;
+    border:1px solid #CCC;
+}
+.bs-sidebar .nav > li > a {
+    font-size: 1.2em;
+    display: block;
+    color: #716b7a;
+    padding: 10px 20px;
+    border-right: 4px solid transparent;
+}
+.bs-sidebar .nav > li > a:hover,.bs-sidebar .nav > li > a:focus{
+    text-decoration: none;
+    background-color: #fff;
+    border-right: 4px solid #dbd8e0;
+}
+.bs-sidebar .nav > .active > a,.bs-sidebar .nav > .active:hover > a,.bs-sidebar .nav > .active:focus > a {
+    font-weight: bold;
+    color: #418cd1;
+    background-color: #fff;
+    border-right: 4px solid #418cd1;
+}
+</style>
+{% endblock %}
+{% block content %}
+{% load mytaghelper %}
+{% load jsprofile_extras %}
+<div class="container-fluid" style="min-height:580px;">
+    <div class="row-fluid">
+        <div class="span3">
+            <div class="bs-sidebar">
+                <ul class="nav bs-sidenav">
+                    <li class='sideheading'>{{ request.user.username }}</li>
+                    <li class="active"><a href="/js/Dashboard/">Dashboard</a></li>{% for nav in navs %}<li{% ifequal next forloop.counter %} class="active"{% endifequal %}><a class="ajaxLoad" href="/js/{% sidebar nav %}/" data-ajxurl="{{ forloop.counter }}">{{nav}}</a></li>{% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="span9">
+        <div class="row-fluid">
+            <div class="span6">
+                <form name="edit_personal_info_form" action="/Edit_Profilepic/" method="post" enctype="multipart/form-data">{% csrf_token %}
+                    <input type="hidden" value="{{ user.id }}" name="user_id" >
+                    <h4 style="border-bottom:2px solid #FFB812;">Change New Profile Picture</h4>
+                    <div style="margin:50px 0px 0px 50px;">
+                        <p class="text-warning"><strong>Current profile picture</strong></p><br>
+                        <div><img  class="img-polaroid" style="width:200px;height:200px;" src="{{ STATIC_URL }}{{ details1.0.profile_pic }}" /></div><br/>
+                        <p class="text-warning"><strong>Change new profile picture</strong></p><br>
+                        <p id="errmsg" class="text-error"></p>
+                        <input type="file" accept="image/*" name="profile_pic" value="{% for a in details1 %}{{a.profile_pic}}{% endfor %}" class="input-xlarge upfile" id="Gfile_1" required ><br><small>(max.size 200KB, .jpeg, .jpg, .png, .gif, .bmp)</small><br><br>
+                        <input type="submit" class="btn btn-success" value="Update">&emsp;<input type="reset" class="btn btn-danger" value="Reset">
+                    </div>
+                </form>
+            </div>
+            <div class="span6">
+                <h4 style="border-bottom:2px solid #FFB812;">Instructions To Change New Profile Picture</h4>
+                <div style="margin:30px 0px 0px 50px;" class="text-warning">
+                    <p><strong>If you want to change your profile picture. You can follow some instructions</strong></p>
+                    <ul>
+                        <li>Your new profile image should be in any of the following format
+                            <ul>
+                                <li>.jpeg</li>
+                                <li>.jpg</li>
+                                <li>.png</li>
+                                <li>.gif</li>
+                                <li>.bmp</li>
+                            </ul>
+                        </li>
+                        <li>The memory size of your new profile image should not be more than 200KB</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %} 
+{% block javascript %}
+<script type="text/javascript">
+$(document).ready(function(){
+    $('.upfile').bind('change', function(){
+        var a=(this.files[0].size);
+        var aa=document.getElementById('Gfile_1').files[0].type  //mime type
+        if((aa=='image/jpeg') || (aa=='image/gif') || (aa=='image/jpg') || (aa=='image/png') || (aa=='image/bmp') || (aa=='image/JPEG') || (aa=='image/GIF') || (aa=='image/JPG') || (aa=='image/PNG') || (aa=='image/BMP')){
+            if(a > 204800){
+                $('#errmsg').html('Not a valid image size. For more information see the instructions');
+                $('.upfile').val('');
+            }
+        }
+        else{
+            $('#errmsg').html('Not a valid image format. For more information see the instructions');
+            $('.upfile').val('');
+        }
+    });
+});
+</script>
+{% endblock %}

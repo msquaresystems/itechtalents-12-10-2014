@@ -1,0 +1,161 @@
+{% extends "registration/base/jobseekerbase.html" %}
+{% block extrahead %}
+<style type="text/css">
+.modal-static { 
+    position: fixed;
+    top: 50% !important; 
+    left: 50% !important; 
+    margin-top: -100px;  
+    margin-left: -100px; 
+    overflow: visible !important;
+}
+.modal-static,
+.modal-static .modal-dialog,
+.modal-static .modal-content {
+    width: 200px; 
+    height: 200px; 
+}
+.modal-static .modal-dialog,
+.modal-static .modal-content {
+    padding: 0 !important; 
+    margin: 0 !important;
+}
+.modal-static .modal-content .icon {
+}
+.share-button { margin: auto; position: absolute; top: 0; left: 0; bottom: 0; right: 0; }
+dt{color: #39B3D7;}
+dd{text-align: justify;}
+</style>
+{% endblock %}
+{% block content %}
+<div style="min-height:495px;" class="container">
+	<div class="row">
+		<div class='span10 offset1'>
+			<div class="row-fluid" style="border-bottom:2px solid #FFB812">
+				<div class="span5">
+					<h3 class="pull-left"><img style="width:30px;height:30px;" src="{{ STATIC_URL }}{% for a in description %}{{a.emp.employerreg_form.companylogo}}{% endfor %}"/>
+					{{description.0.emp.companyname|title}}</h3>
+				</div>
+				<div class="span4"><ul class="pull-right" style="list-style:none;margin-top:20px;">
+					{% if user.is_authenticated %}
+					<li>Share this job : 
+					<a href="http://twitter.com/share?url={{ request.build_absolute_uri }}" target="_blank"><img src="{{STATIC_URL}}img/twitter.png" alt='Twitter' /></a>
+					<a href="#" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),'facebook-share-dialog','width=626,height=436');return false;"><img src="{{STATIC_URL}}img/facebook.png" alt="Share on Facebook" /></a>
+					<a href="https://plus.google.com/share?url={sdfsd fsdfsd f}" onclick="javascript:window.open(this.href,'', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><img src="{{STATIC_URL}}img/gplus.png" alt="Share on Google+"/></a></li>
+					{% else %}
+					<li><a href='/accounts/login/'>Login</a> to share this job</li>
+					{% endif %}
+					</ul>
+				</div>
+				<div class="span2">
+					<ul class="pull-right" style="list-style:none;margin-top:20px;">
+					{% if user.is_authenticated %}
+					{% if applied %}<li class="text-info">Applied Already</li>{% else %}
+					{% if user.jsdetails %}<li class="process"><a id="process" href="/accounts/ApplyJob/{% for d in description %}{{d.id}}{% endfor %}/">Apply Online</a></li>{% else %}
+					<li><a href="/ajax/profile/">Add Details And Apply Online</a></li>
+					{% endif %}
+					{% endif %}
+					{% else %}<li><a href="/accounts/login/">Login to Apply</a></li>{% endif %}
+					</ul>
+				</div>
+				<div class="span1"><p style="margin-top:20px;cursor:pointer;color:#0088CC;" class="back">Go Back</p></div>
+			</div>
+			<div class="row-fluid">
+				<div class="span12" style="text-align:left;">
+					{% for d in description %}
+					<dl>
+						<dt>Company Profile</dt>
+						<dd>{% for a in description %}{{a.emp.employerreg_form.companyprofile|safe}}{% endfor %}</dd>
+						{% if soc_networks %}
+						<br>
+						<dd><strong>You can view the profile using : </strong>{% for a in soc_networks %}{% if a.facebook %}<a target="_blank" href="https://www.facebook.com/{{a.facebook}}">Facebook</a>,&emsp;{% endif %}{% if a.twitter %}<a target="_blank" href="https://www.twitter.com/{{a.twitter}}">Twitter</a>,&emsp;{% endif %}{% if a.linkedin %} <a target="_blank" href="https://www.linkedin.com/{{a.linkedin}}">Linkedin</a>{% endif %}{% endfor %}</dd>
+						{% endif %}
+					</dl>
+					<dl>
+						<dt>Job Description</dt>
+						<dd>{{ d.title }}</dd>
+						<dd>{{ d.jobdetails|safe }}</dd>
+						<dt>Responsibilities </dt>
+						<dd>{{ d.jobsummary|safe }}</dd>
+						<dt>Industry Type</dt>
+						<dd>{{ d.industry }}</dd>
+						<dt>Functional Area</dt>
+						<dd>{{ d.functionalarea }}</dd>
+						<dt>Key Skills</dt>
+						<dd>{% for skill in d.employerkeyskills_set.all %}{{skill.keyskills}}{% if not forloop.last %},&nbsp;{% endif %}{% endfor %}</dd>
+						<dt>Salary Range</dt>
+						<dd>{{ d.salary_range }}</dd>
+					</dl>
+					<dl>
+						<dt>Experience</dt>
+						<dd>Required {{ d.min_exp }} to {{d.max_exp}} year(s) of Experience</dd>
+						<dt>Education</dt>
+						<dd>Qualified with {{ d.qualification }}</dd>
+						<dt>Clearance</dt>
+						<dd>{{ d.empsecretclear }}</dd>
+						<dt>Travel Required</dt>
+						<dd>{{ d.emptravel }}</dd>
+						<dt>Telecommute</dt>
+						<dd>{% if d.emptele %}Yes{% else %}No{% endif %}</dd>
+						<dt>Work Permit for U.S.A</dt>
+						<dd>{{ d.workpermit }}</dd>
+					</dl>
+					{% if user.is_authenticated %}
+					<dl>
+						<dt>Contact Details</dt>
+					</dl>
+					<table class="table table-borderless">
+						<tr>
+							<td>Tax Terms</td><td> : {{ d.jobtype }}</td>
+						</tr>
+						<tr>
+							<td>Location</td><td> :	{% if d.address1 %}{{d.address1}},{% endif %}{% if d.address2 %}{{d.address2}},{% endif %}{% if d.address3 %}{{d.address3}},{% endif %}{% if d.state %}{{d.state}},{% endif %}{% if d.country %}{{d.country}},{% endif %}{% if d.zipcode %}{{d.zipcode}}{% endif %}</td>
+						</tr>
+						<tr>
+							<td>Contact Name</td><td> :{% if d.handno %}{{ d.handno }},{% endif %} {{ d.workno }}</td>
+						</tr>
+						<tr>
+							<td>Fax</td><td> : {{ d.fax }}</td>
+						</tr>
+						<tr>
+							<td>Email</td><td> : {{ d.email }}</td>
+						</tr>
+						<tr>
+							<td>Company URL</td><td> : {{ d.emp.employerreg_form.companyurl }}</td>
+						</tr>
+						<tr>
+							<td>Contact Person</td><td> : {{ d.ownername }}</td>
+						</tr>
+						<tr>
+							<td>Posted Date</td><td> : {{ d.marklive }}</td>
+						</tr>
+						<tr>
+							<td>Last date to apply</td><td> : {{ d.todate }}</td>
+						</tr>
+					</table>
+					{% endif %}
+					{% endfor %}
+					<div style="margin-bottom:100px;"><p style="margin-top:20px;cursor:pointer;color:#0088CC;" class="back pull-right">Go Back</p></div>					
+				</div>				
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{% block extrajavascript %}
+<!-- <script src='{{STATIC_URL}}News/share.js'></script> -->
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('.back').click(function(){
+        parent.history.back();
+        return false;
+    });
+    $('#process').click(function(){
+    	$('.process').html('<label class="text-info">Applying ...</label>');
+    });
+    
+});
+  </script>
+{% endblock %}
+
+

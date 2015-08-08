@@ -1,0 +1,74 @@
+{% extends "registration/base/jobseekerbase.html" %}
+{% block extrahead %}
+<link rel="stylesheet" href="{{ STATIC_URL }}css/blog.css"/>
+<style type="text/css">
+.accordion-inner
+{
+	list-style-type: none;
+}.imgWrap{
+float: left;
+margin: 10px;
+}
+.imgWrap img{
+  width: 280px;
+}
+.descriptionWrap p {text-indent:50px;}
+</style>
+{% endblock %}
+{% block content %}
+<div style="min-height:580px;" class="container">
+	<div class="row-fluid" style="border-bottom:2px solid #FFB812;">
+		<div class="span9"><h4>{{article.0.btitle}}</h4><label><i class="icon-user"></i>&nbsp;{{article.0.user.username}}&emsp;<i class="icon-calendar"></i>&nbsp;{{article.0.bposted}}&emsp;<a href="/accounts/Blog/{{article.0.btopic.id}}/"><i class="icon-tags"></i>&nbsp;{{article.0.btopic}}</a></label></div>
+		<div class="span3" style="margin-top:20px;"><a href="/accounts/BlogTopics/">Topics</a>&emsp;|&emsp;<a href="/accounts/Blog/{{article.0.btopic.id}}/">View other articles</a></div>
+	</div><br>
+	<div class="row-fluid">
+		<div class="span12">
+			{% for article in article %}
+			<div class="imgWrap">
+				<img style="width:350px;height:250px;" class="img-polaroid" src="{{STATIC_URL}}{% if article.bimage %}{{article.bimage}}{% else %}images/noimage.jpg{% endif %}">
+			</div>
+			<br>
+			<div class="descriptionWrap">
+				<p style="text-align:justify;">{{article.bcontent|safe}}</p>
+			</div>
+			{% endfor %}
+		</div>
+	</div><hr>
+	<div class="row-fluid">
+		<div class="span12">
+			<h5 class="text-warning">Comments</h5>
+			{% if messages %}{% for message in messages %}<div class="alert alert-{{message.tags}}">{{ message|safe }}</div>{% endfor %}{% endif %}
+			{% if com %}
+			{% for com in com %}
+			<span style="font-weight:bold;">{{com.user.username}}</span>
+			<p style="word-wrap:break-word;">{{com.comments|safe}}</p>
+			{% endfor %}
+			{% else %}
+			<p class="text-warning">Be a first to post your comment...</p>
+			{% endif %}
+			<br>
+			<h5 class="text-warning">Post your Comments</h5>
+			<form action="." method="post" name="BlogCommentForm" onsubmit="return BlogCommentFormvalidation()">{% csrf_token %}
+				<input type="hidden" name="articleid" value="{% for article in article %}{{article.id}}{% endfor %}">
+				<input type="hidden" name="userid" value="{{request.user.id}}">
+				<textarea style="width:600px;" name="comment" required ></textarea>
+				<input type="submit" class="btn btn-warning" value="Post" >&emsp;<label id="error" style="color:red;"></label>
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{% block extrajavascript %}
+<script type="text/javascript">
+function BlogCommentFormvalidation(){
+	var uid=document.forms["BlogCommentForm"]["userid"].value;
+	if(uid=="" || uid==null || uid=='None' || uid=='none'){
+		document.getElementById('error').innerHTML="Please login and post your comments"
+		return false;
+	}	
+	else{
+		return true;
+	}
+}
+</script>
+{% endblock %}

@@ -1,0 +1,28 @@
+<div>
+  <h4 style="border-bottom:2px solid #FFB812;">Dropped Interviews</h4>
+  <table class="table table-striped">
+    <tr>
+      <th>Candidate Name</th>
+      
+      <th>Position</th>
+
+      <th>Date of Interview</th>
+    </tr>
+    {%if fail%}
+    {% for interview in fail %}
+    <tr>
+         
+      <td><a href="/accounts/RoundsJS/{{ interview.id}}/">{{ interview.emp.companyname}}</a></td>
+
+      <td>{{ interview.Job.title }}</td>
+
+      <td>{{ interview.reschedule.empschedule_date1 }}</td>
+    </tr>
+    {% endfor %}
+    {%else%}
+    <tr>
+      <td colspan="3" style="text-align:center;">There is no interview dropped for you</td>
+    </tr>
+    {%endif%}
+  </table>
+</div>

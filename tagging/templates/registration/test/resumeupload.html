@@ -1,0 +1,44 @@
+
+{% block candidateitemcontent %}
+	<div>
+		<p><h3>Resume Upload</h3></p>
+	<div>
+		<table border="0" width="100%">
+			<tr>
+				<td width="20%">Activated Resume Title</td>
+				<td >{% for a in resume %}{{a.resumeTitle}}{% endfor %}</td>
+			</tr>
+			<tr>
+				<td>Activated Resume</td>
+				<td>{% for a in resume %}{{a.resumeFile}}{% endfor %}</td>
+			</tr>
+			<tr>
+				<td>Resume Uploaded Date</td>
+				<td>{% for a in resume %}{{a.resumeDate}}{% endfor %}</td>
+			</tr>
+		</table>
+		<br />
+		<p>
+			{% if videoresume %}
+				<b>Preview Your Video Resume</b> uploaded on {% for v in videoresume %}{{ v.resumeDate }}{% endfor %}<br><br>
+				&emsp;&emsp;&emsp;
+				
+				<video width="320" height="240" controls >								
+					<source src={{ STATIC_URL }}{% for a in videoresume %}{{ a.videoresume }}{% endfor %} type="video/mp4"/>
+					Your browser does not support the video tag.
+				</video>
+				<br>
+				<br>
+				<a class="btn btn-danger">Remove Current Video</a>
+				<a href="/accounts/recordvideo/" class="btn btn-primary">Remove and Record a new Video</a>
+				<br><br>
+			{% else %}
+				<h2>no video resumes found</h2>
+				<br>			
+				<a href="/accounts/recordvideo/" class="btn btn-primary">Record a new Video</a>
+				<br><br>
+			{% endif %}
+			
+		</div>
+	</div>
+{% endblock %}

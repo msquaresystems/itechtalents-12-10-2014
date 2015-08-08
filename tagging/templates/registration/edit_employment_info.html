@@ -1,0 +1,134 @@
+<script type="text/javascript" src="{{ STATIC_URL }}js/datepicker/bootstrap-datepicker.js"></script>
+<link rel="stylesheet" href="{{ STATIC_URL }}js/datepicker/datepicker.css" />
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-wysihtml5-0.0.2.css"></link>
+<script src="{{ STATIC_URL }}js/wysihtml5-0.3.0_rc2.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-wysihtml5-0.0.2.js"></script>
+<script type="text/javascript">
+	$('body').on('focus',".from",function(){
+		$(this).datepicker( {
+			format: "mm-yyyy",
+			viewMode: "months",
+			minViewMode: "months"
+		});
+	});
+
+
+</script>
+<div>
+<div>       
+<form name="edit_personal_info_form" action="/accounts/Editemploymentinfo/" method="post" enctype="multipart/form-data">{% csrf_token %}
+	<span><input type="hidden" value="{{ user.id }}" name="user_id" ></span>
+		
+		<div class="EmpGroup">
+		{% for a in details1 %}
+		<script type="text/javascript">
+			$('#jobprofileedit{{forloop.counter}}').wysihtml5();
+		</script>
+		<fieldset class="empdtls">
+            <legend>Employment Details {{forloop.counter}}</legend>
+		<table class="table table-borderless" >
+			<tr>
+				<td>Employer Name</td>
+				<td>
+					<input type="text" name="employer_name{{forloop.counter}}" value="{% if a.employer_name %}{{a.employer_name}}{% endif %}" class="input-xlarge" />&emsp;
+					<input type="radio" {% ifequal a.empstatus "Current Employer" %}checked="checked"{% endifequal %} name="empstatus{{forloop.counter}}" value="Current Employer">&nbsp;Current Employer&emsp;
+					<input type="radio" {% ifequal a.empstatus "Previous Employer" %}checked{%endifequal%} name="empstatus{{forloop.counter}}" value="Previous Employer">&nbsp;Previous Employer&emsp;
+					<input type="radio" {% ifequal a.empstatus "Other Employer"%}checked{% endifequal %} name="empstatus{{forloop.counter}}" value="Other Employer">&nbsp;Other Employer
+				</td>
+			</tr>
+			<tr>
+				<td>Duration</td>
+				<td><input type="text" name="empstartdate{{forloop.counter}}" class="from input-xlarge" value="{% if a.empstartdate %}{{a.empstartdate}}{%endif%}" readonly>&emsp;to&emsp;<input type="text" name="emptodate{{forloop.counter}}" class="from input-xlarge" value="{% if a.emptodate %}{{a.emptodate}}{%endif%}" readonly></td>
+			</tr>
+			<tr>
+				<td>Designation</td>
+				<td ><input type="text" name="designation{{forloop.counter}}" class="input-xxlarge" value="{% if a.designation %}{{a.designation}}{%endif%}" ></td>
+			</tr>
+
+			<tr>
+				<td>Job Profile</td>
+				<td><textarea style="width:600px;height:100px;" name="jobprofile{{forloop.counter}}" id="jobprofileedit{{forloop.counter}}" class="editor" >{% if a.jobprofile %}{{a.jobprofile|safe}}{% endif %}</textarea></td>
+			</tr>
+		</table>
+		{% endfor %}
+		</div>
+		<div>
+			<input type="hidden" name="empcounter" id="emp-counter" >
+			<i id="addEmp" title="Add" class="icon-plus-sign icon-large"></i>&emsp;
+			<i id="removeEmp" title="Remove" class="icon-minus-sign icon-large"></i>
+		</div>
+		<table>
+			<tr>
+				<td style="text-align:center;" colspan="2">
+					<p>
+					<input type="submit" value="Update" class="btn btn-success">&emsp;
+					<input type="reset" value="Reset" class="btn btn-info">
+					</p>
+				</td>
+			</tr>
+		</table>
+	
+	</form>
+</div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function()
+{
+var empi = $('.empdtls').size();
+$("#emp-counter").val(empi);
+$("#addEmp").click(function ()
+{
+
+var empj = $('.empdtls').size()+1;
+$("#emp-counter").val(empj);
+$('<fieldset class="empdtls">'+
+    '<legend>Employment Details ' + empj +'</legend>'+
+    '<table class="table table-borderless">'+
+    '<tr>'+
+    '<td>Employer Name</td>'+
+    '<td>'+
+    '<input type="text" class="input-xlarge" name="employer_name' + empj +'" >&emsp;'+
+    '<input type="radio"  name="empstatus' + empj +'" value="Current Employer">&nbsp;Current Employer&emsp;'+
+    '<input type="radio"  name="empstatus' + empj +'" value="Previous Employer">&nbsp;Previous Employer&emsp;'+
+    '<input type="radio"  name="empstatus' + empj +'" value="Other Employer">&nbsp;Other Employer&emsp;'+
+    '</td>'+
+    '</tr>'+
+    '<tr>'+
+    '<td>Duration</td>'+
+    '<td>'+
+    '<input type="text" name="empstartdate' + empj +'" class="from input-xlarge" value="" readonly>'+
+    '&emsp;to&emsp;'+
+    '<input type="text" name="emptodate' + empj +'" class="from input-xlarge" value="" readonly>'+
+    '</td>'+
+    '</tr>'+
+    '<tr>'+
+    '<td>Designation</td>'+
+    '<td ><input type="text" name="designation' + empj +'" class="input-xxlarge" ></td>'+
+    '</tr>'+
+    '<tr>'+
+    '<td>Job Profile</td>'+
+    '<td >'+
+    '<textarea name="jobprofile' + empj +'" style="width:600px;height:100px;" id="jobprofileedit' + empj +'" class="editor" ></textarea>'+
+    '</td>'+
+    '</tr>'+
+    '</table>'+
+    '</fieldset>').fadeIn('fast').appendTo('.EmpGroup');
+	$('#jobprofileedit'+empj).wysihtml5();
+			
+            empj++;
+            empi++;
+    });
+
+$('#removeEmp').click(function () {
+        if (empi > 1) {
+            $('.empdtls:last').remove();
+            empi--;
+            var empj = $('.empdtls').size();
+            $("#emp-counter").val(empj);
+        }
+    });
+});
+
+</script>
+

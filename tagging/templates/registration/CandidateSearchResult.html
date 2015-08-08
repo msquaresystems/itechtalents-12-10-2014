@@ -1,0 +1,251 @@
+{% extends "registration/base/jobseekerbase.html" %}
+{% block extrahead %} 
+<link rel="stylesheet" href="{{ STATIC_URL }}js/datepicker/datepicker.css" /> 
+<style type="text/css">
+.scheduleInterview
+{
+	border-radius: 0;
+	line-height: 18px;
+	padding: 0;
+	font-family: "Lucida Grande", Verdana, sans-serif;
+}
+.scheduleInterview h3
+{
+	margin: 0;
+	padding: 10px;
+	color: #fff;
+	font-size: 14px;
+	background: -moz-linear-gradient(top, #2e5764, #1e3d47);
+	background: -webkit-gradient(linear,left bottom,left top,color-stop(0, #1e3d47),color-stop(1, #2e5764));
+}
+.scheduleInterview p
+{
+	padding: 10px 15px;
+	border-bottom: 1px solid #ddd;
+	margin: 0;font-size: 14px;
+	background: -webkit-gradient(linear,left bottom,left top,color-stop(0, #eee),color-stop(1, #fff));
+	overflow: hidden;
+}
+.scheduleInterview p:last-child
+{
+	border: none;
+}
+.scheduleInterview p label
+{
+	float: left;
+	font-weight: bold;
+	color: #333;
+	width: 110px;
+	line-height: 22px;
+}
+.scheduleInterview p input[type="text"],.scheduleInterview p select
+{
+	font: normal 12px/18px "Lucida Grande", Verdana, sans-serif;
+	padding: 3px;
+	border: 1px solid #ddd;
+	width: 200px;
+}
+.datepicker{z-index:1200;width: 230px;}
+.datepicker td span{width: 50px;}
+.typeahead{text-align:left !important;}
+.dropdown-menu .active > a, .dropdown-menu .active > a:hover{background-color: #C2DFFF !important;}
+</style>
+{% endblock %}
+{% block content %}
+<div style="min-height:580px;" class="container">
+	<div class="row">
+		<div class="span12" style="text-align:left;">
+			<h3 class="text text-info">Candidate Search Result</h3>
+			{% if messages %}
+			{% for message in messages %}
+			<div class="alert alert-{{message.tags}}">{{message}}</div>
+			{% endfor %}
+			{% endif %}
+			<div style="text-align:right;">
+				<form class="form-search" action="/accounts/CandidateSearchResult/" method="post" name="savesearchform">{% csrf_token %} 
+				<input type="hidden" name="savesearch" value="{{ request.get_full_path }}" >
+				<label class="text-success" style="font-weight:bold;"><sub>( To Save this Search Result ) </sub>Search Agent Name : </label>
+				<input type="text" name="searchname" placeholder="Search Name" required class="input-large search-query" id="SavedAgent" autocomplete=off>
+				<button type="submit" class="btn btn-success">Save Search</button>
+				<a href="#" id="usa" class="btn btn-warning ">USA Resumes</a>
+				<button class="btn btn-primary" id="back" >Go back</button>
+			</form>
+			</div>
+			<p id="p"><a class="p1" href="#myModal" role="button" class="btn" data-toggle="modal">Schedule Interview</a></p>
+			<table class="table table-striped" style="table-layout:fixed;">
+				<tr>
+					<th width="2%"><input type="checkbox" id="selectall" name="selectall" ></th>
+					<th width="12%">Name</th>
+					<th width="25%">Key Skills</th>
+					<th width="12%">Location</th>
+					<th width="12%">Experience</th>
+					<th width="12%">Expected Salary</th>
+					<th width="12%">View Profile</th>
+				</tr>
+				{% if details %}
+				<tbody id="tb">
+				{% for d in details %}
+				<tr class="{{d.jspersonal.country}} {{d.jsdetailother.relocatechoice}} {{d.jsdetailother.workother}}">
+					<td><input type="checkbox" name="selectCandidate" value="{{ d.jsdetails.id }}" ></td>
+					<td style="word-wrap: break-word;">{{ d.first_name }}&nbsp;{{ d.last_name}}</td>
+					<!--<td style="" >{% for ks in keyskills %}{{ ks.keyskills }}{% if not forloop.last %},&nbsp;{% endif %}{% endfor %}</td>-->
+					<td style="word-wrap: break-word;">{% for skill in d.jsskills_set.all %}{{ skill.skill }}{% if not forloop.last %},&nbsp;{% endif %}{% endfor %}</td>
+					<td style="word-wrap: break-word;">{{ d.jspersonal.state }}</td>
+					<td style="word-wrap: break-word;">{{ d.jspersonal.work_expyears }}yrs&nbsp;{{ d.jspersonal.work_expmonths }} Mths</td>
+					<td style="word-wrap: break-word;">{{ d.jspersonal.salaryrange }}</td>
+					<td style="word-wrap: break-word;"><a href="/accounts/JSDetails/{{ d.id }}/">Click Here</a></td>
+				</tr>
+				{% endfor %}
+				<tbody>
+				{% else %}
+				<tr>
+					<td colspan="9" style="text-align:center;">Your search term does'nt match any criteria, Please redefine your search <a href="/accounts/SearchResumeAdvanced/">here</a>.</td>
+				</tr>
+				{% endif %}
+			</table>
+		</div>
+	</div>
+</div>
+<!--  ****************************POPUP FORM ********************************  -->
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<form action="/accounts/ScheduleInterviewEmp1/" method="post">{% csrf_token %}
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+			<h4 id="myModalLabel">Schedule Interview for Candidate</h4>
+
+		</div>
+
+		<div class="modal-body">
+			<input type="hidden" name="empid" value="{{user.id}}" >
+			<input type="hidden" id="txt" value="" name="jsid">
+			<p><select name="jobid" required="true">
+				<option value=''>Select Position</option>
+				{% for joblist in employers %}
+				<option value="{{ joblist.id }}">{{ joblist.title }}</option>
+				{% endfor %}
+			</select></p>
+			<p><input type="text" id="from" name="scheduledate" placeholder='Enter Date(MM-DD-YYYY)' required="true" readonly data-date="12-02-2012" ></p>
+			<p><select name="scheduletime" style="" required="true" >
+				<option value="">Set Time</option>
+				<option value="12:00am">12:00am</option>
+				<option value="1:00am">1:00am</option>
+				<option value="2:00am">2:00am</option>
+				<option value="3:00am">3:00am</option>
+				<option value="4:00am">4:00am</option>
+				<option value="5:00am">5:00am</option>
+				<option value="6:00am">6:00am</option>
+				<option value="7:00am">7:00am</option>
+				<option value="8:00am">8:00am</option>
+				<option value="9:00am">9:00am</option>
+				<option value="10:00am">10:00am</option>
+				<option value="11:00am">11:00am</option>
+				<option value="12:00pm">12:00pm</option>
+				<option value="1:00pm">1:00pm</option>
+				<option value="2:00pm">2:00pm</option>
+				<option value="3:00pm">3:00pm</option>
+				<option value="4:00pm">4:00pm</option>
+				<option value="5:00pm">5:00pm</option>
+				<option value="6:00pm">6:00pm</option>
+				<option value="7:00pm">7:00pm</option>
+				<option value="8:00pm">8:00pm</option>
+				<option value="9:00pm">9:00pm</option>
+				<option value="10:00pm">10:00pm</option>
+				<option value="11:00pm">11:00pm</option>
+			</select></p>
+			<p><input type="text" name="totalrounds" placeholder='Enter no.of rounds(eg : 5)' required="true" ></p>
+
+			<p>
+				
+				<input type="text" name="location" id="location" value="" placeholder="Location" required="true" >
+			</p>
+
+			<p>Allow candidate(s) to reschedule : 
+				<input type="radio" value="1" name="isreschedule" required="true" >Yes
+				<input type="radio" value="2" name="isreschedule" required="true" >No
+			</p>
+			<font color="red">* All fields are mandatory</font>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">No</button>
+			<input class="btn btn-primary" type="submit" onclick="return intervalid();" value="Schedule">
+		</div>
+	</form>
+</div>
+
+<!-- ********** End Popup form ************** -->
+{% endblock %}
+{% block extrajavascript %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/datepicker/bootstrap-datepicker.js"></script>
+<script type="text/javascript">
+$(function(){
+	$('#usa').click(function(){
+	    if($('#usa').text() == 'All Resumes'){$('#usa').html('USA Resumes');}
+	    else{$('#usa').html('All Resumes');}
+	    $( "tbody#tb tr" ).each(function(i) {
+	        var str=$(this).attr('class');
+	        if(!str.contains("States")){$(this).toggle();}
+	     });
+	});
+	var availableTags = [{% for ss in empsavesearch %}"{{ ss.searchname }}"{% if not forloop.last %}, {% endif %}{% endfor %}];
+    $('#SavedAgent').typeahead({source: availableTags});
+});
+function intervalid()
+{
+	var x=document.getElementById('txt').value;
+	if(x==0 || x==null)
+	{
+		alert("Select Candidate");
+		return false;
+	}
+
+}
+</script>
+<script type="text/javascript">
+
+
+$(document).ready(function ()
+	{	
+			$("#from").datepicker( {
+			format: 'mm-dd-yyyy',
+			startDate: '0d',
+		});
+
+		$('#selectall').click(function (event)
+			{
+				var selected = this.checked;
+				$(':checkbox[name=selectCandidate]').each(function ()
+					{
+						this.checked = selected;
+					});
+			});
+
+		$("#p").click(function()
+			{
+				var array1 = [];
+				$("input:checkbox[name=selectCandidate]:checked").each(function ()
+					{
+						array1.push($(this).val());
+					});
+				$("#txt").val(array1.join(','));
+			});
+
+
+		$("#checkloc").click(function()
+			{
+				var array1 = [];
+				$("input:checkbox[name=checkloc]:checked").each(function ()
+					{
+						array1.push($(this).val());
+					});
+				$("#location").val(array1.join(','));
+			});
+
+		$('#back').click(function()
+			{
+				parent.history.back();
+				return false;
+			});
+	});
+
+</script>
+{% endblock %}

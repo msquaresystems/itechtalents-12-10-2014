@@ -1,0 +1,113 @@
+
+
+{% block candidateitemcontent %}
+
+  <div>
+
+    <span>
+        <input type="hidden" value="{{ user.id }}" name="user_id" >
+    </span>
+    <p><h3>Personal Info</h3></p>
+
+    <div>
+ 
+<table class="table table-striped">
+	<tr>
+		
+		<th>First Name</th>
+		<td>{{ user.first_name }}</td>
+		<th>Last Name </th>
+		<td>{{ user.last_name }}</td>
+	
+
+	</tr>
+
+	<tr>
+		<th>Date of Birth</th>
+		<td>
+			{% for a in personal %}{{a.dob}}{% endfor %}
+			
+		</td>
+		<th>Primary Mail</th>
+		<td>{{user.email}}</td>
+	</tr>
+
+	<tr>
+		<th>Secondary Email</th>
+		<td>{% for a in personal %}{{a.sec_email}}{% endfor %} </td>
+		<th>Address 1</th>
+		<td>{% for a in personal %}{{a.address1}}{% endfor %}</td>
+		
+	</tr>
+	
+	<tr>
+		<th>Address 2</th>
+		<td>{% for a in personal %}{{a.address2}}{% endfor %}</td>
+		<th>Country</th>
+		<td>
+			{% for a in personal %}{{a.country}}{% endfor %}
+	  	</td>
+		
+	</tr>
+	
+	<tr>
+		<th>State</th>
+		<td>{% for a in personal %}{{a.state}}{% endfor %}
+		</td>
+
+		<th>City</th>
+		<td>
+			{% for a in personal %}{{a.city}}{% endfor %}
+		</td>
+	</tr>
+
+	<tr>
+		<th>Zipcode</th>
+		<td>{% for a in personal %}{{a.zipcode}}{% endfor %}</td>
+		<th>Mobile Number</th>
+		<td>{% for a in personal %}{{a.handno}}{% endfor %}</td>
+	</tr>
+
+	<tr>
+		<th>Home Number</th>
+		<td>{% for a in personal %}{{a.homeno}}{% endfor %}</td>
+		<th>Work Number</th>
+		<td>{% for a in personal %}{{a.workno}}{% endfor %}</td>
+	</tr>
+
+	<tr>
+		<th>Preferred Time to call</th>
+		<td>{% for a in personal %}{{a.prefertime}}{% endfor %}</td>
+		<th>Gender</th>
+		<td>{% for a in personal %}{{a.gender}}{% endfor %}</td>
+		
+	</tr>
+
+	<tr>
+		<th>Marital Status</th>
+		<td>{% for a in personal %}{{a.maritalstatus}}{% endfor %}</td>
+		<th>Total Experience</th>
+		<td>{% for a in personal %}{{a.work_expyears}}{% endfor %} Years {% for a in personal %}{{a.work_expmonths}}{% endfor %} Months</td>
+				
+	</tr>
+
+	<tr>
+		<th>Annual Salary</th>
+		<td>{% for a in personal %}{{a.salaryrange}}{% endfor %}</td>
+		<th>Current Industry</th>
+		<td>{% for a in personal %}{{a.industry}}{% endfor %}
+		</td>
+				
+	</tr>
+	<tr>
+		<th>Functional Area</th>
+
+		<td>{% for a in personal %}{{a.functional_area}}{% endfor %}</td>
+		<th>Linkedin URL</th>
+		<td>{% for a in personal %}{{a.profileurl}}{% endfor %}</td>
+
+	</tr>
+	</table>
+	 </div>
+     </div>
+{% endblock %}

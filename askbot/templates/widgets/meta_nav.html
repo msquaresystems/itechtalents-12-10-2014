@@ -1,0 +1,29 @@
+{% import "macros.html" as macros%}
+<li><a style="font-size:18px;"
+  id="navTags"
+  href="{% url tags %}"
+  {% if active_tab == 'tags' %}class="on"{% endif %}
+><i class="icon-tags"></i>{% trans %}tags{% endtrans %}</a></li>
+{% if settings.GROUPS_ENABLED %}
+<li><span class="dropdown">
+<a style="font-size:18px;"
+  id="navGroups" 
+  {% if active_tab == 'groups' %}class="on"{% endif %}
+  href="{% url groups %}" data-target="#">
+  {% trans %}people & groups{% endtrans %}
+</a>
+</span></li>
+{%else%}
+<li><a style="font-size:18px;"  
+  id="navUsers"
+  href="{% url users %}"
+  {% if active_tab == 'users' %}class="on"{% endif %}
+>{% trans %}users{% endtrans %}</a></li>
+{% endif %}
+{% if settings.BADGES_MODE == 'public' %}
+<li><a style="font-size:18px;"
+  id="navBadges"
+  href="{% url badges %}"
+  {% if active_tab == 'badges' %}class="on"{% endif %}
+>{% trans %}badges{% endtrans %}</a></li>
+{% endif %}

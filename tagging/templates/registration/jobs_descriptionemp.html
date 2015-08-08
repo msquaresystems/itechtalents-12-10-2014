@@ -1,0 +1,120 @@
+{% extends "registration/base/jobseekerbase.html" %}
+{% block extrahead %}<style type="text/css">dt{color:#f0ad4e;}</style>{% endblock %}
+{% block content %}
+<div class="container" style="min-height:580px;">
+  <div class="row">
+    <div class="span12" style="text-align:left;">
+      <h3 style="border-bottom:2px solid #FFB812;"><!-- <img style="width:40px;height:40px;" src="{{ STATIC_URL }}{% for a in cmpdetails %}{{a.companylogo}}{% endfor %}"/> --> {% for d in description %}{{d.emp.companyname}}{% endfor %}</h3>
+    </div>
+  </div>
+  <div class="row">
+    <div class="span12" style="text-align:left;">
+  <h4 class="text-info">Job Description for {{description.0.title}} ({{description.0.referencecode}})</h4>      
+      <dl>
+        <dt>Company Profile</dt>
+        <dd>{% for a in cmpdetails %}{{a.companyprofile|safe}}{% endfor %}</dd>
+      </dl>
+      {% for d in description %}
+      <dl>
+        <dt>{{ d.title }}</dt>
+        <dd>{{ d.jobdetails|safe }}</dd>
+        <dt>Responsibilities </dt>
+        <dd>{{ d.jobsummary|safe }}</dd>
+        <dt>Industry Type</dt>
+        <dd>{{ d.industry }}</dd>
+        <dt>Functional Area</dt>
+        <dd>{{ d.functionalarea }}</dd>
+        <dt>Key Skills</dt>
+        <dd>{% for skill in d.employerkeyskills_set.all %}{{skill.keyskills}}{% if not forloop.last %},&nbsp;{% endif %}{% endfor %}</dd>
+        <dt>Salary Range</dt>
+        <dd>{{ d.salary_range }}</dd>
+      </dl>
+      <dl>
+        <dt><b>Requirements</b></dt>
+      </dl>
+      <dl>
+        <dt>Experience</dt>
+        <dd>Required {{ d.min_exp }} to {{d.max_exp}} year(s) of Experience</dd>
+        <dt>Education</dt>
+        <dd>Qualified with {{ d.qualification }}</dd>
+        <dt>Clearance</dt>
+        <dd>{{ d.empsecretclear }}</dd>
+        <dt>Travel Required</dt>
+        <dd>{{ d.emptravel }}</dd>
+        <dt>Telecommute</dt>
+        <dd>{% if d.emptele %}Yes{% else %}No{% endif %}</dd>
+        <dt>Work Permit for U.S.A</dt>
+          <dd>{{ d.workpermit }}</dd>
+      </dl>
+
+      {% if user.is_authenticated %}
+
+      <dl>
+        <dt><b>Contact Details</b></dt>
+      </dl>
+
+      
+      <ul>
+        <table>
+          <tr>
+            <td>Tax Terms</td>
+            <td> : {{ d.jobtype }}</td>
+          </tr>
+          <tr>
+            <td>Location</td>
+            <td> : {{ d.address1 }} {{ d.address2 }} {{ d.address3 }} {{ d.state }} {{ d.country }} {{  d.}}</td>
+          </tr>
+          <tr>
+            <td>Contact Name</td>
+            <td> : {{ d.handno }} {{ d.workno }}</td>
+          </tr>
+          <tr>
+            <td>Fax</td>
+            <td> : {{ d.fax }}</td>
+          </tr>
+          <tr>
+            <td>Email</td>
+            <td> : {{ d.email }}</td>
+          </tr>
+          <tr>
+            <td>Company URL</td>
+            <td> : {{ d.emp.employerreg_form.companyurl }}</td>
+          </tr>
+          <tr>
+            <td>Contact Person</td>
+            <td> : {{ d.ownername }}</td>
+          </tr>
+          <tr>
+            <td>Posted Date</td>
+            <td> : {{ d.marklive }}</td>
+          </tr>
+          <tr>
+            <td>Last date to apply</td>
+            <td> : {{ d.todate }}</td>
+          </tr>
+        </table>
+      </ul>
+      {% endif %}
+      {% endfor %}
+      <ul style="text-align:right;font-size:12px;">
+        <li style="display:inline;padding: 20px;"><button id="btn" class="btn btn-primary">Go back</button></li>
+       
+      </ul>
+
+
+      <br>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extrajavascript %}
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('#btn').click(function(){
+        parent.history.back();
+        return false;
+    });
+});
+</script>
+{% endblock %}
+

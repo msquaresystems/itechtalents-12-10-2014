@@ -1,0 +1,192 @@
+{% load jsprofile_extras %}
+<style>
+	.editable form {
+	    background-color: #F8F8F8;
+	    border: 1px solid #EAD9CE;
+	    cursor: default;
+	    margin: 0;
+	    padding: 13px;
+	}
+	hr {
+	  margin: 5px;
+	}
+	.xgap{
+	  margin-top:60px;
+	}
+	.item_tittle h1 span {
+	    background: none repeat scroll 0 0 #74767A;
+	    border-radius: 3px 3px 3px 3px;
+	    color: #ffffff;
+	    float: right;
+	    font-size: 16px;
+	    font-weight: bold;
+	    margin: 7px 0 0;
+	    padding: 0 5px;
+	  	margin-right: 0;	 
+	}
+	.item_tittle h2 {
+	  font-size: 18px;
+	  font-weight:normal;
+	  text-align: left;
+	  color:#000;
+	}
+	.item_tittle h3{
+	  font-size: 14px;
+	  font-weight:normal;
+	  text-align: right;
+	  color:#000;
+	}
+</style>
+<div id="edus" class="xgap">
+	<h4 style="border-bottom:2px solid #FFB812;">Educational Details</h4>
+	<br>
+	<div id="edusview">				
+		{% if edus %}
+		<table class="table table-striped" id="EduTable">
+			<tr class="info"><th>Degree</th><th>Specialization</th><th>University/Board</th><th>City/State</th><th>Country</th><th>Year of Passing</th><th></th></tr>
+			{% for l in edus %}
+			<tr id="edu{{l.pk}}"><td><a href="#" class="editdegree" data-type="select" data-source="/ajax/fillcombo/degree/" data-title="Enter degree" data-pk="{{l.pk}}" data-url="/ajax/update/" data-name="degree" data-params="{curtable:'edutable'}">{{ l.degree }}</a></td>
+
+			<td><a href="#" data-type="text" data-pk="{{l.pk}}" data-title="Specialization" class="editdegree editable editable-click" data-url="/ajax/update/" data-name="special" data-params="{curtable:'edutable'}">{{l.special}}</a></td>
+
+			<td><a href="#" data-type="text" data-pk="{{l.pk}}" data-title="University/Board" class="editdegree editable editable-click" data-url="/ajax/update/" data-name="institution" data-params="{curtable:'edutable'}">{{l.institution}}</a></td>
+
+			<td><a href="#" data-type="text" data-pk="{{l.pk}}" data-title="City/State" class="editdegree editable editable-click" data-url="/ajax/update/" data-name="location" data-params="{curtable:'edutable'}">{{l.location}}</a></td>
+
+			<td><a href="#" class="editdegree editable editable-click" data-type="select" data-source="/ajax/fillcombo/country/" data-title="Enter Country" data-pk="{{l.pk}}" data-url="/ajax/update/" data-name="country" data-params="{curtable:'edutable'}">{{ l.country }}</a></td>
+			<!--
+<a href="#" id="vacation" data-type="date" data-viewformat="dd.mm.yyyy" data-pk="1" data-placement="right" data-title="When you want vacation to start?" class="editable editable-click" data-original-title="" title="">25.02.2013</a>-->
+
+			<td><a href="#" data-type="date" data-pk="{{l.pk}}" data-viewformat="mm-yyyy" data-format="mm-yyyy" data-title="Year of Passing" class="monthview editable editable-click" data-url="/ajax/update/" data-name="year" data-params="{curtable:'edutable'}">{{l.year}}</a></td>
+
+			<td><a class="btn btn-mini btn-danger deleteedu" data-eduid="{{ l.pk }}" href="#">delete</a></td></tr>
+			{% endfor %}
+		</table>
+		{% else %}
+		<div style="background-color:#ffa; padding:20px">
+			<strong>Please Add Your Educational Details.</strong>
+		</div>
+		{% endif %}
+	</div>
+	<div class="toggleview"> 
+		<a class="btn btn-success toggle-button" href="javascript:void(0);" rel="edus">add education</a>			    
+	</div>
+	<div class="editable toggleform" style="display:none;">
+		<form action="" class="form-horizontal" id="eduForm">	{% csrf_token %}
+		<!-- curform value can be used to check which form is ajaxpost in a python view -->
+			<input type="hidden" name="curform" value="eduform">
+			<div class="control-group">
+				<label class="control-label">Degree</label>
+				<div class="controls">
+				{% create_select 'degree' %}					
+					<span>Specialization</span>
+					<input maxlength="100" name="special" type="text" required/>
+				</div>
+				
+			</div>
+			<div class="control-group">
+				<label class="control-label">University/Board</label>
+				<div class="controls">
+					<input maxlength="100" name="institution" type="text" required/>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">City/State: </label>
+				<div class="controls">
+					<input maxlength="50" name="location" type="text" required/>
+					<span>Country</span>
+					{% create_select %}
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Year of Passing: </label>
+				<div class="controls">
+					<input type="text" id='dateYear' name="year" required>					
+				</div>
+			</div>			
+			<br>
+		    <input class="btn btn-success" type="submit" value="save" />
+		    <a href="javascript:void(0);"  rel="edus" class="btn btn-warning toggle-button">cancel</a>
+	  </form>
+ 	</div><!-- .editable toggle form-->
+</div>
+<script>
+function CreateRow(jdata) { 
+	if($("#EduTable").length == 0) {
+		$("#edusview").html('<table class="table table-striped" id="EduTable"><tr class="info"><th>Degree</th><th>Specialization</th><th>University/Board</th><th>City/State</th><th>Country</th><th>Year of Passing</th><th></th></tr></table>');
+	}	
+	$('#EduTable tr:last').after(jdata);	 
+    //$('#edusview').fadeIn(1500);        
+	$('#edus .toggleview').toggle();
+	$('#edus .toggleform').toggle();	
+	$('.editdegree').editable();
+	$('.monthview').editable({
+    	datepicker: {
+    		minViewMode:1
+        }
+    });
+} 
+
+$(document).ready(function(){
+	 //toggle `popup` / `inline` mode
+    $.fn.editable.defaults.mode = 'popup';
+    $.fn.editable.defaults.ajaxOptions = {type: "GET"};
+    $('.editdegree').editable();
+    $('.monthview').editable({
+    	datepicker: {
+    		minViewMode:1
+        }
+    });
+    $('#dateYear').datepicker({
+	    format: "mm-yyyy",
+	    minViewMode: 1,
+	    autoclose:true
+	});
+
+    /*
+    $('#address').editable({
+        url: '/post',
+        title: 'Enter city, street and building #',
+        value: {
+            city: "Moscow", 
+            street: "Lenina", 
+            building: "15"
+        }
+    });*/
+
+	$('body').on("click", '.toggle-button', function () {
+    	var section=$(this).attr('rel');
+        $('#'+section+' .toggleview').toggle();
+        $('#'+section+' .toggleform').toggle();
+        if ($(this).hasClass('btn-success')){	        	
+        	$('#'+section+' .toggleform').find("input[type=text], select").val("");
+        }	        
+    });
+	$('body').on("click",".deleteedu", function(e){   	
+   		e.preventDefault();
+   		//alert('dele'); 
+   		var answer = confirm ("Are you sure you want to delete from the database?");
+   		if (answer)  		
+   			$.ajax({
+		 		type: "GET",
+				url: "/ajax/del/",
+				data: { eduid: $(this).data('eduid')}
+			}).done(function(msg) {
+				var tdname='#edu'+msg;
+				$('#edu'+msg).remove();
+				//i want to set the table hidden if there is no edus
+				if ($('#EduTable tr').length == 1){
+				$("#edusview").html('<div style="background-color:#ffa; padding:20px"><strong>Please Add Your Educational Details.</strong></div>');
+			}
+ 		});
+	});
+	$("body").on("submit",'#eduForm', function(event){	
+		//alert('clcik butto');
+		$.post('/ajax/views/', $(this).serialize(),	function(data){
+			//alert(data);
+			CreateRow(data);
+		});	
+		event.preventDefault();		
+	});
+}); 
+</script>   

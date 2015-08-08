@@ -1,0 +1,370 @@
+{% extends 'registration/base/jobseekerbase.html' %}
+{% block extrahead %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/datepicker/bootstrap-datepicker.js"></script>
+<link rel="stylesheet" href="{{ STATIC_URL }}js/datepicker/datepicker.css" />
+<style type="text/css">
+	li
+	{
+		list-style-type: none;
+	}
+	.datepicker{z-index:1200;width: 230px;}
+.datepicker td span{width: 50px;}
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+		<div class="row well">
+			<div class="span7">
+				{% if messages %}
+				{% for message in messages %}
+				<div class="alert alert-{{ message.tags }}">{{message}}</div>
+				{% endfor %}
+				{% endif %}
+
+
+				{% if js %}
+				{% for status in js %}
+				{% if status.visiblepassive == 1 %}
+				<div class="alert alert-{{ message.tags }}"><em>Note: Currently {% for a in users %}{{ a.first_name }}&nbsp;{{ a.last_name }}{% endfor %} is not actively looking for jobs. But still you can contact him for better employment.</em></div>
+				{% endif %}
+				{% endfor %}
+				{% endif %}
+				<!--message over-->
+
+				<div>
+					<div class="span12" style="text-align:left;">
+						{% for a in users %}
+						<h3 class="text text-info">{{ a.first_name }}&nbsp;{{ a.last_name }}</h3>
+	   					{{a.jspersonal.address1}}<br>
+	   					{{a.jspersonal.address2}}<br>
+	   					{{a.jspersonal.city}}<br>
+	   					{{a.jspersonal.state}}<br>
+	   					{{a.jspersonal.country}}&emsp;{{a.jspersonal.zipcode}}<br>
+	   					{% endfor %}
+	   				</div>
+	   			</div>
+	   			<div>
+	   				<div class="span12">
+	   					{% for a in users %}
+	   					<table class="text text-warning table table-borderless">
+	   						<tr>
+	   							<th>Posted </th>
+	   							<td> : {{a.jsdetails.update_date}}	</td>
+	   						</tr>
+	   						<tr>
+	   							<th>Email </th>
+	   							<td> : {{a.email}} </td>
+	   						</tr>
+	   						<tr>
+	   							<th>Mobile Phone </th>
+	   							<td> : {{a.jspersonal.handno}} </td>
+	   						</tr>
+	   						<tr>
+	   							<th>Work Phone </th>
+	   							<td> : {{a.jspersonal.workno}}</td>
+	   						</tr>
+	   						<tr>
+	   							<th>Home Phone </th>
+	   							<td> : {{a.jspersonal.homeno}}</td>
+	   						</tr>
+	   						
+	   						<tr>
+	   							<th>Authorization </th>
+	   							<td> : {{a.jsdetailother.workpermit}}</td>
+	   						</tr>
+	   						<tr>
+	   							<th>Tax Terms </th>
+	   							<td> : {{a.jsdetailother.emptype}}</td>
+	   						</tr>
+	   						<tr>
+	   							<th>Salary </th>
+	   							<td> : {{a.jspersonal.salaryrange}}</td>
+	   						</tr>
+	   						<tr>
+	   							<th>Years Expernece </th>
+	   							<td> : {{a.jspersonal.work_expyears}} Yrs {{a.jspersonal.work_expmonths}} Ms</td>
+	   						</tr>
+	   						<tr>
+	   							<th>Recent Employers </th>
+	   							{% for i in a.jsemployerdetails_set.all %}
+	   							{% ifequal i.empstatus 'Current Employer' %}
+	   							<td> : {{i.employer_name}}</td>
+	   							{% endifequal %}
+	   							{% endfor %}
+	   						</tr>
+
+	   						<tr>
+	   							<th>Industry Type </th>
+	   							<td> : {{a.jspersonal.industry}}</td>
+	   						</tr>
+	   						<tr>
+	   							<th>Functional Area </th>
+	   							<td> : {{a.jspersonal.functional_area}}</td>
+	   						</tr>
+
+
+	   					</table>
+	   					<table class="table well alert alert-info">
+	   						<tr>
+	   							<th colspan="2">Qualification</th>
+	   						</tr>
+
+	   						<tr>
+	   							<th>Degree</th>
+	   							<th>University</th>
+	   						</tr>
+	   						{% for q in a.jsqualification_set.all %}
+	   						<tr>
+	   							<td>{{ q.degree }}</td>
+	   							<td>{{ q.institution }}</td>
+	   						</tr>
+	   						{% endfor %}
+	   					</table>
+	   					
+	   					{% endfor %}
+	   				</div>
+	   			</div>
+	   			<div>
+	   			
+					<div class="span12" style="text-align:left;"><!--<div style="width:700px;margin:auto;padding:0px;">-->
+						{% for a in users %}
+
+						{% if a.jstextresume.activetext_resume %}
+						<p><b>TextResume:</b>{{ a.jstextresume.resumeTitle }}</p>
+						<div style="border: 1px solid #E3E3E3;">
+						{{ a.jstextresume.resumeFile|safe }}
+						</div>
+						{% elif a.jsresumeactive.resumeActive.resumeFile %}
+						<p><b>Resume:</b>{{ a.jsresumeactive.resumeActive.resumeTitle }}</p>
+						<p><b>Download Resume:</b><a href="{{STATIC_URL}}{{ a.jsresumeactive.resumeActive.resumeFile }}">Click Here</a></p>
+						<div>
+						<iframe src="/accounts/empdoc/{{ a.id }}/" style="width:670px; height:800px;" >
+						</iframe>
+						</div>
+						{% else %}
+						<div style="border: 1px solid #E3E3E3;">
+						<h2>No Resumes Attached</h2>
+						</div>
+						{% endif %}
+
+						{% endfor %}
+					</div>
+				</div>
+				
+			</div>
+			<div class="span4">
+				<!--<div style="float:left;position:relative;width:475px;">
+				<div style="padding:15px;">-->
+				<div>
+					<div class="span12 well">
+						<a href="#myModal1" role="button" class="btn btn-primary" data-toggle="modal">Save Candidates</a>
+						<a href="#myModal" role="button" class="btn btn-primary" data-toggle="modal" id="p" >Schedule Interview</a>
+					</div>
+				</div>
+
+				<div>
+					<div class="span12 well alert alert-info">
+	
+	<!--<div style="padding:15px;">-->
+						<table class="table" style="table-layout:fixed;">
+							<tr>
+								<th>Skill</th>
+								<th>Year used</th>
+								<th>Last used</th>
+							</tr>
+							{% for a in users %}
+							{% for skill in a.jsskills_set.all %}
+							<tr>
+								<td>{{skill.skill}}</td>
+								<td>{{skill.skillyear}}.{{skill.skillmon}} Years</td>
+								<td>{{skill.lastused}}</td>
+							</tr>
+							{% endfor %}
+							{% endfor %}
+						</table>
+					</div>
+				</div>
+
+				<div>
+					<div class="span12 well alert alert-info">
+					<!--<div style="padding:15px;" class="well">-->
+						<table class="table" style="table-layout:fixed;">
+							{% for a in users %}
+							<tr>
+								<th width="50%">Willing to Telecommunicate </th>
+								{% if a.jsdetailother.telecommunicate %}
+								<td> : {{a.jsdetailother.telecommunicate}}</td>
+								{% else %}
+								<td> : No </td>
+								{% endif %}
+							</tr>
+
+							<tr>
+								<th>Willing to travel </th>
+								{% if a.jsdetailother.travel %}
+								<td> : {{a.jsdetailother.travel}}</td>
+								{% else %}
+								<td> : No </td>
+								{% endif %}
+							</tr>
+
+							<tr>
+								<th>Willing to Relocate </th>
+								{% if a.jsdetailother.relocate %}
+								<td> : {{a.jsdetailother.relocate}}</td>
+								{% else %}
+								<td> : No </td>
+								{% endif %}
+							</tr>
+
+							<tr>
+								<th>Relocation choices</th>
+								<td style="word-wrap:break-word;"> : {{a.jsdetailother.relocatechoice}}</td>
+							</tr>
+							{% endfor %}
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div style="text-align:right;">
+		<button class="btn btn-primary" id="back" >Go back</button>
+	</div>
+<br>
+</div>
+<!--  ************ Model Form for Save Candidates **************** -->
+<div id="myModal1" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+		<h4 id="myModalLabel" class="text text-info">Save Candidates</h4>
+	</div>
+	{%if folder%}
+	<form action="/accounts/SaveCandidate/" method="post" >{% csrf_token %}
+		<div class="modal-body">
+			<input type="hidden" name="empid" value="{{user.id}}" > 
+			<p>
+			{% for folder in folder %}
+			<li>
+			<input type="radio" value="{{ folder.id }}" name="folderid" required>{{ folder.foldername }}
+			</li>
+			{% endfor %}
+			</p>
+			<p>
+			<input type="hidden" value="{% for a in users %}{{a.jsdetails.id}}{% endfor %}" name="jsid">
+			<input type="hidden" value="{% for a in users %}{{a.id}}{% endfor %}" name="userid">
+			<button type="submit" class="btn btn-success">Save</button>
+			</p>
+			<p></p>
+		</div>
+	</form>
+	{%endif%}
+	<form class="form-search" action="/accounts/FolderCreation/" name="foldercreation" method="post" >{% csrf_token %}
+		<div class="modal-header">
+			
+			<h4 id="myModalLabel" class="text text-info">Create Folder</h4>
+		</div>
+		<div class="modal-body">
+			<input type="hidden" name="empid" value="{{user.id}}" >
+			<input type="hidden" value="{% for a in users %}{{a.jsdetails.id}}{% endfor %}" name="jsid">
+			<input type="hidden" value="{% for a in users %}{{a.id}}{% endfor %}" name="userid">
+			<p>
+				<input type="text" name="foldername" required placeholder="Folder Name">
+				<button type="submit" class="btn btn-success">Create and Save</button>
+            </p>
+			<!-- <p>
+			<input type="submit" class="btn btn-primary" value="Create Folder" >
+			</p> -->
+		</div>
+	</form>
+</div>
+
+<!-- ******************** Model form for Scheduled Interview **************** --> 
+
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<form action="/accounts/ScheduleInterviewEmp1/" method="post" >{% csrf_token %}
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+			<h4 id="myModalLabel" style="color:#3498DB;">Schedule Interview for Candidate</h4>
+		</div>
+		<div class="modal-body">
+			<input type="hidden" name="empid" value="{{user.id}}" >
+					{% for a in users %}
+					<input type="hidden" id="txt" value="{{ a.jsdetails.id }}" name="jsid">
+					{% endfor %}
+					<p><select name="jobid" required="true">
+						<option value=''>Select Position</option>
+						{% for joblist in employers %}
+						<option value="{{ joblist.id }}">{{ joblist.title }}</option>
+						{% endfor %}
+					</select></p>
+					<p><input type="text" class="from" name="scheduledate" placeholder='Enter Date(MM-DD-YYYY)' required="true" readonly autocomplete="off"></p>
+			
+					<p><select name="scheduletime" required="true">
+						<option value="">Set Time</option>
+						<option value="12:00am">12:00am</option>
+						<option value="1:00am">1:00am</option>
+						<option value="2:00am">2:00am</option>
+						<option value="3:00am">3:00am</option>
+						<option value="4:00am">4:00am</option>
+						<option value="5:00am">5:00am</option>
+						<option value="6:00am">6:00am</option>
+						<option value="7:00am">7:00am</option>
+						<option value="8:00am">8:00am</option>
+						<option value="9:00am">9:00am</option>
+						<option value="10:00am">10:00am</option>
+						<option value="11:00am">11:00am</option>
+						<option value="12:00pm">12:00pm</option>
+						<option value="1:00pm">1:00pm</option>
+						<option value="2:00pm">2:00pm</option>
+						<option value="3:00pm">3:00pm</option>
+						<option value="4:00pm">4:00pm</option>
+						<option value="5:00pm">5:00pm</option>
+						<option value="6:00pm">6:00pm</option>
+						<option value="7:00pm">7:00pm</option>
+						<option value="8:00pm">8:00pm</option>
+						<option value="9:00pm">9:00pm</option>
+						<option value="10:00pm">10:00pm</option>
+						<option value="11:00pm">11:00pm</option>
+					</select></p>
+					<p><input type="text" name="totalrounds" placeholder='Enter no.of rounds(eg : 5)' required="true" autocomplete="off"></p>
+
+					<p>
+						
+						<input type="text" name="location" id="location" placeholder="Interview location" required="true" value="" autocomplete="off">
+					</p>
+
+					<p>Allow candidate(s) to reschedule : 
+						<input type="radio" value="1" name="isreschedule" required="true" >Yes
+						<input type="radio" value="2" name="isreschedule" required="true" >No
+					</p>
+					<font color="red">* All fields are mandatory</font>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Close</button>
+			<input type="submit" class="btn btn-primary" value="Submit" onclick="return intervalid();">
+		</div>
+	</form>
+</div>
+{% endblock %}
+
+
+{% block extrajavascript %}
+<script type="text/javascript">
+$(function()
+        {
+            
+            var from=$(".from").datepicker( {
+						        				format: "mm-dd-yyyy",
+						        				viewMode: 2,
+						        				startDate:'0d',
+					    					});
+
+            $('#back').click(function()
+				{
+					parent.history.back();
+					return false;
+				});
+
+        });
+</script>
+{% endblock %}

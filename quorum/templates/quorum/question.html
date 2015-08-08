@@ -1,0 +1,167 @@
+{% extends "quorum/base_quorum.html" %}
+{% block extrahead %}
+<link href="{{ STATIC_URL }}css/bootstrap-wysihtml5-0.0.2.css" rel="stylesheet">
+<style type="text/css">
+  .time { font-size: 0.9em; margin-top: 2px; border-bottom: 1px solid #ccc; padding-bottom:10px}
+  .body { font-size: 1.2em; margin-top: 20px;  }      
+  
+  .comment { border: 1.1px solid #ccc; padding: 4px; margin-bottom: 12px;}  
+  .messages { margin-left: 20px; }
+  .title { font-size: 1.4em; margin-top: 20px; border-bottom: 1px solid #ccc; padding-left: 4px; }
+  #addc { background: #ffcc99; text-align: left; padding: 20px;} 
+  ul { margin-bottom: 30px; }
+  .comment a{ color:#660000; font-size:1.1em;}   
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container questbox">
+  <!-- Question  -->
+  <ul>
+   <span class="time"><strong>Topic:{{ quest.topic.topic }}</strong> | <b class="favoritecount">{{ fav.total }}</b> followers <a class="follow btn {{ fav.btnclass }}" id="{{ quest.pk }}">{{ fav.btntext }}</a> | <i class="icon-calendar"></i> {{ quest.created }} | <i class="icon-user"></i> <a href="/quorum/user/{{quest.user}}">{{quest.user}}</a> | <a href="/upvote/"><i class="icon-thumbs-up"></i>upvote</a> | <a href="/downvote/"><i class="icon-thumbs-down"></i>downvote</a>
+   </span>
+   <div class="body">{{ quest.question|safe }}</div>
+  </ul>
+
+    <!-- Answers  -->
+    <div style="margin:40px;">
+      {% if ans %}
+          <p>Answers:</p>
+      {% else %}
+        <p> Sorry no answers. Consider adding an answer?</p>
+      {% endif %}
+      {% for answer in ans %}
+          <div class="comment" id="answer{{answer.pk}}">
+              <div class="time">
+                {% ifequal answer.user.pk quest.user.pk %}
+                  <a href="/upvote/"><i class="icon-ok"></i> correct answer</a> | 
+                {% endifequal %}
+                Answered on :<span><i class="icon-calendar"></i>{{ answer.created }}</span> by <i class="icon-user"></i> <a href="/quorum/user/{{answer.user}}">{{ answer.user.username }}</a> | 
+                {% ifequal answer.user.pk user.pk %}
+                  <a class="editquest" href="#div_id_answer" data-ans="{{ answer.answer }}"><i class="icon-edit"></i>edit answer</a> | <a class="deletequest" data-id="{{quest.pk}}" href="#"><i class="icon-trash"></i>delete answer</a>                 
+                {% else %}
+                  | <a href="/upvote/"><i class="icon-thumbs-up"></i>upvote</a> | <a href="/downvote/"><i class="icon-thumbs-down"></i>downvote</a>
+                {% endifequal %}
+
+              </div>
+              <div class="body">{{ answer.answer|safe|linebreaks }}</div>
+              
+          </div>
+      {% endfor %}
+
+      {% if user.is_active %}
+      <div class="row">
+        <div class="span9" id="addc">
+          <h4>Add an Answer</h4>
+          
+              <form action="" id="answerForm" method="POST">{% csrf_token %}
+                
+                <div style='display:none'>
+                  <input type='hidden' name='actiontype' id='ActionType' value='add' />
+                </div>
+                <div id="div_id_answer" class="control-group">                  
+                  <div class="controls">
+                    <textarea id="id_answer" rows="10" cols="40" name="answer" class="field span8 textarea"></textarea>
+                  </div>
+                </div>
+                <div class="buttonHolder">
+                  <input type="submit" name="submit" value="Submit" class="btn btn-primary btn-primary pull-right" id="submit-answer" />
+                </div>
+              </form>
+
+            
+        </div>
+      </div>
+      {% endif %}
+      <!--</form>-->      
+    </div>
+  </ul>
+</div>
+{% endblock %}
+
+{% block extrajavascript %}
+<script src ="{{ STATIC_URL }}js/wysihtml5-0.3.0_rc2.js"></script>
+<script src ="{{ STATIC_URL }}js/bootstrap-wysihtml5-0.0.2.js"></script>
+
+<script>
+$(document).ready(function()
+{
+  $('.textarea').wysihtml5();//add toolbar to text area
+
+  $("a.follow").click(function(){
+    $(this).prop("disabled", true);
+    var qid=$(this).attr("id");
+    var params ={param1:qid};
+     $.ajax({ url: "/quorum/question/markfav/",
+              dataType: "json",
+              data: params,           
+              success: setResult      
+      });           
+  });
+   
+  function setResult(data) {
+    // data.updated=(followed,unfollowed, nouser) 
+    if (data.updated=="nouser"){
+      alert("you must signin to follow a question.");   
+    }else{
+        var p_opt="b.favoritecount";
+        var nfavs=$(p_opt).text();
+        if (data.updated=='mark') {
+          //$(this).removeClass("btn-");
+          $("a.follow").addClass("btn-primary");
+          $("a.follow").text("UnFollow");           
+          nfavs++;
+        }else if (data.updated=='unmark'){ 
+          //$(this).removeClass("btn-success");
+          $("a.follow").removeClass("btn-primary"); 
+          $("a.follow").text("Follow");
+          nfavs--;               
+        }
+        $(p_opt).text(nfavs);
+        $("a.follow").prop("disabled", false);        
+    }
+  }
+  $("a.deletequest").click(function(){
+    if(confirm("Are you Sure want to delete answer!")) {
+      var str_url="/quorum/question/"+$(this).data('id')+"/";
+      $.ajax({ url: str_url,
+        type: 'POST',
+        dataType: "json",
+        data: {actiontype:'del'},           
+        success: function(e){
+          $('div#answer'+e.ans_pk).remove();
+          
+        }      
+      });
+    }   
+  });
+  $("a.editquest").click(function(){
+    var cur_ans=$(this).data('ans');    
+    $('.textarea#id_answer').data("wysihtml5").editor.setValue(cur_ans);    
+    $('input#ActionType').val('edit');
+    $('#addc').fadeOut('normal');
+    $('#addc').fadeIn('normal');
+    //document.location.href='/'+href+'/'
+  });
+
+  $("#answerForm").on("submit", function(event){
+    var ans=$(this).find('#id_answer').val();
+    if(ans.length>20)
+      {        
+        alert('valid');
+      }
+    else{
+      alert("Answer must have atleast 20 characters.");
+      return false;
+    }
+    //$.post('/jobseeker/profile/', $(this).serialize(),
+    //function(data){
+     //   alert('AJAX successful');
+        //CreateRow(jdata);
+    //}, "json"); 
+    //event.preventDefault(); 
+  });
+
+});
+</script>
+{% endblock %}

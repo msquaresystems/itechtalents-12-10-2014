@@ -1,0 +1,14 @@
+lettertemplate
+openid
+markdown
+quorum
+paypal
+addressbook
+social_auth
+askbot
+oauth2
+tagging
+registration
+feeds
+crispy_forms
+feeds_todel

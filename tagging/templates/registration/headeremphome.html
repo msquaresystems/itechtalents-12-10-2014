@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+  
+   <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css"/>
+  <link rel="stylesheet" href="{{ STATIC_URL }}css/jquery-ui.css" />
+  <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.9.1.js"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui.js"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}js/list.js"></script>
+  <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap-responsive.css" />
+  <link rel="stylesheet" href="{{ STATIC_URL }}css/flatstrap.css" />
+  <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.js"></script>
+
+
+</head>
+<body>
+<div id="headeremp">
+  <div style="width:1200px; border:1px solid black;padding:0px;margin:auto;">
+      <div style="text-align:right; height:50px; border:1px solid #542CA0;">
+            <ul style="list-style:none;">
+                {% if user.is_authenticated %}
+                <li style="padding:10px 0px; display:inline;">Welcome <a style="color:green; font-weight:bold;">{{ user.username }}</a></li>
+                <li style="padding-left:0px; display:inline; padding-right:15px; border-right:3px solid grey;"><a href="/accounts/EmpLogout/">(Logout)</a></li>
+                {% else %}
+                <li style="padding:10px 15px; display:inline; border-right:3px solid grey;"><a href="/">Login</a></li>
+                {% endif %}
+                <li style="padding:10px 15px; display:inline;"><a href="/" style="padding-top:20px;">Home</a></li>
+            </ul>
+      </div>
+
+    
+
+<div  id='cssmenu'>
+<ul>
+    <li><a href='/accounts/RecruiterHome/'><span>Home</span></a></li>
+
+    
+
+    <li><a href='/accounts/RecruiterDashboard/'><span>My Desk</span></a>
+      <ul>
+            <li><a href='/accounts/EmployerProfile/'><span>My Profile</span></a></li>
+            <li><a href='/accounts/UpdateEmployerProfile/'><span>Update Profile</span></a></li>
+            <li><a href='/accounts/RecruiterChangePassword/'><span>Change Password</span></a></li>
+         </ul>
+    </li>
+
+ 
+
+  <li><a href=''><span>Post Jobs & Find Candidates</span></a>
+      <ul>
+         <table width="100%" rules="cols">
+              <tr>
+                <th width="50%" >Post Jobs</th>
+                <th >Find Candidates</th>
+              </tr>
+               <tr>
+                <td><a href='/accounts/JobsEmp/'><span>My Jobs</span></a></td>
+                <td><a href="/accounts/SearchResumeAdvanced/">Advanced Search</a></td>
+              </tr>
+
+              <tr>
+                <td><a href='/accounts/PostJob/'><span>Post a New Job</span></a></td>
+                <td><a href='/accounts/ReceivedApplication/'>Received Application</a></td>
+              </tr>
+              </tr>
+
+              <tr>
+                <td><a href='/accounts/SearchAllJobs/'><span>Search Posted Job</span></a></td>
+                <td><a href="/accounts/savedsearchresult/">Search Agents</a></td>
+              </tr>
+
+              <tr>
+                <td><a href='/accounts/RecruiterDashboard/1/'><span>Open Jobs</span></a></td>
+                <td><a href="/accounts/Candidatefolder/">Candidate Folder</a></td>
+              </tr>
+              <tr>
+                <td><a href='/accounts/RecruiterDashboard/2/'><span>Expired Jobs</span></a></td>
+                <td><a href="">Address Book</a></td>
+              </tr>
+              <tr>
+                <td><a href='/accounts/RecruiterDashboard/3/'><span>Pending Job</span></a></td>
+                
+              </tr>
+              <tr>
+                <td><a href='/accounts/RecruiterDashboard/4/'><span>All Jobs</span></a></td>
+                
+              </tr>
+
+            </table>
+         
+      </ul>
+   
+    </li>
+
+      <li><a href='/accounts/BlogTopics/'><span>Blog</span></a>
+    <ul>
+      <li><a href='/accounts/BlogPost/'><span>Post Articles</span></a></li>
+    </ul>
+  </li>
+<li><a href="/feeds/">Feeds</a></li>
+ <li><a href='/quorum/'><span>Quorum</span></a></li>
+ <li>
+  <a href='/accounts/MyInterviewZoneEmp/'><span>Interview Zone</span></a>
+  <ul>
+    <li><a href='/accounts/EmpInterviewCofirmPage/'><span>Interview Confirmation</span></a></li>
+  </ul>
+ </li>
+
+
+</ul>
+</div>
+
+
+
+
+</div>
+</div>

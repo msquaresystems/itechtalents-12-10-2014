@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta name="google-translate-customization" content="c1b069108e61e3a4-2f6898331601ef07-gd05b61e166d8d81c-27"></meta>
+  	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>{% block title %}iTechTalents{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="Keywords" content="jobs, Employers">
+    <meta name="description" content="job portal,job provider">
+    <meta name="author" content="capsone">
+    <!-- Le styles -->
+    <link rel="shortcut icon" href="{{STATIC_URL}}img/Faviicon.ico">
+  <!--<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.9.1.js"></script>-->
+  <script type="text/javascript" src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js'></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui.js"></script>
+  <link rel="stylesheet" href="{{ STATIC_URL }}css/suh.css" />
+  <link rel="stylesheet" href="{{ STATIC_URL }}css/flatstrap.css" />
+  <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.js"></script>
+  <link rel="stylesheet" href="{{ STATIC_URL }}css/font-awesome.min.css" />
+<link rel="stylesheet" href="{{ STATIC_URL }}css/font-awesome-ie7.min.css" />
+<link href="{{STATIC_URL}}News/modern-ticker.css" type="text/css" rel="stylesheet">
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+}
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script src="{{STATIC_URL}}News/jquery.modern-ticker.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $(".ticker1").modernTicker({
+        effect: "scroll",
+        scrollInterval: 20,
+        transitionTime: 500,
+        autoplay: true
+    });
+  });
+</script>        
+<style type="text/css">
+    .accordion-inner
+    {
+        list-style-type:none;
+    }   
+
+
+</style> 
+<script type="text/javascript">
+  var timer;
+jQuery(function($) {
+    timer = setTimeout(blnk, 0);
+});
+function blnk() {
+    $(".blink").css({opacity: 0}).
+        animate({opacity: 1}, 500, "linear").
+        animate({opacity: 0}, 500, "linear", 
+        function() {
+            timer = setTimeout(blnk, 0);
+        });
+}
+
+</script>
+</script>
+	{% block extrahead %}	
+	{% endblock %}
+	{% block extraheadfrmreg %}
+	{% endblock %}
+	
+</head>
+<body>
+ {% if user.is_authenticated %}
+  {% ifequal user.usertype  "employer" %}
+    {% include "registration/headeremployer.html" %}
+  {% else %}
+    {% include "registration/headerjs.html" %}
+  {% endifequal %}
+{% else %}
+  {% include "registration/headerhome.html" %}
+{% endif %}
+
+{% block navtop %}
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block breadcrumbs %}
+{% endblock %}
+
+{% block content %}
+{% endblock %}
+
+<link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap-responsive.css" />
+
+{% block extrajavascript %}
+{% endblock %}
+{% include 'registration/footer.html' %}
+</body>
+</html>

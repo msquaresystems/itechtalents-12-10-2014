@@ -1,0 +1,30 @@
+<h1>Templates</h1>
+<table class="table table-hover" id="tasks">
+              
+    <tr><th>Title</th><th>Subject</th><th>Body</th><th></th></tr>
+    {% for l in lettertemplates %}
+    <tr><td>{{ l.title }}</td><td>{{ l.subject }}</td><td>{{ l.body|safe|truncatewords:50 }}  </td><!--convert_body -->
+        <td>
+            <div class="btn-toolbar">
+                <div class="btn-group">
+                    <a href="/employer/manageletters/edit/?id={{ l.id }}" class="btn Ajaxcreate">
+                        <i class="icon-edit"></i></a>                        
+                    <a href="/employer/manageletters/del/?id={{ l.id }}" onclick="return confirm('Are you sure want to delete ?');"class="btn Ajaxdel">
+                        <i class="icon-trash"></i></a>
+                </div>
+            </div>
+        </td>
+    </tr>
+    {% endfor %}            
+</table>
+<div class="ajaxBox"></div>
+<script>
+$('.Ajaxcreate').click(function(e)
+  {
+    e.preventDefault();
+    var url=$(this).attr('href');
+    $('.ajaxBox').load(url);    
+  });  
+
+
+</script>

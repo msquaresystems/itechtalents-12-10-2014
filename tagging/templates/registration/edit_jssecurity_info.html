@@ -1,0 +1,80 @@
+<script type="text/javascript" src="{{ STATIC_URL }}js/datepicker/bootstrap-datepicker.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/datepicker/daterange.js"></script>
+<link rel="stylesheet" href="{{ STATIC_URL }}js/datepicker/datepicker.css" />
+{% load mytaghelper %}
+<div>
+<form name="edit_personal_info_form" action="/accounts/Editjssecurity/" method="post" enctype="multipart/form-data">{% csrf_token %}
+	<div>
+
+	<span><input type="hidden" value="{{ user.id }}" name="user_id" ></span>
+
+	<div>
+		
+		<table class="table table-striped">
+    <tr>
+                <td colspan="2"><h3>Security Clearance Section</h3></td>
+            </tr>
+            {% for sc in details1 %}
+            <tr>
+                <td>Security Clearance</td>
+                <td>
+                    {% if sc.jssecretclear %}
+
+                    {% secret sc.jssecretclear%}
+                    {% else %}
+                    <select name="jssecretclear" class="input-xlarge" >
+                    <option value=""> Select </option>
+                    <option value="None">None</option>
+                    <option value="Public Trust">Public Trust</option>
+                    <option value="NACI">NACI</option>
+                    <option value="ADP1/IT1">ADP1/IT1</option>
+                    <option value="ADP2/IT2">ADP2/IT2</option>
+                    <option value="Confidential">Confidential</option>
+                    <option value="DOE L">DOE L</option>
+                    <option value="DOE Q">DOE Q</option>
+                    <option value="Secret">Secret</option>
+                    <option value="Top Secret">Top Secret</option>
+                    <option value="Top Secret/SCI">Top Secret/SCI</option>
+                    <option value="Top Secret/SCI CI Polygeaph">Top Secret/SCI CI Polygeaph</option>
+                    <option value="Top Secret/SCI Full Scope Polygeaph">Top Secret/SCI Full Scope Polygeaph</option>
+                    <option value="Other Clearance">Other Clearance</option>
+                    </select>
+                    {% endif %}
+                </td>
+
+            </tr>
+
+
+             <tr>
+                <td>From Date</td>
+                <td>
+                    <input type="text" name="jsfromdate" class="input-xlarge" id="dpd11" value="{% if sc.jsfromdate %}{{ sc.jsfromdate|date:'m-d-Y' }}{% endif %} readonly" >
+                   
+                    
+                </td>
+            </tr>
+            <tr>
+                <td>Expire Date</td>
+                <td>
+                    
+                    <input type="text" name="jstodate" class="input-xlarge" id="dpd22" value="{% if sc.jstodate %}{{ sc.jstodate|date:'m-d-Y' }}{% endif %}" readonly>
+                  
+
+                </td>
+            </tr>
+            {% endfor %}
+            <tr><td colspan="2" style="text-align:center;">
+                    <p>
+                    <input type="submit" value="Update" class="btn btn-success">&emsp;
+                    <input type="reset" value="Reset" class="btn btn-info">
+                    </p>
+                </td>
+
+            </tr>
+
+</table>
+	</div>
+
+	</div>
+	</form>
+</div>

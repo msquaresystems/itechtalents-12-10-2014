@@ -1,0 +1,181 @@
+<script type="text/javascript">
+    $(function(){
+            $("#editpro").click(function()
+                {
+            
+                $('.rightside').load('/accounts/UpdateEmployerProfile/');
+            
+                });
+            $("#empaddgallery").click(function()
+                {
+            
+                $('.rightside').load('/accounts/AddEmpGallery/');
+            
+                });
+            $("#empviewgallery").click(function()
+                {
+            
+                $('.rightside').load('/accounts/ViewEmpGallery/');
+            
+                });
+            $('.upfile').bind('change', function(){
+                var a=(this.files[0].size);
+                var aa=document.getElementById('upimg').files[0].type  //mime type
+                if((aa=='image/jpeg') || (aa=='image/gif') || (aa=='image/jpg') || (aa=='image/png') || (aa=='image/bmp')){
+                    if(a > 204800){
+                        $('#errmsg1').html('Size is more than 200KB');
+                        $('.upfile').val('');
+                    }
+                }
+                else{
+                    $('#errmsg1').html('Invalid file format');
+                    $('.upfile').val('');
+                }
+            });
+            $('.upvfile').bind('change', function(){
+                var a=(this.files[0].size);
+                var aa=document.getElementById('upvid').files[0].type  //mime type
+                if((aa=='video/webm') || (aa=='video/ogg')){
+                    if(a > 2621440){
+                        $('#errmsg2').html('Size is not more than 2.5MB');
+                        $('.upvfile').val('');
+                    }
+                }
+                else{
+                    $('#errmsg2').html('Invalid file format');
+                    $('.upvfile').val('');
+                }
+            });
+            $('body').on('submit','#addVideoForm',function(){
+                if($('#upvid').val()==''){
+                    $('#upvid').css('border','1px solid red');
+                    return false;
+                }
+                else{
+                    $('#upvid').css('border','1px solid #cccccc');
+                    $('#errmsg2').html('');
+                    return true;
+                }
+            });
+            $('body').on('submit','#addPhotoForm',function(){
+                if($('#upimg').val()==''){
+                    $('#upimg').css('border','1px solid red');
+                    return false;
+                }
+                else{
+                    $('#upimg').css('border','1px solid #cccccc');
+                    $('#errmsg1').html('');
+                    return true;
+                }
+            });
+        });
+</script>
+
+<div>
+    <h3 class="text-info" style="border-bottom:2px solid #FFB812;">{{request.user.companyname}} Profile!!!!!!!!!!!!</h3>
+    <div>
+        <p class="pull-right"><a href="#addPhoto" data-toggle="modal" style="text-decoration:none;" id="empaddphotogallery" class="btn btn-danger">Add photo gallery</a>
+        <a style="text-decoration:none;" id="empaddvideogallery" href="#addVideo" data-toggle="modal" class="btn btn-warning">Add video gallery</a>
+        <a href="#" style="text-decoration:none;" id="empviewgallery"><input type="button" class="btn btn-success" value="View gallery"></a>
+        <a href='#' class="btn btn-info" id="editpro">Edit</a></p>
+    </div>
+    <div>
+        <table class="table table-striped well">
+            <tr>
+                <th width="20%">Recruiter Name</th>
+                <td>{{ user.username }}</td>
+            </tr>
+            <tr>
+                <th>Email id</th>
+                <td>{{user.email}}</td>
+            </tr>
+            <tr>
+                <th>Company Name</th>
+                <td>{{user.companyname}}</td>
+            </tr>
+            <tr>
+                <th>Company URL</th>
+                <td>{% for a in details1 %}{{a.companyurl}}{% endfor %}</td>
+            </tr>
+            <tr>
+                <th>Company Type</th>
+                <td>{% for a in details1 %}{{a.companytype}}{% endfor %}</td>
+            </tr>
+            <tr>
+                <th>Contact Person</th>
+                <td>{% for a in details1 %}{{a.contactperson}}{% endfor %}</td>
+            </tr>
+            <tr>
+                <th>Phone Number</th>
+                <td>{% for a in details1 %}{{a.contactno}}{% endfor %}</td>
+            </tr>
+            <tr>
+                <th>Company Logo</th>
+                <td><img  style="width:120px;height:50px;" src="{{ STATIC_URL }}{{user.employerreg_form.companylogo}}" /></td>
+            </tr>
+            <tr>
+                <th>Company Profile</th>
+                <td style="word-break:break-all;">{{user.employerreg_form.companyprofile|safe}}</td>
+            </tr>
+            <tr>
+                <th>Social account Profile</th>
+                <td>{% if request.user.empsocialnetworks.facebook %}<a target="_blank" href="http://www.facebook.com/{{request.user.empsocialnetworks.facebook}}">www.facebook.com/{{request.user.empsocialnetworks.facebook}}</a><br>{% endif %}{% if request.user.empsocialnetworks.twitter %} <a target="_blank" href="http://www.twitter.com/{{request.user.empsocialnetworks.twitter}}">www.twitter.com/{{request.user.empsocialnetworks.twitter}}</a><br>{% endif %}{% if request.user.empsocialnetworks.linkedin %} <a target="_blank" href="http://www.linkedin.com/{{request.user.empsocialnetworks.linkedin}}">www.linkedin.com/{{request.user.empsocialnetworks.linkedin}}</a>{% endif %}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+<!-- Add Photo -->
+<div id="addPhoto" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<form  action="/accounts/AddEmpGallery/" method="post" id="addPhotoForm" enctype="multipart/form-data">{% csrf_token %}
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+<h3 id="myModalLabel">Add New Photo</h3>
+</div>
+<div class="modal-body">
+        <input type='hidden' name="user_id" value="{{ request.user.id }}">
+        <table class="table">
+            <tr>
+                <td>Select Picture</td>
+                <td><input type="file" accept="image/*" name="galpic" class="input-xlarge upfile" id="upimg" required ><p><sub>(.jpg, png, jpeg, gif, bmp, max.size 200KB)</sub></p><small id="errmsg1" style="color:red;"></small></td>
+            </tr>
+            <tr>
+                <td>Description</td>
+                <td><input type="text" name="galpictitle" class="input-xlarge" required ></td>
+            </tr>
+        </table>
+    
+</div>
+<div class="modal-footer">
+<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+<input type="submit" class="btn btn-primary" value="Save">
+</div>
+</form>
+</div>
+
+<!-- Add Video -->
+
+<div id="addVideo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<form  action="/accounts/AddEmpGalleryVideo/" id="addVideoForm" method="post" enctype="multipart/form-data">{% csrf_token %}
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+<h3 id="myModalLabel">Add New Video</h3>
+</div>
+<div class="modal-body">
+        <input type='hidden' name="user_id" value="{{ user.id }}">
+        <table class="table ">
+            <tr>
+                <td>Select Video</td>
+                <td><input type="file" accept="video/*" class="input-xlarge upvfile" id="upvid" name="galvideo" required ><p><sub>(ogg and webm max.size 2.5MB)</sub></p><small id="errmsg2" style="color:red;"></small></td>
+            </tr>
+            <tr>
+                <td>Description</td>
+                <td><input type="text" name="galvideotitle" class="input-xlarge" required ></td>
+            </tr>
+        </table>
+</div>
+<div class="modal-footer">
+<input type="reset" class="btn" data-dismiss="modal" aria-hidden="true" value="close">
+<input type="submit" class="btn btn-primary" value="Save">
+</div>
+</form>
+</div>

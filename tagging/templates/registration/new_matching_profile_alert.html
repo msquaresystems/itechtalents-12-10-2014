@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+</head>
+<body style="color: #191919;font-family: arial,sans-serif; font-size: 12px;line-height: 17px;">
+<div style="width:80%;margin:auto;padding:0px;background-color:#E2F0FD;padding:15px;">
+	<div style="padding:5px 0px 5px 25px;"><p style="font-size:36px;color: #357EC7;"><strong>ITechTalents <sub style="font-size:16px;"><i>"Smart Engine, Smart People"</i></sub></strong></p></div>
+	<hr style="color:#e9e9e9;">
+	<div>
+		<h3>Job Alert | {{now|date:"M d, Y"}}</h3>
+		<p><strong>Dear {{fname}}, </strong></p>
+		<p>Here is/are new profile(s) matching the criteria set by you in Profile Alert "<strong>{{searchname}}</strong>".</p>
+		<br>
+		{% for i in d %}
+		<p style="color:#3882C8;"><strong>{{i.first_name}}</strong>&nbsp;-&nbsp;{% for skill in i.jsskills_set.all %}{{skill.skill}}{% if not forloop.last %},&nbsp;{% endif %}{% endfor %}&nbsp;<span style="color:#C11B17;">({{i.jspersonal.work_expyears}}&nbsp;Yr&nbsp;-&nbsp;{{i.jspersonal.work_expmonths}}&nbsp;Mon)</span></p>
+		<p style="color:green;">{{i.jspersonal.city}},{{i.jspersonal.state}}</p>
+		<p style="color: #474A4B;font-family: Tahoma;font-size: 11px;line-height: 16px;">{{i.jsprofilesummary.profile_summary|truncatewords:20 }}</p>
+		<hr style="color:#e9e9e9;" />
+		{% endfor %}
+		<br><br>
+		<p><a target="_blank" style="font-family:Arial,Helvetica,sans-serif;text-decoration:none;padding:7px 10px;font-size:12px;display:block;background:#FDE25E;border:solid 1px #ffc21f; width:150px;font-weight:bold;text-align:center;" target="_blank" href="http://{{current_domain}}/accounts/EmpReg/">View Profile</a></p>
+		<br><br><br>
+		<p>Thanks & Regards,</p>
+		<p>HR Staffing Team, ItechTalents.com</p>
+		<br><hr style="color:#e9e9e9;"><br>
+	</div>
+</div>
+</body>
+</html>
+
+
+
+
+

@@ -1,0 +1,180 @@
+<style>
+	.editable form {
+	    background-color: #F8F8F8;
+	    border: 1px solid #EAD9CE;
+	    cursor: default;
+	    margin: 0;
+	    padding: 13px;
+	}
+	hr {
+	  margin: 5px;
+	}
+	.xgap{
+	  margin-top:60px;
+	}
+	.item_tittle h1 span {
+	    background: none repeat scroll 0 0 #74767A;
+	    border-radius: 3px 3px 3px 3px;
+	    color: #ffffff;
+	    float: right;
+	    font-size: 16px;
+	    font-weight: bold;
+	    margin: 7px 0 0;
+	    padding: 0 5px;
+	  margin-right: 0;
+	 
+	}
+	.item_tittle h2 {
+	  font-size: 18px;
+	  font-weight:normal;
+	  text-align: left;
+	  color:#000;
+	}
+	.item_tittle h3{
+	  font-size: 14px;
+	  font-weight:normal;
+	  text-align: right;
+	  color:#000;
+	}
+</style>
+<div id="empdetails" class="xgap">
+	<h4 style="border-bottom:2px solid #FFB812;">Employment Details</h4>
+	<br>
+	<div id="empview">				
+		{% if emp %}
+			{% for l in emp %}
+			<div class="emps"><table  class="table table-striped info" id="emp{{l.pk}}" >
+			<tr><th  colspan="4"><a href="#" class="editemp" data-type="text" data-title="Enter Company name" data-pk="{{l.pk}}" data-url="/ajax/update/" data-name="employer_name" data-params="{curtable:'emptable'}">{{ l.employer_name }}</a> - <a href="#" class="editemp" data-type="text" data-title="Enter Company status" data-pk="{{l.pk}}" data-url="/ajax/update/" data-name="empstatus" data-params="{curtable:'emptable'}">{{ l.empstatus }}</a></th></tr>
+			<tr><th style="width:25%">Duration</th><td style="width:25%"><a href="#" data-type="date" data-pk="{{l.pk}}" data-viewformat="mm-yyyy" data-format="mm-yyyy" data-title="Start date" class="editemp" data-url="/ajax/update/" data-name="empstartdate" data-params="{curtable:'emptable'}">{{l.empstartdate}}</a> to {% ifequal l.empstatus 'currentemployer' %}Today{% else %}<a href="#" data-type="date" data-pk="{{l.pk}}" data-viewformat="mm-yyyy" data-format="mm-yyyy" data-title="Start date" class="editemp" data-url="/ajax/update/" data-name="emptodate" data-params="{curtable:'emptable'}">{{l.emptodate}}</a>{% endifequal %}</td>
+			<th style="width:25%">Designation</th><td style="width:25%"><a href="#" class="editemp" data-type="text" data-title="Enter Designation" data-pk="{{l.pk}}" data-url="/ajax/update/" data-name="designation" data-params="{curtable:'emptable'}">{{l.designation}}</a></td></tr>
+			<tr id="emp{{l.pk}}"><th>Jobprofile</th><td colspan="3"><a href="#" class="editemp" data-type="text" data-title="Enter Jobprofile" data-pk="{{l.pk}}" data-url="/ajax/update/" data-name="jobprofile" data-params="{curtable:'emptable'}">{{l.jobprofile}}</a></td></tr>
+			<tr colspan="4"><td><a class="deleteemp" data-empid="{{l.pk}}" href="#">delete</a></td>
+			<td></td><td></td><td></td></tr>
+			</table></div>
+			<!-- <div id="emp{{l.pk}}" class="emps">
+				<a class="deleteemp" data-empid="{{ l.pk }}" href="#">delete</a>
+				<p class="lead">{{l.designation}},{{ l.employer_name }}</p>
+				<p>Status:<i>{{ l.empstatus }}</i></p>-->
+				<!-- <p style="font-style:italic;">{{l.empstartdate}} - {% ifequal l.empstatus 'currentemployer' %}Today{% else %}{{l.emptodate}}{% endifequal %}</p>
+				<p style="text-decoration:underline;"><strong>Job Summary</strong></p>
+				<p>{{l.jobprofile|safe}}</p>
+			</div> -->
+			{% endfor %}		
+		{% else %}
+		<div class="noitems" style="background-color:#ffa; padding:20px">
+			<strong>Please Add Employment details</strong>
+		</div>
+		{% endif %}
+	</div>
+	<div class="toggleview"> 
+		<a class="btn btn-success toggle-button" href="javascript:void(0);" rel="emp">add employment details</a>			    
+	</div>
+	<div class="editable toggleform" style="display:none;">
+		<form action="" class="form-horizontal" id="empForm">{% csrf_token %}
+		<!-- curform value can be used to check which form is ajaxpost in a python view -->
+			<input type="hidden" name="curform" value="empform">
+			<div class="control-group">
+				<label class="control-label">Company name</label>
+				<div class="controls">
+					<input id="employer_nameadd" maxlength="100" name="employer_name" type="text" required/>
+				</div>
+			</div>			
+			<div class="control-group">
+				<div class="controls">
+				<label class="checkbox">
+			      <input type="checkbox" name="empstatus" value="currentemployer" id="iscurrentjob"> Current Job
+			    </label>
+			    </div>
+		    </div>
+			<div class="control-group">
+				<label class="control-label">Time Frame </label>
+				<div class="controls">
+				 <input type="text" class="datepicker" name="empstartdate" required /> to 
+				 <input type="text" class="datepicker" id="todate" name="emptodate" required/>
+				</div>
+			</div>		
+			<div class="control-group">
+				<label class="control-label">Designation</label>
+				<div class="controls">
+					<input id="designation" name="designation" type="text" required/>
+				</div>
+			</div>	
+			<div class="control-group">
+				<label class="control-label">Jobprofile</label>
+				<div class="controls">
+					<textarea id="some-textarea" name="jobprofile" style="width:600px;height:100px;" ></textarea>
+				</div>
+			</div>	
+			<br>
+		    <input class="btn btn-success" type="submit" value="save" />
+		    <a href="javascript:void(0);"  rel="emp" class="btn btn-warning toggle-button">cancel</a>
+	  </form>
+ 	</div><!--  .editable toggle form -->
+</div>
+<script>
+function CreateRow(jdata) { 
+	//$('#SkillTable').append(fulltr);
+	if ($('.emps').length == 0){
+		//alert('noitems');
+		$('#empview').empty();
+	}
+	//alert($('.emps').length+ 'emps');
+	$('#empview').append(jdata);	 
+
+	//alert($('#noitems').length + 'nitess'); 
+    //$('#skillsview').fadeIn(1500);        
+	$('.toggleview').toggle();
+	$('.toggleform').toggle();	
+	$('.editemp').editable();
+
+} 
+
+$(document).ready(function(){
+	$.fn.editable.defaults.mode = 'popup';
+    $.fn.editable.defaults.ajaxOptions = {type: "GET"};
+    $('.editemp').editable();
+	$('body').on('change','#iscurrentjob',function(){
+    	if($(this).is(':checked')){    		
+    		document.getElementById('todate').disabled = true;
+    	} else {
+    		document.getElementById('todate').disabled = false;    		
+    	}
+	});
+	$( ".datepicker" ).datepicker();
+	$('body').on('click','.toggle-button',function () {    	
+        $('.toggleview').toggle();
+        $('.toggleform').toggle();
+        if ($(this).hasClass('btn-success')){	        	
+        	$('.toggleform').find("input[type=text], select").val("");
+        	$('textarea').val('');
+        }	        
+    });
+	$("body").on("click",".deleteemp", function(e){   	
+   		e.preventDefault();
+   		var answer = confirm ("Are you sure you want to delete from the database?");
+   		if (answer)
+   			$.ajax({
+		 		type: "GET",
+				url: "/ajax/del/",
+				data: { empid: $(this).data('empid')}
+			}).done(function(msg) {			
+				$('#emp'+msg).remove();
+				//alert($('.emps').length);
+				//i want to set the table hidden if there is no skills
+				if ($('.emps').length == 1){
+				$("#empview").html('<div class="noitems" style="background-color:#ffa; padding:20px">
+					<strong>Please Add Employer details</strong>
+					</div>');
+			}
+ 		});
+	});
+	$("body").on("submit","#empForm", function(event){	
+		$.post('/ajax/views/', $(this).serialize(),	function(data){
+			CreateRow(data);
+		});	
+		event.preventDefault();		
+	});
+	$('#some-textarea').wysihtml5();
+	
+}); 
+</script>   

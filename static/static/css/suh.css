@@ -1,0 +1,89 @@
+/* Body and structure
+-------------------------------------------------- */
+
+body {
+  position: relative;
+  padding-top: 40px;
+
+}
+
+
+hr.soften {
+  height: 1px;
+  margin: 25px 0;
+  border: 0;
+}
+
+
+.timer-box {
+  color: #468847;
+  background-color: #dff0d8;
+  border: 1px solid #d6e9c6;
+}
+.content{
+   min-height: 500px;
+
+}
+.question-box{
+	padding-bottom: 15px;
+}
+/* Mini layout previews
+-------------------------------------------------- */
+
+.mini-layout-body {
+  margin: 0 auto;
+  padding-left: 20px;
+  width: 75%;
+  float: left;
+  border: 1px solid #ddd;
+}
+
+.mini-layout-sidebar {
+  float: right;
+  padding-top: 50px;
+  width: 20%;
+}
+.btn-nav-quests {
+  width: 36px;
+}
+
+.input-large[class=input-large] {
+    width: 400px;
+    height: 40px ;
+  
+  line-height: 30px;
+  padding: 2px 5px;
+  font-size: 17.5px;
+  -webkit-border-radius: 6px;
+     -moz-border-radius: 6px;
+          border-radius: 6px;
+
+}
+
+/* Footer
+-------------------------------------------------- */
+
+.footer {
+  text-align: center;
+  padding: 30px 0;
+  margin-top: 50px;
+  border-top: 1px solid #e5e5e5;
+  background-color: #f5f5f5;
+  clear: both;
+}
+.footer p {
+  margin-bottom: 0;
+  color: #777;
+}
+.footer-links {
+  margin: 10px 0;
+}
+.footer-links li {
+  display: inline;
+  padding: 0 2px;
+}
+.footer-links li:first-child {
+  padding-left: 0;
+}
+
+

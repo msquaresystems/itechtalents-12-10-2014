@@ -1,0 +1,53 @@
+<div>
+    <div class="span6">
+    <form name="edit_personal_info_form" action="/ajax/edit_profilepic_info/" method="post" enctype="multipart/form-data">{% csrf_token %}
+        <input type="hidden" value="{{ user.id }}" name="user_id" >
+        <h4 style="border-bottom:2px solid #FFB812;">Change New Profile Picture</h4>
+        <div style="margin:50px 0px 0px 50px;">
+            <p class="text-warning"><strong>Current profile picture</strong></p><br>
+            <div><img  class="img-polaroid" style="width:200px;height:200px;" src="{{ STATIC_URL }}{{ details1.0.profile_pic }}" /></div><br/>
+            <p class="text-warning"><strong>Change new profile picture</strong></p><br>
+            <p id="errmsg" class="text-error"></p>
+            <input type="file" accept="image/*" name="profile_pic" value="{% for a in details1 %}{{a.profile_pic}}{% endfor %}" class="input-xlarge upfile" id="Gfile_1" required ><br><small>(max.size 200KB, .jpeg, .jpg, .png, .gif, .bmp)</small><br><br>
+            <input type="submit" class="btn btn-success" value="Update">&emsp;<input type="reset" class="btn btn-danger" value="Reset">
+        </div>
+    </form>
+    </div>
+    <div class="span6">
+        <h4 style="border-bottom:2px solid #FFB812;">Instructions To Change New Profile Picture</h4>
+        <div style="margin:30px 0px 0px 50px;" class="text-warning">
+            <p><strong>If you want to change your profile picture. You can follow some instructions</strong></p>
+            <ul>
+                <li>Your new profile image should be in any of the following format
+                    <ul>
+                        <li>.jpeg</li>
+                        <li>.jpg</li>
+                        <li>.png</li>
+                        <li>.gif</li>
+                        <li>.bmp</li>
+                    </ul>
+                </li>
+                <li>The memory size of your new profile image should not be more than 200KB</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('.upfile').bind('change', function(){
+        var a=(this.files[0].size);
+        var aa=document.getElementById('Gfile_1').files[0].type  //mime type
+        if((aa=='image/jpeg') || (aa=='image/gif') || (aa=='image/jpg') || (aa=='image/png') || (aa=='image/bmp')){
+            if(a > 204800){
+                $('#errmsg').html('Not a valid image size. For more information see the instructions');
+                $('.upfile').val('');
+            }
+        }
+        else{
+            $('#errmsg').html('Not a valid image format. For more information see the instructions');
+            $('.upfile').val('');
+        }
+    });
+});
+</script>
+

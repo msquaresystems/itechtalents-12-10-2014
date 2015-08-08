@@ -1,0 +1,223 @@
+<link rel="shortcut icon" href="/static/img/Faviicon.ico">    
+<link rel="stylesheet" href="/static/css/flatstrap.css" /> 
+<link rel="stylesheet" href="{/static/css/bootstrap-responsive.css" />
+<link href="/static/jsprofile_static/xeditable/bootstrap-editable.css" rel="stylesheet"/>  
+<link rel="stylesheet" type="text/css" href="/static/css/bootstrap-wysihtml5.css"></link>
+<script language="JavaScript" type="text/javascript">
+<!--
+
+// Global variable to hold player's reference.
+var _Nimbb;
+
+// Global variable to hold the guid of the recorded video.
+var _Guid = "";
+
+// Global variables for timer.
+var _Timer;
+var _Count;
+
+// Constant for maximum recording time (in seconds).
+var MAX_TIME = {{nimbb.RECORD_TIME}};
+
+// Event: Nimbb Player has been initialized and is ready.
+function Nimbb_initCompleted(idPlayer)
+{
+  // Get a reference to the player since it was successfully created.
+  _Nimbb = document[idPlayer];
+  $("#actions").show();
+  $("#loading").hide();
+
+}
+
+  // Event: the player has stopped recording.
+function Nimbb_recordingStopped(idPlayer)
+{
+  // Tell the player to save video now.
+  _Nimbb.saveVideo();
+}
+
+// Event: the state of the player changed.
+function Nimbb_stateChanged(idPlayer, state)
+{
+  // Update button text.
+  updateText();
+}
+
+// Event: the video was saved.
+function Nimbb_videoSaved(idPlayer)
+{
+  var viewVideo = document.getElementById("guidTextBox");
+	
+  // Get video GUID.
+  _Guid = _Nimbb.getGuid();
+ 
+  $("#widget").hide();
+  $("#stopButton").hide();
+
+  {% comment %}
+  var videoLink = "{% url video-resume-playback %}?guid=" + _Guid;
+  // Set GUID value in textbox.
+  viewVideo.href = videoLink;
+  viewVideo.style.display = "block";
+  {% endcomment %}
+
+  $.ajax({
+      url:'{% url create_video %}?guid=' + _Guid,
+      type:"GET",
+      dataType: "json",
+      success:function(data){                
+          if(data.success == true){
+            $("#statusArea").html("Video saved successfully.");
+          }else{
+            $("#statusArea").html("Error while saving the video.");
+          }
+      }
+  })
+
+
+}
+
+// Event: the timer count.
+function Timer_Count()
+{
+  // Decrement total count and check if we have reached the maximum time.
+  _Count--;
+  if( _Count == 0 )
+  {
+    // Stop the recording.
+    stop();
+    return;
+  }
+	
+  // Update button text.
+  updateText();
+	
+  // Let's continue the timer.
+  _Timer = setTimeout("Timer_Count()", 1000);
+}
+
+// Called when user clicks the link.
+function action()
+{
+  // Check player's state and call appropriate action.
+  if( _Nimbb.getState() == "recording" )
+  {
+    stop();
+  } 
+  else
+  {
+    record();
+  }
+}
+
+// Start recording the video.
+function record()
+{
+  
+  // Make sure the user has allowed access to camera.
+  if( !_Nimbb.isCaptureAllowed() )
+  {
+    alert("You need to allow access to your webcam.");
+    return;
+  }
+
+  // Make sure the user is not already recording.
+  if( _Nimbb.getState() == "recording" )
+  {
+    alert("You are already recording a video.");
+    return;
+  }
+	
+  // Prepare timer object.
+  _Count = MAX_TIME + 1;
+  Timer_Count();
+	
+  // Start recording.
+  _Nimbb.recordVideo();
+
+  $("#startButton").hide();
+}
+
+// Stop recording the video.
+function stop()
+{
+   
+  // Make sure the user is recording.
+  if( _Nimbb.getState() != "recording" )
+  {
+    alert("No video is recording.");
+    return;
+  }
+  
+  // Stop timer.
+  clearTimeout(_Timer);
+	
+  // Stop recording.
+  _Nimbb.stopVideo();
+
+  $("#stopButton").hide();
+  $("#statusArea").html("The video is being saved...")
+}
+
+// Update text on the link.
+function updateText()
+{
+  var statusArea = document.getElementById("statusArea");
+
+  // Check player's state.
+  if( _Nimbb.getState() == "recording" )
+  {
+    // Update link text.
+    statusArea.innerHTML = _Count + " seconds more...";
+  }
+}
+
+// -->
+</script>
+
+
+<div id="loading" class="alert alert-info" style="width:38%;">
+  <button type="button" class="close" data-dismiss="alert">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  Loading the widget... Please wait.
+</div>
+
+<div id="actions" style="display:none;">
+
+<div id="status" class="alert alert-success" style="width:38%;">
+  <button type="button" class="close" data-dismiss="alert">
+  </button>
+  <p id="statusArea">Click Start to record the video.</p>
+</div>
+
+<a class="btn btn-success toggle-button" id="startButton" href="javascript:record();">Start</a>
+
+<a class="btn btn-danger toggle-button" id="stopButton" href="javascript:stop();">Stop</a>
+
+</div>
+
+<a id="guidTextBox" target="_blank" href="" style="display: none;">View Recorded Resume</a>
+<br>
+
+<div id="widget">
+<object id="nimbb" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+        width="600" height="420"
+        codebase= "http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
+
+    <param name="movie"
+           value="http://player.nimbb.com/nimbb2.swf?mode=record&simplepage=1&showmenu=0&showcounter=0&key={{nimbb.PUBLIC_KEY}}&lang=en" />
+    <param name="allowScriptAccess" value="always" />
+    <param name="allowFullScreen" value="true" />
+
+    <embed name="nimbb"
+        src="http://player.nimbb.com/nimbb2.swf?mode=record&simplepage=1&showmenu=0&showcounter=0&key={{nimbb.PUBLIC_KEY}}&lang=en"
+        width="600"
+        height="420"
+        allowScriptAccess="always"
+        allowFullScreen="true"
+        pluginspage="http://www.adobe.com/go/getflashplayer"
+        type="application/x-shockwave-flash">
+    </embed>
+</object>
+</div>

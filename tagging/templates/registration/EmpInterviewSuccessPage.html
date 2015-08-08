@@ -1,0 +1,33 @@
+<div>
+<h4 class="text text-info" style="border-bottom:2px solid #FFB812;">Selected Candidates</h4>
+  <table class="table table-striped">
+    <tr>
+      <th>Candidate Name</th>
+      <th>Position</th>
+      <th>Date of Interview</th>
+    </tr>
+    {%if success%}
+    {% for interview in success %}
+    <tr>     
+      <td><a href="/accounts/RoundsEmp/{{ interview.id}}/">{{ interview.JSId.user.first_name}} {{ interview.JSId.user.last_name }}</a></td>
+      <td>{{ interview.Job.title }}</td>
+      {% if interview.reschedule.jsschedule_date3%}
+      <td>{{ interview.reschedule.jsschedule_date3 }}</td>
+      {% elif interview.reschedule.empschedule_date3%}
+      <td>{{ interview.reschedule.empschedule_date3 }}</td>
+      {% elif interview.reschedule.jsschedule_date2%}
+      <td>{{ interview.reschedule.jsschedule_date2 }}</td>
+      {% elif interview.reschedule.empschedule_date2%}
+      <td>{{ interview.reschedule.empschedule_date2 }}</td>
+      {% elif interview.reschedule.jsschedule_date1 %}
+      <td>{{ interview.reschedule.jsschedule_date1 }}</td>
+      {% else %}
+      <td>{{ interview.reschedule.empschedule_date1 }}</td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+    {%else%}
+    <tr><td colspan="3" style="text-align:center;">There is no selected candidates !</td></tr>
+    {%endif%}
+  </table>
+</div>

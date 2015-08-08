@@ -1,0 +1,840 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="LibreOffice 4.0.2.2 (Linux)">
+	<META NAME="AUTHOR" CONTENT="capsone-system1 ">
+	<META NAME="CREATED" CONTENT="20131214;6330200">
+	<META NAME="CHANGED" CONTENT="0;0">
+	<STYLE TYPE="text/css">
+	<!--
+		@page { size: 8.27in 11.69in; margin: 0.79in }
+		P { margin-bottom: 0.08in; direction: ltr; color: #000000; widows: 0; orphans: 0 }
+		P.western { font-family: "Liberation Serif", "Times New Roman", serif; font-size: 12pt; so-language: en-IN }
+		P.cjk { font-family: "DejaVu Sans"; font-size: 12pt; so-language: zh-CN }
+		P.ctl { font-family: "Lohit Hindi"; font-size: 12pt; so-language: hi-IN }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" TEXT="#000000" DIR="LTR">
+<P LANG="en-IN" CLASS="western" ALIGN=CENTER STYLE="margin-bottom: 0in">
+ <FONT SIZE=4 STYLE="font-size: 16pt"><B>Documentation of Ajax edit
+and delete with MVC</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=4><B>Introduction:</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">	To
+perform edit and delete functionality with ajax and jquery to avoid
+page reloading.</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=4><B>Steps
+to follow:</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=3 STYLE="font-size: 13pt"><B>Open
+terminal:</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">	1. Move
+to corresponding directory.</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">	2. Create
+a new project.</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">		django-admin.py
+startproject projectname</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">	3. Enter
+into project.</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">		cd
+projectname</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">	4. Create
+a new application</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">		python
+manage.py startapp applicationname</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">	5.
+Syunchronise database</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">		python
+manage.py syncdb</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">	6. Run a
+project</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">		python
+manage.py runserver 
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=4><B>MVC:(Model
+View Controller)</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=3 STYLE="font-size: 13pt"><B>Models:</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P LANG="en-IN" CLASS="western"><B>	Models represent knowledge. A
+model could be a single object (rather uninteresting), or it could be
+some structure of objects. </B>
+</P>
+<P LANG="en-IN" CLASS="western">	There should be a one-to-one
+correspondence between the model and its parts on the one hand, and
+the represented world as perceived by the owner of the model on the
+other hand. 
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=3 STYLE="font-size: 13pt"><B>Views
+</B></FONT>
+</P>
+<P LANG="en-IN" CLASS="western">	A view is a (visual) representation
+of its model. It would ordinarily highlight certain attributes of the
+model and suppress others. It is thus acting as a <I>presentation
+filter</I>. 
+</P>
+<P LANG="en-IN" CLASS="western">	A view is attached to its model (or
+model part) and gets the data necessary for the presentation from the
+model by asking questions. It may also update the model by sending
+appropriate messages. All these questions and messages have to be in
+the terminology of the model, the view will therefore have to know
+the semantics of the attributes of the model it represents. 
+</P>
+<P LANG="en-IN" CLASS="western"><FONT SIZE=3 STYLE="font-size: 13pt"><B>Controllers
+</B></FONT>
+</P>
+<P LANG="en-IN" CLASS="western">	A controller is the link between a
+user and the system. It provides the user with input by arranging for
+relevant views to present themselves in appropriate places on the
+screen. It provides means for user output by presenting the user with
+menus or other means of giving commands and data. The controller
+receives such user output, translates it into the appropriate
+messages and pass these messages on to one or more of the views. 
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=4><B>Proceedings:</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=4><B>Example:</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=3><B>1.
+Create a table with three fields namely first name, last name and
+email id.  Created a form in templates with three input fields and
+one button to save the data in database when submit this button.  The
+saved datas are displayed in a table format using bootstrap. The name
+fields are editable.</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=4><SPAN STYLE="font-weight: normal">	</SPAN></FONT><FONT SIZE=3><SPAN STYLE="font-weight: normal">Projectname:
+secretclearance</SPAN></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>	Application name: app1</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>	Inside the project we have app1, manage.py,
+secretclearance files. Inside the app1 we have models.py, views.py,
+__init__.py and tests.py.</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>	Inside the secretclearance we have settings.py,
+urls.py, template folder to have html files, images and css files.</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=4><B>Settings.py</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=4>	</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=4><SPAN STYLE="font-weight: normal">	</SPAN></FONT><FONT SIZE=3><SPAN STYLE="font-weight: normal">In
+settings.py we need to mention which database we are going to use.
+For example mysql, sqlite, postgresql and so on.. We have to mention
+the application name, static files used, template used. To activate
+admin enable the admin related things.</SPAN></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=4><B>i).
+To take the path automatically:</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>import os</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>PROJECT_PATH =
+os.path.dirname(os.path.realpath(__file__))</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=4><B>To
+use database(Give the database name specifically):</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>DATABASES = {</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">   
+<FONT SIZE=3><SPAN STYLE="font-weight: normal">'default': {</SPAN></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">       
+<FONT SIZE=3><SPAN STYLE="font-weight: normal">'ENGINE':
+'django.db.backends.sqlite3',</SPAN></FONT><FONT SIZE=3><B> # Add
+'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">       
+<FONT SIZE=3><SPAN STYLE="font-weight: normal">'NAME':
+PROJECT_PATH+'/sc',     </SPAN></FONT><FONT SIZE=3><B>               
+ # Or path to database file if using sqlite3.</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">          
+          <FONT SIZE=3><B># Set to empty string for default. Not used
+with sqlite3.</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">    <FONT SIZE=3><SPAN STYLE="font-weight: normal">}</SPAN></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>}</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=4><B>ii).
+Mention the template used:</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3 STYLE="font-size: 13pt">TEMPLATE_DIRS =
+(PROJECT_PATH+'/template',</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">    <FONT SIZE=3 STYLE="font-size: 13pt"><B>#
+Put strings here, like &quot;/home/html/django_templates&quot; or
+&quot;C:/www/django/templates&quot;.</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">    <FONT SIZE=3 STYLE="font-size: 13pt"><B>#
+Always use forward slashes, even on Windows.</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">    <FONT SIZE=3 STYLE="font-size: 13pt"><B>#
+Don't forget to use absolute paths, not relative paths.</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3 STYLE="font-size: 13pt">)</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=4><B>iii).
+Mention the application used:</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>INSTALLED_APPS = (</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">   
+<FONT SIZE=3><SPAN STYLE="font-weight: normal">'django.contrib.auth',</SPAN></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">   
+<FONT SIZE=3><SPAN STYLE="font-weight: normal">'django.contrib.contenttypes',</SPAN></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">   
+<FONT SIZE=3><SPAN STYLE="font-weight: normal">'django.contrib.sessions',</SPAN></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">   
+<FONT SIZE=3><SPAN STYLE="font-weight: normal">'django.contrib.sites',</SPAN></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">   
+<FONT SIZE=3><SPAN STYLE="font-weight: normal">'django.contrib.messages',</SPAN></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">   
+<FONT SIZE=3><SPAN STYLE="font-weight: normal">'django.contrib.staticfiles',</SPAN></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">   
+<FONT SIZE=3><SPAN STYLE="font-weight: normal">'django.contrib.admin',</SPAN></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">   
+<FONT SIZE=3><SPAN STYLE="font-weight: normal">'app1',</SPAN></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>)</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=4><B>Models.py</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=3><B>#A
+model(table) with 3 fields called firstname, lastname and email.</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>from django.db import models</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=3><B>#
+from django.contrib.auth.models import User</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=3><B>#
+Create your models here.</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>class Secretclear(models.Model):</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>	fname=models.CharField(max_length=30)</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>	lname=models.CharField(max_length=30)</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>	email=models.CharField(max_length=30)</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=4><B>secretclear.html(template)</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=3><B>#Html(template)
+with a form and script to perform store, delete and edit using
+jquery.</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>&lt;!DOCTYPE html&gt;</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>&lt;html lang=&quot;en&quot;&gt;</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>&lt;head&gt;</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=3><B>#
+In head part we are having all the scripts to call.</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=3><B>#Bootstrap
+to use popup to edit.</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>&lt;link
+href=&quot;http://getbootstrap.com/dist/css/bootstrap.min.css&quot;
+rel=&quot;stylesheet&quot;&gt; </FONT>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>&lt;link
+href=&quot;http://vitalets.github.io/x-editable/assets/x-editable/bootstrap3-editable/css/bootstrap-editable.css&quot;
+rel=&quot;stylesheet&quot;/&gt;</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>&lt;script
+src=&quot;http://vitalets.github.io/x-editable/assets/jquery/jquery-1.9.1.min.js&quot;&gt;&lt;/script&gt;</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>&lt;script
+src=&quot;http://vitalets.github.io/x-editable/assets/bootstrap300/js/bootstrap.js&quot;&gt;&lt;/script&gt;</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>&lt;script
+src=&quot;http://vitalets.github.io/x-editable/assets/x-editable/bootstrap3-editable/js/bootstrap-editable.js&quot;&gt;&lt;/script&gt;</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+ 
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>&lt;script type=&quot;text/javascript&quot;&gt;</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>$(document).ready(function(){</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=3><B>#
+ajax to get the form datas given and brings it to the mentioned to
+views.</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>	$('#submit1').click(function(e){</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>		e.preventDefault();</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>		$.post(&quot;/secretclear/&quot;,$(&quot;#testform&quot;).serialize()).done(function(x){</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>			# The datas from views is displayed in id- stutable
+in a table format.</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>			$('#stutable').html(x);</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>		</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>		</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>		});	</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>	});</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=3><SPAN STYLE="font-weight: normal">	</SPAN></FONT><FONT SIZE=3><B>#
+Script to delete with an id.</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>	$(document).on('click','.deleterow',function(){</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>		var cbut=$(this).data('del');</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>		alert(cbut);</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>		$.ajax({</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">   
+<FONT SIZE=3><SPAN STYLE="font-weight: normal">	type:'POST',</SPAN></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">   
+<FONT SIZE=3><SPAN STYLE="font-weight: normal">	data:{sid:cbut,csrfmiddlewaretoken:$('input[type=hidden]').val()},</SPAN></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">     
+<FONT SIZE=3><SPAN STYLE="font-weight: normal">	datatype:'json',</SPAN></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">   
+<FONT SIZE=3><SPAN STYLE="font-weight: normal">	url:'/deletedetails/',</SPAN></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">   
+<FONT SIZE=3><SPAN STYLE="font-weight: normal">	success:function(data)
+{</SPAN></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">   
+<FONT SIZE=3><SPAN STYLE="font-weight: normal">		$(&quot;#row&quot;+cbut).remove();</SPAN></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">   
+<FONT SIZE=3><SPAN STYLE="font-weight: normal">		alert(&quot;data
+deleted successfully&quot;);</SPAN></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">      <FONT SIZE=3><SPAN STYLE="font-weight: normal">	}</SPAN></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in">  <FONT SIZE=3><SPAN STYLE="font-weight: normal">		});</SPAN></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>	});</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=3><SPAN STYLE="font-weight: normal">	</SPAN></FONT><FONT SIZE=3><B>#
+Script to edit using editable() using bootstrap</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>	$('.editrow').editable();</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>});</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>&lt;/script&gt;</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>&lt;/head&gt;</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>&lt;body&gt;</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=3><B>&lt;!--
+form with three input fields and save button to submit--&gt;</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>&lt;form id=&quot;testform&quot; &gt;{% csrf_token %}</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>Firstname:&lt;input type=&quot;text&quot; id=&quot;firstname&quot;
+name=&quot;input1&quot;&gt;&lt;br&gt;</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>Lastname:&lt;input type=&quot;text&quot; id=&quot;lastname&quot;
+name=&quot;input2&quot;&gt;&lt;br&gt;</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>e-mail:&lt;input type=&quot;text&quot; id=&quot;email&quot;
+name=&quot;input4&quot;&gt;&lt;br&gt;</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>&lt;input type=&quot;submit&quot; id=&quot;submit1&quot;
+value=&quot;save&quot;&gt;</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>&lt;/form&gt;</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=3><B>&lt;!--
+display sotred datas in table format--&gt;</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"> <FONT SIZE=3><SPAN STYLE="font-weight: normal">&lt;div
+id=&quot;stutable&quot;&gt;</SPAN></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>{% for i in p %}</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>&lt;table class=&quot;table table-bordered
+table-condensed&quot; id=&quot;row{{i.id}}&quot; border=&quot;1px&quot;&gt;&lt;tr
+id=&quot;row{{i.id}}&quot;&gt;&lt;th&gt;Firstname&lt;/th&gt;&lt;td&gt;&lt;a
+href=&quot;#&quot; data-type=&quot;text&quot; data-name=&quot;fname&quot;
+data-url=&quot;/update/&quot; data-pk=&quot;{{i.id}}&quot;
+class=&quot;editrow&quot;&gt;{{i.fname}}&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;th&gt;lastname&lt;/th&gt;&lt;td&gt;&lt;a
+href=&quot;#&quot; data-type=&quot;text&quot; data-name=&quot;lname&quot;
+data-url=&quot;/update/&quot; data-pk=&quot;{{i.id}}&quot;
+class=&quot;editrow&quot;&gt;{{i.lname}}&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;th&gt;address&lt;/th&gt;&lt;td&gt;{{i.email}}&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;input
+type=&quot;button&quot; class=&quot;deleterow&quot;
+data-del=&quot;{{i.id}}&quot; value=&quot;delete&quot;&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>{% endfor %}</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>&lt;/div&gt;</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>&lt;/body&gt;</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>&lt;/html&gt;</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=4><B>Views.py</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=3><B>#
+import functions</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>from django.shortcuts import render</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>from django.views.decorators.csrf import csrf_exempt</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>from django.http import
+HttpResponse,HttpResponseRedirect</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>from app1.models import *</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>from django.conf import settings</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>from django.template import Context,Template</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=3><B>#
+function to save table datas using post method</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>def secretclear(request):</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>	if request.POST:</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>		Secretclear(fname=request.POST['input1'],lname=request.POST['input2'],email=request.POST['input4']).save()</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>		p=Secretclear.objects.all()</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>		# s=&quot;&quot;</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>		st='''</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>		{% for i in p %}</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>		&lt;table class=&quot;table table-bordered
+table-condensed&quot; id=&quot;row{{i.id}}&quot; border=&quot;1px&quot;&gt;</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>		&lt;tr&gt;&lt;th&gt;firstname&lt;/th&gt;&lt;td&gt;&lt;a
+href=&quot;#&quot; data-type=&quot;text&quot; data-name=&quot;fname&quot;
+data-url=&quot;/update/&quot; data-pk=&quot;{{i.id}}&quot;
+class=&quot;editrow&quot;&gt;{{i.fname}}&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>		&lt;tr&gt;&lt;th&gt;lastname&lt;/th&gt;&lt;td&gt;&lt;a
+href=&quot;#&quot; data-type=&quot;text&quot; data-name=&quot;lname&quot;
+data-url=&quot;/update/&quot; data-pk=&quot;{{i.id}}&quot;
+class=&quot;editrow&quot;&gt;{{i.lname}}&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>		&lt;tr&gt;&lt;th&gt;address&lt;/th&gt;&lt;td&gt;{{i.email}}&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;input
+type=&quot;button&quot; class=&quot;deleterow&quot;
+data-del=&quot;{{i.id}}&quot; value=&quot;delete&quot;&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>		{% endfor %}</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>		'''</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>		t=Template(st)</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>		c=Context({'p':p})</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>		return HttpResponse(t.render(c))                      
+                                                                     
+                        </FONT>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=3><SPAN STYLE="font-weight: normal">	</SPAN></FONT><FONT SIZE=3><B>#
+to select all the datas from the database.</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>	p=Secretclear.objects.all()</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>	return render(request,&quot;secretclear.html&quot;,{'p':p})	</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=3><B>#
+function to delete</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>def deletedetails(request):</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>	Secretclear.objects.get(id=request.POST['sid']).delete()		</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>	return HttpResponse('/secretclear')</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=4><B>Urls.py</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>from django.conf.urls import patterns, include, url</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in"><FONT SIZE=3><B>#
+To enable admin</B></FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>from django.contrib import admin</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>admin.autodiscover()</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>urlpatterns = patterns('',</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>url(r'^admin/', include(admin.site.urls)),</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>url(r'^secretclear/$','app1.views.secretclear'),</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>url(r'^deletedetails/$','app1.views.deletedetails'),</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<FONT SIZE=3>)</FONT></P>
+<P LANG="en-IN" CLASS="western" STYLE="margin-bottom: 0in; font-weight: normal">
+<BR>
+</P>
+</BODY>
+</HTML>

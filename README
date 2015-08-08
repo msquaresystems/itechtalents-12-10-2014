@@ -1,0 +1,68 @@
+## Itech Talents  - A Job portal 
+
+### Installation  Instructions
+
+#### Install general system dependencies
+```
+sudo apt-get -y install python-pip python-dev
+sudo pip install virtualenv
+sudo pip install virtualenvwrapper
+```
+
+#### Add the following lines to .bashrc(Needed for commands - mkvirtualenv, workon)
+```
+export WORKON_HOME=$HOME/VENVS
+export PROJECT_HOME=$HOME/Projects
+source /usr/local/bin/virtualenvwrapper.sh
+```
+
+#### Install & cinfigure dependencies for PIL(Image processing)
+```
+sudo apt-get install libjpeg-dev libfreetype6 libfreetype6-dev zlib1g-dev
+sudo apt-get build-dep -y python-imaging
+sudo ln -s /usr/lib/`uname -i`-linux-gnu/libfreetype.so /usr/lib/
+sudo ln -s /usr/lib/`uname -i`-linux-gnu/libjpeg.so /usr/lib/
+sudo ln -s /usr/lib/`uname -i`-linux-gnu/libz.so /usr/lib/
+sudo ln -s /usr/include/freetype2 /usr/include/freetype
+```
+
+#### Create virtual environment for the project
+```
+mkvirtualenv itech
+```
+
+#### Install pip requirements for the project
+```
+workon itech
+pip install -r userreg/requirements.txt
+```
+
+#### Install PIL from third party site
+```
+workon itech
+cd /tmp
+wget -c http://effbot.org/downloads/Imaging-1.1.7.tar.gz
+tar -xvzf Imaging-1.1.7.tar.gz
+cd Imaging-1.1.7/
+python setup.py install
+```
+
+#### Run the project
+```
+workon itech
+cd userreg
+python manage.py runserver
+```
+
+### For PostgreSQL database
+```
+sudo apt-get build-dep python-psycopg2
+sudo apt-get install libpq-dev
+pip install psycopg2
+```
+### For MySQL database
+```
+sudo apt-get install mysql-server
+sudo apt-get install libmysqlclient-dev
+pip install mysql-python
+```

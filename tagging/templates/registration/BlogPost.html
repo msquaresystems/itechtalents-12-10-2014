@@ -1,0 +1,102 @@
+{% extends "registration/base/jobseekerbase.html" %}
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-wysihtml5.css"></link>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-select1.min.css">
+<style type="text/css">
+.selectpicker{width:600px !important;}
+sup{color: red;	}
+</style>
+{% endblock %}
+{% block content %}
+	<div style="min-height:580px;" class="container">
+		<div class="row-fluid" style="border-bottom:2px solid #FFB812;">
+			<div class="span10"><h3>Post an article</h3></div>
+			<div class="span2" style="margin-top:20px;"><a href="/accounts/BlogTopics/">View articles</a>&emsp;|&emsp;<a href="#" id="back">Go back</a></div>
+		</div><br><br>
+		<div class="row-fluid">
+			<div class="span10 offset1">
+				<div id="errmsg">
+				{% if messages %}{% for message in messages %}<div class="alert alert-{{message.tags}}">{{ message|safe }}</div>{% endfor %}{% endif %}</div>
+				<form action="/accounts/BlogPost/" method="post" name="blogpostform"  enctype="multipart/form-data" id="blogpost">{% csrf_token %}
+					<table class="table table-borderless">
+						<tr>
+							<td>Select Topics<sup>*</sup></td>
+							<td>
+								<select name="btopicid" id="topicid" class="selectpicker btopics" data-live-search="true">
+									<option value="">Select Topics</option>
+									{% for btopics in btopics %}
+									<option value="{{btopics.id}}">{{btopics.blogtopic}}</option>
+									{% endfor %}
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>Article Title<sup>*</sup></td>
+							<td><input id="title" type="text" name="btitle" class="selectpicker" autocomplete="off" ></td>
+						</tr>
+						<tr>
+							<td>Article Image</td>
+							<td><input type="file" accept="image/*" class="selectpicker" name="bimage" ></td>
+						</tr>
+						<tr>
+							<td>Article Content<sup>*</sup></td>
+							<td><textarea id="some-textarea" name="bcontent" class="selectpicker" style="height:200px;"></textarea></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td>
+								<input class="btn btn-warning btn-large" id="sbt" type="submit" value="Post Article" >
+							</td>
+						</tr>
+					</table>
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+{% block extrajavascript %}
+<script src="{{ STATIC_URL }}js/wysihtml5-0.3.0.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-wysihtml5.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap-select.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('.selectpicker').selectpicker();
+	$('#some-textarea').wysihtml5();
+	var availableTags = [{% for ss in btitle %}"{{ ss.btitle }}"{% if not forloop.last %}, {% endif %}{% endfor %}];
+    $('#title').typeahead({
+    	source: availableTags,
+    });
+    $('#blogpost').submit(function(){
+    	if ($('#topicid').val() == ''){
+    		$('.btopics > button').css('border','1px solid #FC798D');
+    	}
+    	if ($('#topicid').val() != ''){
+    		$('.btopics > button').css('border','1px solid #CCCCCC');
+    	}
+    	if ($('#title').val() == ''){
+    		$('#title').css('border','1px solid #FC798D');
+    	}
+    	if ($('#title').val() != ''){
+    		$('#title').css('border','1px solid #CCCCCC');
+    	}
+    	if ($('#some-textarea').val() == ''){
+    		$('.wysihtml5-sandbox').css('border','1px solid #FC798D');
+    	}
+    	if ($('#some-textarea').val() != ''){
+    		$('.wysihtml5-sandbox').css('border','1px solid #CCCCCC');
+    	}
+    	if ($('#topicid').val() == '' || $('#title').val() == '' || $('#some-textarea').val() == ''){
+    		$('#errmsg').html('<div class="alert alert-danger">All the fields are required except image article. Please fill out the empty field !!!</div>')    		
+    		return false;
+    	}
+    });
+	$('#back').click(function(e){
+		e.preventDefault();
+		parent.history.back();
+		return false;
+	});
+});
+</script>
+	
+{% endblock %}
+

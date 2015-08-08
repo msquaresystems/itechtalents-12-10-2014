@@ -1,0 +1,295 @@
+<script type="text/javascript" src="{{ STATIC_URL }}js/datepicker/bootstrap-datepicker.js"></script>
+<link rel="stylesheet" href="{{ STATIC_URL }}js/datepicker/datepicker.css" />
+<script type="text/javascript">
+$(function(){
+	$('#usa').click(function(){
+	    if($('#usa').text() == 'All Resumes'){$('#usa').html('USA Resumes');}
+	    else{$('#usa').html('All Resumes');}
+	    $( "tbody#list tr" ).each(function(i) {
+	        var str=$(this).attr('class');
+	        if(!str.contains("States")){$(this).toggle();}
+	     });
+	});
+	$(".from").datepicker({
+		format: "mm-dd-yyyy",
+		startDate: '0d',
+	});
+});    
+$(document).ready(function (){
+	$('#selectall').click(function (event){
+		var selected = this.checked;
+		$(':checkbox[name=receivedApplications]').each(function (){
+			this.checked = selected;
+		});
+	});
+	$("#p").click(function(){
+		var array1 = [];
+		$("input:checkbox[name=receivedApplications]:checked").each(function (){
+			array1.push($(this).val());
+		});
+		$("#txt").val(array1.join(','));
+	});
+	$("#p1").click(function(){
+		var hlink='/accounts/EmpResumeComp/?',i=0;
+		$("input:checkbox[name=receivedApplications]:checked").each(function (){
+			i+=1;
+			hlink=hlink+'r'+i+'='+$(this).val()+'&';
+		});
+		$("a#p1").attr('href',hlink.slice(0,-1));
+	});
+	$("#p2").click(function(){
+		var array1 = [];
+		$("input:checkbox[name=receivedApplications]:checked").each(function (){
+			array1.push($(this).val());
+		});
+		$("#txt2").val(array1.join(','));
+		if ($('#txt2').val()==''){
+			$('#errmsg').html('Select atleast 1 candidate to schedule interview !');
+			return false;
+		}
+		else{
+			$('#errmsg').html('');
+			return true;
+
+		}
+	});
+	$('body').on('click','.delone',function(){
+		$('#jobid').val($(this).data('jid'));
+	});
+	$("#del").click(function(){
+		var array1 = [];
+		$("input:checkbox[name=receivedApplications]:checked").each(function (){
+			array1.push($(this).val());
+		});
+		$("#jobid").val(array1.join(','));
+		if ($("#jobid").val() == ''){
+			$('#errmsg').html(' Please select atleast 1 candidate to delete');
+			return false;
+		}
+		else{
+			$('#errmsg').html('');
+			return true;
+		}
+	});
+});
+function delrecappval(){
+	var x=document.getElementById('txt').value
+	if(x=='' || x==null){
+		alert("Select the Candidate");
+		return false;
+	}
+}
+(function ($){
+	jQuery.expr[':'].Contains = function(a,i,m){
+		return (a.textContent || a.innerText || "").toUpperCase().indexOf(m[3].toUpperCase())>=0;
+	};
+	function filterList(header, list) {
+		var form = $("<form>").attr({"class":"filterform","action":"#"}),
+		input = $("<input>").attr({"class":"filterinput","type":"text","placeholder": "Search"});
+		$(form).append(input).appendTo(header);
+		$(input)
+		.change( function (){
+			var filter = $(this).val();
+			if(filter){	       
+	          $matches = $(list).find('td:Contains(' + filter + ')').parent();
+	          $('tr', list).not($matches).slideUp();
+	          $matches.slideDown();
+	      }
+	      else{
+	      	$(list).find("tr").slideDown();
+	      }
+	      return false;
+	  })
+		.keyup( function (){
+			$(this).change();
+		});
+	}
+	$(function (){
+		filterList($("#form"), $("#list"));
+	});
+}(jQuery));
+</script>
+<style type="text/css">
+ .delreceiveapp {
+  border-radius: 0;
+  line-height: 18px;
+  padding: 0;
+  font-family: "Lucida Grande", Verdana, sans-serif;
+}
+.delreceiveapp h3 {
+  margin: 0;
+  padding: 10px;
+  color: #fff;
+  font-size: 14px;
+  background: -moz-linear-gradient(top, #2e5764, #1e3d47);
+  background: -webkit-gradient(linear,left bottom,left top,color-stop(0, #1e3d47),color-stop(1, #2e5764));
+}
+.delreceiveapp p { padding: 10px 15px; border-bottom: 1px solid #ddd; margin: 0;font-size: 14px;
+  background: -webkit-gradient(linear,left bottom,left top,color-stop(0, #eee),color-stop(1, #fff));  
+  overflow: hidden;
+}
+.delreceiveapp p:last-child { border: none; }
+.delreceiveapp p label{
+  	font-family: "Lucida Grande", Verdana, sans-serif;
+	padding: 3px;
+	width: 200px;
+}
+.recappul li,#form{
+	display: inline;
+}
+.datepicker{z-index:1200;width: 230px;}
+.datepicker td span{width: 50px;}
+</style>
+<div>
+	<p><h3>Received Application</h3></p>
+	<ul class="recappul" style="text-align:left;padding-right:40px;" >
+		<li>
+			<sub style="color:red;">(Select upto 3 candidates to compare their resumes)</sub>
+			<a style="text-decoration:none;" id="p1" class="btn btn-success" href="" rel=''>Compare Resume</a>
+		</li>
+
+		<li>
+			<a href="#myModal" role="button" class="btn btn-warning" data-toggle="modal" id="p2" >Schedule Interview</a>
+		</li>
+		<li>
+			<button class="btn btn-info" id="usa">USA Resumes</button>
+		</li>
+		<li id="form" style="text-align:right;"></li>
+	</ul>
+
+	<h5>{% if received %}<a href="#myModal1" role="button" class="text-error" data-toggle="modal" id="del" >Delete</a><small class="text-warning"> ( Select Multiple Jobs ) </small>{% endif %}<small class="text-error" id="errmsg"></small></h5>
+
+	<h5><a href=""></a><small id="errmsg" class="text-error"></small></h5>
+	<table class="table table-striped">
+		<thead>
+		<tr>
+			<th><input type="checkbox" id="selectall" name="selectall" ></th>
+			<th width="17%">Name</th>
+			<th width="17%">Desired Position</th>
+			<th width="26%">Skill</th>
+			<th width="17%">Experience</th>
+			<th width="17%">Applied Date</th>
+			<th width="6%">Action</th>
+		</tr>
+		</thead>
+		<tbody  id="list">
+		{% if received %}
+		{% for received in received|dictsortreversed:"applieddate" %}
+		<tr class="{% if received.JS.jspersonal.country %}{{received.JS.jspersonal.country}},{% endif %}{% if received.JS.jsdetailother.relocatechoice %}{{received.JS.jsdetailother.relocatechoice}},{% endif %}{% if received.JS.jsdetailother.workother %}{{received.JS.jsdetailother.workother}}{% endif %}">
+			<td><input type="checkbox" name="receivedApplications" value="{{ received.id }}" ></td>
+			<td><a href="/accounts/JSDetails/{{ received.JS.user.id }}/">{{ received.JS.user.first_name}} {{ received.JS.user.last_name}}</a></td>
+			<td>{{ received.Job.title }}</td>
+			
+			<td style="word-break:break-all;">{% for rec in received.JS.user.jsskills_set.all%}{{rec.skill}}{% if not forloop.last %},&nbsp;{% endif %}{% endfor %}</td>
+
+			<td>{{ received.JS.jspersonal.work_expyears }}Yrs {{ received.JS.jspersonal.work_expmonths }}Months</td>
+			<td>{{ received.applieddate|date:"M-d-Y" }}</td>
+			<td><a href="#myModal1" role="button" class="btn btn-mini btn-danger delone" data-jid="{{received.id}}" data-toggle="modal">Delete</a></td>
+		</tr>
+		{% endfor %}
+		{% else %}
+		<tr>
+			<td colspan="7">
+				<p style="text-align:center;">There is no application received..</p>
+			</td>
+		</tr>
+		{% endif %}
+		</tbody>
+	</table>
+	<br>
+	<br>
+
+
+</div>
+
+
+<!--  ****************************POPUP FORM Schedule Interview ********************************  -->
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<form action="/accounts/ScheduleInterviewEmp2/" method="post" >{% csrf_token %}
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3 id="myModalLabel">Schedule Interview for Candidate</h3>
+		</div>
+		<div class="modal-body">
+			<input type="hidden" name="empid" value="{{user.id}}" >
+			<input type="hidden" id="txt2" value="" name="jsid">
+			<p><select name="jobid" required="true">
+				<option value=''>Select Position</option>
+				{% for joblist in employers %}
+				<option value={{ joblist.id }}>{{ joblist.title }}</option>
+				{% endfor %}
+			</select></p>
+
+			<p><input type="text" class="from" name="scheduledate" placeholder='Enter Date(MM-DD-YYYY)' required="true" readonly></p>
+
+			<p><select name="scheduletime" style="" required="true" >
+				<option value="">Set Time</option>
+				<option value="12:00am">12:00am</option>
+				<option value="1:00am">1:00am</option>
+				<option value="2:00am">2:00am</option>
+				<option value="3:00am">3:00am</option>
+				<option value="4:00am">4:00am</option>
+				<option value="5:00am">5:00am</option>
+				<option value="6:00am">6:00am</option>
+				<option value="7:00am">7:00am</option>
+				<option value="8:00am">8:00am</option>
+				<option value="9:00am">9:00am</option>
+				<option value="10:00am">10:00am</option>
+				<option value="11:00am">11:00am</option>
+				<option value="12:00pm">12:00pm</option>
+				<option value="1:00pm">1:00pm</option>
+				<option value="2:00pm">2:00pm</option>
+				<option value="3:00pm">3:00pm</option>
+				<option value="4:00pm">4:00pm</option>
+				<option value="5:00pm">5:00pm</option>
+				<option value="6:00pm">6:00pm</option>
+				<option value="7:00pm">7:00pm</option>
+				<option value="8:00pm">8:00pm</option>
+				<option value="9:00pm">9:00pm</option>
+				<option value="10:00pm">10:00pm</option>
+				<option value="11:00pm">11:00pm</option>
+			</select></p>
+
+			<p><input type="text" name="totalrounds" placeholder='Enter no.of rounds(eg : 5)' required="true" ></p>
+			<p><input type="text" name="location" id="location" value="" placeholder="Location" required="true" ></p>
+			<p>Allow candidate(s) to reschedule :
+				<input type="radio" value="1" name="isreschedule" required="true" >Yes
+				<input type="radio" value="2" name="isreschedule" required="true" >No
+			</p>
+		</div>
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+			<input type="submit" class="btn btn-primary" value="Submit" onclick="return intervalid();">
+		</div>
+	</form>
+</div>
+<!-- Delete Received Application Form  -->
+<div id="myModal1" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <form id="DeleteJob" action="/accounts/DeleteMyApplications/" method="POST">{% csrf_token %}
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h4 id="myModalLabel">Delete Job</h4>
+  </div>
+  <div class="modal-body">
+    <p class="text-error">Are you sure want to delete this job ?</p>
+    <input type="hidden" name="usertype" value="employer" />
+    <input type="hidden" name="jobid" id="jobid" value="" />
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" data-dismiss="modal" aria-hidden="true">Close</button>
+    <button type="submit" class="btn btn-success">Delete</button>
+  </div>
+  </form>
+</div>
+
+<script type="text/javascript">
+function intervalid(){
+ var x=document.getElementById('txt2').value;
+ if(x==0 || x==null){
+ 	alert("Select Candidate");
+ 	return false;
+ }
+}
+</script>
+
+<!--  ********************POPUP FORM ******************************  -->

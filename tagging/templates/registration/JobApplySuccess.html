@@ -1,0 +1,45 @@
+{% extends "registration/base/jobseekerbase.html" %}
+{% block extrahead %}
+<style type="text/css">
+	.table tbody td, .table thead th{
+		text-align: center;
+	}
+</style>
+{% endblock %}
+{% block content %}
+<div style="min-height:575px;" class="container">
+	<div class="row">
+		<div class="span10 offset1" style="text-align:left;">
+			{% if messages %}
+                {% for message in messages %}<div class="alert alert-{{ message.tags }}">{{message}}</div>{% endfor %}
+            {% endif %}
+			<h3 class="text text-info" style="border-bottom:2px solid #FFB812">Simlar Jobs Applied By Others at Different locations are ...</h3>
+			<table class="table table-striped well">
+				<thead>
+					<tr>
+						<th>Company Name</th><th>Job Title</th><th>Location</th><th>Posted Date</th>
+					</tr>
+				</thead>
+				<tbody id="list">
+					{% if b %}
+					{% for b in b|dictsortreversed:"marklive" %}
+					<tr>
+						<td class="title"><a href="/accounts/JobFullDescription/{{b.id}}/">{{ b.emp.companyname }}</a></td>
+						<td class="companyname">{{ b.title }}</td>
+						<td class="location">{{ b.city }}, {{ b.state }}</td>
+						<td>{{ b.marklive|date }}</td>
+					</tr>
+					{% endfor %}
+					{% else %}
+					<tr><td colspan="4">No similar jobs applied by others ...</td></tr>
+					{% endif %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+
+
+

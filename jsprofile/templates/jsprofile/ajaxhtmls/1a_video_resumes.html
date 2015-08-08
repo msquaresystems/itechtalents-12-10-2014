@@ -1,0 +1,162 @@
+{% extends "jsprofile/base.html" %}
+{% block extrahead %} 
+<link rel="stylesheet" href="{{ STATIC_URL }}js/datepicker/datepicker.css" />
+<link href="{{STATIC_URL}}jsprofile_static/xeditable/bootstrap-editable.css" rel="stylesheet"/>  
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-wysihtml5.css"></link>
+<link rel="stylesheet" href="/static/colorbox/css/colorbox.css" />
+<script src="/static/js/jquery-1.9.1.js"></script>
+<script src="/static/colorbox/js/jquery.colorbox-min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    $(".ajax").colorbox({width:"50%", height:"100%"});
+
+    $(document).bind('cbox_closed', function(){
+      location.reload();
+    });
+
+});
+</script>
+<style>
+.editable form{
+    background-color: #F8F8F8;
+    border: 1px solid #EAD9CE;
+    ursor: default;
+    margin: 0;
+    padding: 13px;
+}
+hr{
+margin: 5px;
+}
+.item_tittle h1 span{
+    background: none repeat scroll 0 0 #74767A;
+    border-radius: 3px 3px 3px 3px;
+    color: #ffffff;
+    float: right;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 7px 0 0;
+    padding: 0 5px;
+    margin-right: 0;
+}
+.item_tittle h2 {
+    font-size: 18px;
+    font-weight:normal;
+    text-align: left;
+    color:#000;
+}
+.item_tittle h3{
+    font-size: 14px;
+    font-weight:normal;
+    text-align: right;
+    color:#000;
+}
+.bs-sidebar.affix {
+    position: static;
+}
+.sideheading{
+    background-color: #e0e0e0;
+    background-image: -moz-linear-gradient(#fafafa, #e0e0e0);
+    background-image: -webkit-linear-gradient(#fafafa, #e0e0e0);
+    background-image: linear-gradient(#fafafa, #e0e0e0);
+    background-repeat: repeat-x;
+    display: block;
+    padding: 10px 10px;
+    border-bottom: 1px solid #ccc;
+    color: #222;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 20px;
+    border-left: 0 none;
+}
+.bs-sidenav {
+    padding-top:    10px;
+    padding-bottom: 10px;
+    background-color: #fafafa;
+    border-radius: 5px;
+    border:1px solid #CCC;
+}
+.bs-sidebar .nav > li > a {
+    font-size: 1.2em;
+    display: block;
+    color: #716b7a;
+    padding: 10px 20px;
+    border-right: 4px solid transparent;
+}
+.bs-sidebar .nav > li > a:hover,.bs-sidebar .nav > li > a:focus{
+    text-decoration: none;
+    background-color: #fff;
+    border-right: 4px solid #dbd8e0;
+}
+.bs-sidebar .nav > .active > a,.bs-sidebar .nav > .active:hover > a,.bs-sidebar .nav > .active:focus > a {
+    font-weight: bold;
+    color: #418cd1;
+    background-color: #fff;
+    border-right: 4px solid #418cd1;
+}
+</style>
+{% endblock %}
+{% block content %}
+{% load jsprofile_extras %}
+{% load mytaghelper %}
+<div class="container-fluid" style="min-height:580px;">
+    <div class="row-fluid">
+        <div class="span3">
+            <div class="bs-sidebar">
+                <ul class="nav bs-sidenav"><span id="userid" style="display:none">{{request.user.id}}</span>
+                    <li class='sideheading'>{{ request.user.username }}</li>
+                    <li><a href="/js/Dashboard/">Dashboard</a></li>
+                    {% for nav in navs %}
+                        <li {% if nav == "VideoResume" %}class="active"{% endif %}>
+                        <!--<li {% ifequal nav "VideoResume" %}class="active"{% endifequal %}> -->
+                        <a class="ajaxLoad" href="/js/{% sidebar nav %}/" data-ajxurl="{{ forloop.counter }}">
+                            {{nav}}
+                        </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="span9">
+            <div id="ajaxBox" >
+                <div id="resume" class="xgap">
+                    <h4 style="border-bottom:2px solid #FFB812;">Video Resumes</h4>
+                    <div id="resumeview">
+                        {% if resumes %}
+                        <table class="table table-striped" id="resumeTable">
+                        <tr class="info">
+                            <th width="20%">Resume Title</th>
+                            <th width="35%">Video</th>
+                            <th width="20%">Created At</th>
+                            <th width="25%">Actions</th>
+                        </tr>
+                        {% for l in resumes %}
+                        <tr id="resume{{l.pk}}">
+                            <td id="resumetitle{{l.pk}}" >{{ l.title }}</td>
+                            <td id="resumefile{{l.pk}}">
+                                <a class="ajax" href="{% url view_video l.id %}">View Video</a>
+                            </td>
+                            <td>{{ l.created_at }}</td>
+                            <td>
+                                <a href="#myModal1" role="button" data-toggle="modal"class="btn btn-mini btn-info editresume" data-resumeid="{{ l.pk }}" href="#">
+                                    <i class="icon-edit"></i>&nbsp;default</a>&emsp;
+                                <a class="btn btn-mini btn-info deleteresume" data-resumeid="{{ l.pk }}" href="#">
+                                    <i class="icon-trash"></i>&nbsp;delete</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </table>
+                        {% else %}
+                        <div style="background-color:#ffa; padding:20px">
+                        <strong>No video resumes found.</strong></div>
+                        {% endif %}
+                    </div>
+                     <div class="toggleview"> 
+                        <a class="ajax btn btn-success toggle-button"
+                            href="{% url create_video %}">Add Resume</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

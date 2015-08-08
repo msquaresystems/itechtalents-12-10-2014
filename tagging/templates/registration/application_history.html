@@ -1,0 +1,168 @@
+{% extends "registration/base/jobseekerbase.html" %}
+{% block extrahead %} 
+<style type="text/css">
+.bs-docs-sidenav a.section-head {
+  text-decoration: none;
+  background-image: linear-gradient(#5d71b8, #B5BFE4);
+  background-repeat: repeat-x;
+  border-bottom: 1px solid #CCCCCC;
+  border-left: 0 none;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
+  color: #fff;
+  display: block;
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 20px;
+  padding: 10px;
+  cursor:default;
+}
+.bs-docs-sidenav > li > a {
+  display: block;
+  width: 190px \9;
+  margin: 0 0 -1px;
+  padding: 8px 14px;
+  border: 1px solid #e5e5e5;
+}
+.bs-docs-sidenav > li > a:hover {
+  background: #CED6F2;    
+}
+</style>
+{% endblock %}
+{% block content %}
+<div class="container-fluid" style="min-height:590px;">
+  <div class="row-fluid">
+    <div class="span3 sidebar">
+      <ul class="nav nav-list bs-docs-sidenav">
+        <a class="section-head">My Jobs</a>
+        <li><a href="#" id="appjobs">Applied Jobs</a></li>
+        <li><a href="#" id="recjobs">Recommended Jobs</a></li>
+        <li><a href="#" id="searchagent">Search Agents</a></li>
+      </ul>
+    </div>
+    <div class="span9 rightside">
+      {% if messages %}{% for message in messages %}<div class="row-fluid"><div class="alert alert-{{ message.tags }}">{{message}}</div></div>{% endfor %}{% endif %}
+      <div class="row-fluid" style="border-bottom:2px solid #FFB812;">
+        <div class="span6"><h4 class="text text-info">Applied Jobs</h4>{% if appjob %}<h5><a href="#myModal" role="button" class="text-error" data-toggle="modal" id="del" >Delete</a><small class="text-warning"> ( Select Multiple Jobs ) </small><small class="text-error" id="errmsg"></small></h5>{% endif %}</div>
+        <div class="span6" id='form'></div>
+      </div>
+      <div class="row-fluid">
+        <div class="span12">
+          <table class="table table-striped" style="table-layout:fixed;">
+            <thead><tr><th width="4%"><input type="checkbox" id="selectall" name="selectall" ></th><th width="24%">Job Title</th><th width="24%">Company Name</th><th width="24%">Applied Date</th><th width="24%">Action</th></tr></thead>
+            <tbody id="list">
+              {% if appjob %}
+              {% for a in appjob|dictsortreversed:"applieddate" %}
+              <tr>
+                <td><input type="checkbox" name="sentApplications" value="{{ a.id }}" ></td>
+                <td class="title" width="25%" style="word-wrap:break-word;"><a href="/accounts/JobFullDescription/{{a.Job.id}}/">{{ a.Job.title }}</a></td>
+                <td class="companyname" width="25%" style="word-wrap:break-word;">{{ a.Job.emp.companyname }}</td>
+                <td width="25%" style="word-wrap:break-word;">{{ a.applieddate|date:"M-d-Y"}}</td>
+                <td width="25%" style="word-wrap:break-word;"><a href="#myModal" role="button" class="btn btn-mini btn-danger delone" data-jid="{{a.id}}" data-toggle="modal">Delete</a></td>
+              </tr>
+              {% endfor %}
+              {% else %}
+              <tr>
+                <td colspan="5" style="text-align:center;"><strong class="text-error">There is no jobs applied so for.. Click <a href="/accounts/SearchJobs/">here</a> to search and appling the jobs </strong></td>
+              </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <form id="DeleteJob" action="/accounts/DeleteMyApplications/" method="POST">{% csrf_token %}
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h4 id="myModalLabel">Delete Job</h4>
+  </div>
+  <div class="modal-body">
+    <p class="text-error">Are you sure want to delete this job ?</p>
+    <input type="hidden" name="usertype" value="jobseeker" />
+    <input type="hidden" name="jobid" id="jobid" value="" />
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" data-dismiss="modal" aria-hidden="true">Close</button>
+    <button type="submit" class="btn btn-success">Delete</button>
+  </div>
+  </form>
+</div>
+{% endblock %}
+{% block extrajavascript %}
+<script type="text/javascript">
+$(document).ready(function (){
+  $("body").on('click','#recjobs',function(e){
+    e.preventDefault();
+    $('.rightside').load('/accounts/MyJobs/');
+  });
+  $("#appjobs").click(function(){
+    location.reload();
+  });
+  $("#searchagent").click(function(){
+    $('.rightside').load('/accounts/MySearchAgents/');
+  });
+  $('body').on('click','.delone',function(){
+    $('#jobid').val($(this).data('jid'));
+  });
+  $('#selectall').click(function (event){
+    var selected = this.checked;
+    $(':checkbox[name=sentApplications]').each(function (){
+      this.checked = selected;
+    });
+  });
+  $("#del").click(function(){
+    var array1 = [];
+    $("input:checkbox[name=sentApplications]:checked").each(function (){
+      array1.push($(this).val());
+    });
+    $("#jobid").val(array1.join(','));
+    if ($("#jobid").val() == ''){
+      $('#errmsg').html(' Please select atleast 1 candidate to delete');
+      return false;
+    }
+    else{
+      $('#errmsg').html('');
+      return true;
+    }
+  });  
+});
+</script>
+<script type="text/javascript">
+(function ($) {
+  jQuery.expr[':'].Contains = function(a,i,m){
+    return (a.textContent || a.innerText || "").toUpperCase().indexOf(m[3].toUpperCase())>=0;
+  };
+  function filterList(header, list) {
+    var form = $("<br><form>").attr({"class":"form-search filterform","action":"#"}),
+    input = $("<input>").attr({"class":"input-large search-query filterinput","type":"text","placeholder": "Search"});
+    $(form).append(input).appendTo(header);
+    $(input)
+    .change( function () {
+      var filter = $(this).val();
+      if(filter) {
+        $matches = $(list).find('td:Contains(' + filter + ')').parent();
+        $('tr', list).not($matches).slideUp();
+        $matches.slideDown();
+      } else {
+        $(list).find("tr").slideDown();
+      }
+      return false;
+    })
+    .keyup( function () {
+      $(this).change();
+    });
+  }
+  $(function () {
+    filterList($("#form"), $("#list"));
+  });
+}(jQuery));
+</script>
+{% endblock %}
+
+
+
+
+
+

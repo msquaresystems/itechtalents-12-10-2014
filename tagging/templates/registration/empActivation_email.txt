@@ -1,0 +1,29 @@
+{% load humanize %}
+Someone, hopefully you, signed up for a new account at {{ site_url }} using this email address. If it was you, and you'd like to activate and use your account, click the link below or copy and paste it into your web browser's address bar:
+
+{{ site_url }}accounts/EmpActivation/{{ activation_key }}/
+
+If you didn't request this, you don't need to do anything; you won't receive any more email from us, and the account will expire automatically in 72 hours.
+<!DOCTYPE html>
+<html>
+<head>
+
+</head>
+<body>
+<div style="width:80%;margin:auto;padding:0px;background-color: #D9EDF7;border-color: #BCE8F1;padding:15px;color: #3A87AD;">
+	<div style="background-image:url('cid:image1');background-repeat:no-repeat;height:85px;"></div>
+	<hr style="color:#7F7F80;">
+	<div>
+		<p style="color:#1F8B59;"><strong>Thank you for choosing an ItechTalents.com ! </strong></p><br>
+		<p>You have received this email because of you signed up for a free account with Itechtalents.com</p>
+		<p>To start using your account you would have to activate it first.</p>
+		<p>You can activate your account by clicking the <strong>"Activate now"</strong> button stated in your email.</p><br>
+		<p><a href="{{ site_url }}accounts/EmpActivation/{{ activation_key }}/" style="font-family:Arial,Helvetica,sans-serif;text-decoration:none;padding:7px 10px;font-size:13px;display:block;background:#FDE25E;border:solid 1px #ffc21f; width:150px;" target="_blank"><strong>Activate Now !</strong></a></p>
+		<p>If you didn't request this, you don't need to do anything; you won't receive any more email from us, and the account will expire automatically in 72 hours.</p><br><br><br><br>
+		<p>Thanks & Regards,</p>
+		<p>HR Staffing Team, ItechTalents.com</p>
+		<br><hr style="background:#9A9B9C;"><br>
+	</div>
+</div>
+</body>
+</html>

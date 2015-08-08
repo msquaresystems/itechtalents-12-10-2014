@@ -1,0 +1,11 @@
+{% cache 600 "contributors" contributors search_tags scope sort query context.page language_code %}
+  <div id="contrib-users" class="box">
+  <h2 class="contributorback">{% trans %}Contributors{% endtrans %}</h2>
+  {% spaceless %}
+  {% for person in contributors %}
+    <a class="avatar-box" href="/forum/users/{{person.id}}/{{person}}/"><img class="gravatar" style="width:48px;height:48px;" alt="{{person}} gravatar image" title="{{person}}" src="{{STATIC_URL}}{% if person.usertype == 'jobseeker' %}{% if person.jsprofilesummary.profile_pic %}{{ person.jsprofilesummary.profile_pic }}{% else %}img/facebook-default-no-profile-pic.jpg{% endif %}{% else %}{% if person.employerreg_form.companylogo %}{{ person.employerreg_form.companylogo }}{% else %}img/facebook-default-no-profile-pic.jpg{% endif %}{% endif %}"></a>
+<!--  {{ macros.gravatar(person,48) }} -->
+  {% endfor %}
+  {% endspaceless %}
+  </div>
+{% endcache %}

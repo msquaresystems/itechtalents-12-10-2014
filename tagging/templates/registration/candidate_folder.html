@@ -1,0 +1,161 @@
+<script type="text/javascript">
+$(document).ready(function ()
+    {
+      $('#selectall').click(function (event)
+        {
+          var selected = this.checked;
+          $(':checkbox[name=checklocs]').each(function ()
+            {
+              this.checked = selected;
+            });
+        });
+
+      $(".p1").click(function()
+        {
+          var array1 = [];
+          $("input:checkbox[name=checklocs]:checked").each(function ()
+            {
+              array1.push($(this).val());
+            });
+          $("#txt").val(array1.join(','));
+        });
+
+      $('.clickdel').click(function()
+        {
+          var id = $(this).attr('id');
+          $("#txt1").val(id);
+        });
+
+      $('.clickedit').click(function()
+        {
+          var id = $(this).attr('id');
+          $("#txt2").val(id);
+        });
+    });
+
+function delallval()
+    {
+      var s=document.getElementById('txt').value;
+      if (s==""||s==null)
+      {
+        alert("Select the Folder ! ");
+        return false;
+
+      }
+      else
+      {
+        return true;
+      }
+
+    }
+
+function editval()
+    {
+      var e=document.getElementById('foldername').value;
+      
+      if(e=='' || e==null)
+      {
+        document.getElementById('foldername').style.borderColor = "#FF0000";
+        return false;
+      }
+      else
+      {
+        return true;
+      }
+    }
+</script>
+<div class="row">
+  <div class="span8" style="text-align:left;"><h3 class="text-info">Scratch Pad</h3></div>
+  <div class="span4"><a class="p1 pull-right text-error" href="#myModal" role="button" class="btn" data-toggle="modal" style="margin:20px 20px 0px 0px;">Delete</a></div>
+</div>
+<div class="row">
+  <div class="span12">
+  <table class="table table-striped well" style="border-top:3px solid #FFB812;">
+    <tr>
+      <th><input type="checkbox" id="selectall" name="selectall" ></th>
+	    <th>Folder Name</th>
+	    <th>Seekers</th>
+	    <th>Last Changes</th>
+	    <th>Action</th>
+    </tr>
+    {% for folder in folders %}
+    <tr>
+      <td><input type="checkbox" id="checkloc" name="checklocs" value="{{folder.id}}" ></td>
+      <td><a style="text-decoration:none;" href="/accounts/RecruiterFolder/{{ folder.id }}/" ><img style="width:25px;height:25px;" src="{{ STATIC_URL }}images/Folder.png">{{ folder.foldername }}</a></td>
+      <td>{{ folder.fcount }}</td>
+      <td>{{ folder.lastupdate }}</td>
+      <td><a class="clickedit" id="{{ folder.id }}" href="#myModal2" role="button" class="btn" data-toggle="modal">Edit</a>&emsp;&emsp;<a class="clickdel" id="{{ folder.id }}" href="#myModal1" role="button" class="btn" data-toggle="modal">Delete</a></td>
+    </tr>
+    {% endfor %}
+    </table>
+    <hr>
+    <p style="text-align:left;font-weight:bold;">Create New Folder&nbsp;<sup style="color:red;">*</sup></p>
+    <form class="form-search" style="text-align:left;" action="/accounts/Candidatefolder/" name="CreateFolderForm" method="post" id="scratchpad" >{% csrf_token %}
+    {{form.foldername}}<button type="submit" class="btn btn-success">Create Folder</button></form>
+  </div>
+	<br/>
+</div>
+<!-- **************** POPUP FORM DELETE ALL *************** -->
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <form action="/accounts/DeleteRecFolder/" method="post">{% csrf_token %}
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+      <h4 id="myModalLabel">Delete All Folder(s)</h4>
+    </div>
+
+    <div class="modal-body">
+      <input type="hidden" value="{{ user.id }}" name="empid" >
+      <input type="hidden" id="txt" value="" name="folderid">
+      <p>Are you sure to delete?</p>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">No</button>
+      <input class="btn btn-primary" type="submit" onclick="return delallval();" value="YES">
+    </div>
+  </form>
+</div>
+<!-- ************ POPUP FORM DELETE ONE BY ONE ************* -->
+<div id="myModal1" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <form action="/accounts/DeleteRecFolder/" method="post">{% csrf_token %}
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+      <h4 id="myModalLabel">Delete Folder</h4>
+    </div>
+
+    <div class="modal-body">
+      <input type="hidden" name="empid" value="{{user.id}}" >
+      <input type="hidden" id="txt1" value="" name="folderid">
+    
+      <p>Are you sure want to Delete ?</p>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">No</button>
+      <input class="btn btn-primary" type="submit" value="YES">
+    </div>
+  </form>
+</div>
+<!-- ************ POPUP EDIT FROM ************** -->
+<div id="myModal2" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <form action="/accounts/EditRecFolder/" method="post">{% csrf_token %}
+
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+      <h4 id="myModalLabel">Edit Folder</h4>
+    </div>
+
+    <div class="modal-body">
+      <input type="hidden" name="empid" value="{{user.id}}" >
+      <input type="hidden" id="txt2" value="" name="folderid">
+      <p>Enter folder name to edit</p>
+      <p><input type="text" value="" id="foldername" name="foldername"></p>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">No</button>&emsp;
+      <input class="btn btn-primary" type="submit" onclick="return editval();" value="Edit">
+    </div>
+  </form>
+</div>
+

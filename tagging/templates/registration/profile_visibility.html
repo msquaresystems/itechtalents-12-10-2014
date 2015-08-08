@@ -1,0 +1,67 @@
+{% extends "registration/base/jobseekerbase.html" %}
+{% block content %}
+<div style="min-height:495px;" class="container">
+  <div class="row">
+    <div class="span12" style="text-align:left;">
+      <h3 class="text text-info">Visibility Setting</h3>
+
+      <p>{{msg}}<a href="/accounts/ProfileDetails/" style="text-decoration:none;" >{{msg1}}</a></p>
+
+      <form action="/accounts/Visibility_page/" method="post">{% csrf_token %}
+
+
+          {% for a in details1 %}
+            {% if a.visiblity %}
+              <div class="alert alert-error">Your profile is in Active status.</div>
+              <p class="text-warning"></p><br/>
+              
+            {% elif a.visiblepassive %}
+              <div class="alert alert-error">Your profile is in Passive status.</div><br>
+            {% else %}
+              <div class="alert alert-error">Your profile is in Inactive status.</div><br>
+            {% endif %}
+          {% endfor %}
+
+{% for a in details1 %}
+            
+              <p><b>
+                {% if a.visiblity == 1%}
+                <input type="radio" checked="checked" value="active" id="rd1" name="status">
+                {% else %}
+                <input type="radio" value="active" id="rd1" name="status">
+                {% endif %}
+                 Visible as Active</b></p>
+            Your profile will be shown to recruiters in the iTechTalents. Recruiters will contact you for suitable job opportunities.
+            <br><br>
+            <p><b>
+              {% if a.visiblepassive == 1 and a.visiblity == 0 %}
+              <input type="radio" checked="checked" value="passive" id="rd2" name="status">
+              {% else %}
+              <input type="radio" value="passive" id="rd2" name="status">
+              {% endif %}
+               Visible as Passive</b></p>
+            Your profile will be shown to recruiters in the iTechTalents, but recruiters will be informed that you are not actively looking for jobs. Recruiters may still contact you for job opportunities.
+            <br><br>
+            <p><b>
+              {% if a.visiblity == 0 and a.visiblepassive == 0 %}
+              <input type="radio" checked="checked" value="inactive" id="rd3" name="status">
+              {% else %}
+              <input type="radio" value="inactive" id="rd3" name="status">
+              {% endif %}
+               Not Visible(Inactive)</b></p>
+              Your profile will not be shown to recruiters in the iTechTalents. You will not get unadvertised jobs from recruiters.
+            <br> <br> 
+
+{% endfor %}
+          <p><em>Note: You can search and apply for the jobs irrespective of the status</em></p>
+            <br>
+
+            <div style="padding-left:150px;"><button type="submit" class="btn btn-primary">Save</button></div>
+        </form>
+    </div>
+  </div>
+</div>
+
+
+
+{% endblock %}

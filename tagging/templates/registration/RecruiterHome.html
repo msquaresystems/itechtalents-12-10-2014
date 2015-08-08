@@ -1,0 +1,129 @@
+
+
+{% extends "registration/base/jobseekerbase.html" %}
+{% block extrahead %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/jquery-ui.css" />
+
+ <style type="text/css">
+    .success
+    {
+      color: green;
+      font-weight: bold;
+      font-size: 12px;
+      text-align: center;
+      font-family: "Lucida Sans Unicode","Lucida Grande",Sans-Serif;
+    }
+    </style>
+
+{% endblock %}
+{% block content %}
+
+           <div style="width:1200px;padding:0px;margin:auto;">
+            {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
+            {% endfor %}
+            {% endif %}
+
+                <div style="padding:0px;margin:auto;" >
+                    <p><h3>Trial Pack</h3></p>
+                    <p style="color:red;">{{msg1}}</p>
+                    <p>{{msg2}}</p>
+                    <p>{{msg3}}</p>
+                    
+                    <p><h3>Subscribed Packs</h3></p>
+                    <p>{{msgpack}}</p>
+                    
+                    <table  class="table table-striped">
+                        <tr>
+                            <th height="20%" width="15%">Pack Name</th>
+                            <th height="20%" width="10%">Activated Date</th>
+                            <th height="20%" width="10%">Expire date</th>
+                            <th height="20%" width="10%">No of jobpost</th>
+                            <th height="20%" width="10%">No of C.V access</th>
+
+                        </tr>
+                        
+                        {% if empselpack %}
+                            {% for a in empselpack%}
+                                <tr>
+                                    <td height="20%">{{a.pack.pack_name}}</td>
+                                    <td height="20%">{{a.pack_activate}}</td>
+                                    <td height="20%">{{a.pack_expire}}</td>
+                                    <td height="20%">{{a.spack_jobpost}}</td>
+                                    <td height="20%">{{a.spack_resume}}</td>
+                                </tr>
+                            {% endfor %}
+                        
+                        {% else %}
+                            <p>You can select your packs <a href="/accounts/EmpPackname/">HERE</p></a>
+
+                        {% endif %}
+
+                    </table>
+                             <br/><br/>
+
+                    
+
+                </div>
+
+                <div>
+                    <p><h3>Save Search Agent</h3></p>
+                    
+                    <hr>
+                    {% for s in savesearch %}
+                    <p><a href="{{s.savedsearch}}">{{s.searchname}}</a>&emsp;</p>
+                     {% endfor %}
+
+
+                    <hr/>
+                </div>
+
+                <div>
+                    <span><h3>Candidate Folder</h3></span>
+                    <hr >
+                    <table class="table table-striped">
+                        <tr>
+                            <th>Folder Name</th>
+                            <th>Seekers</th>
+                            <th>Last Changes</th>
+                        </tr>
+                        {% for folder in folders %}
+                        <tr>
+                            <td>
+                                <span>
+                                    <a style="text-decoration:none;" href="/accounts/RecruiterFolder/{{ folder.id }}/" ><img style="width:25px;height:25px;" src="{{ STATIC_URL }}images/Folder.png">{{ folder.foldername }}</a>
+                                </span>
+                            </td>
+                            <td>
+                                <span>{{ folder.fcount }}</span>
+                            </td>
+                            <td>
+                                <span>{{ folder.lastupdate }}</span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                    
+                        
+                    <hr>
+                    <p>Create New Folder</p>
+                    <form action="." name="CreateFolderForm" method="post" >{% csrf_token %}
+                    <input type="text" name="folderName" required="True" >
+                    <input class="btn btn-primary" type="submit" value="Save Folder" >
+                    </form>
+                    <br>
+    
+
+                </div>
+               </div>
+{% endblock %}
+{% block extrajavascript %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui.js"></script>
+
+{% endblock %}
+

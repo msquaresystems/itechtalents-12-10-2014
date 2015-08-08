@@ -1,0 +1,32 @@
+
+
+{%- if request.user.is_authenticated() -%}
+<li class="">{{ macros.inbox_link(request.user) }}</li>
+    <li class=""><a href="{{ request.user.get_absolute_url() }}" style="font-size:18px;">{{ request.user }}
+
+<!--new update -->
+<span class="user-info">
+   
+    {{ macros.moderation_items_link(request.user, moderation_items) }}
+    {%-
+        if settings.POINT_MODE != 'hidden' or settings.BADGES_MODE != 'hidden' 
+    -%}
+        {{ macros.user_long_score_and_badge_summary(user,point_mode=settings.POINT_MODE,badges_mode=settings.BADGES_MODE)}}
+    {%- endif -%}
+    </span>
+<!--/ -->
+
+</a> 
+    </li>
+
+    {% if settings.USE_ASKBOT_LOGIN_SYSTEM %}
+         <li class=""><a href="{{ settings.LOGOUT_URL }}?next={{ settings.LOGOUT_REDIRECT_URL }}" style="font-size:18px;">{% trans %}sign out{% endtrans %}</a></li>
+    {% endif %}
+{% elif settings.USE_ASKBOT_LOGIN_SYSTEM %}
+    <li class=""><a href="{{ settings.LOGIN_URL }}?next={{request.path|clean_login_url|escape}}" style="font-size:18px;" >{% trans %}Hi there! Please sign in{% endtrans %}</a></li>
+{% endif %}
+{% if request.user.is_authenticated() and request.user.is_administrator() %}
+    <li class=""><a class="settings" href="{% url site_settings %}" style="font-size:18px;">{% trans %}settings{% endtrans %}</a></li>
+    <li class=""><a class="widgets" href="{% url widgets %}" style="font-size:18px;">{% trans %}widgets{% endtrans %}</a></li>
+{% endif %}
+    <li class=""><a class="help" href="{% url "help" %}" title="{% trans %}help{% endtrans %}" style="font-size:18px;">{% trans %}help{% endtrans %}</a></li>

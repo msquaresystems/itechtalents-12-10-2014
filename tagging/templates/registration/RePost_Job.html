@@ -1,0 +1,351 @@
+{% extends "registration/base/jobseekerbase.html" %}
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-wysihtml5.css"></link>
+<script src="{{ STATIC_URL }}js/wysihtml5-0.3.0.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-wysihtml5.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/datepicker/bootstrap-datepicker.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/datepicker/daterange.js"></script>
+<link rel="stylesheet" href="{{ STATIC_URL }}js/datepicker/datepicker.css" /> 
+
+<style type="text/css">
+.ui-helper-hidden-accessible{
+    display: none;
+}
+
+.ui-autocomplete { position: absolute; cursor: default; }   
+.ui-autocomplete { width:1px; } /* without this, the menu expands to 100% in IE6 */
+.ui-menu {
+    list-style:none;
+    padding: 2px;
+    margin-top: 2px;
+    display:block;
+    float: left;
+    background-color: #F5F5F5;
+    border: 1px solid #CCCCCC;
+    color: #3A87AD;
+}
+.ui-menu .ui-menu {
+    margin-top: -3px;
+}
+.ui-menu .ui-menu-item {
+    margin:0;
+    padding: 0;
+    zoom: 1;
+    float: left;
+    clear: left;
+    width: 100%;
+}
+.ui-menu .ui-menu-item a {
+    text-decoration:none;
+    display:block;
+    padding:.2em .4em;
+    line-height:1.5;
+    zoom:1;
+}
+.ui-menu .ui-menu-item a.ui-state-hover,
+.ui-menu .ui-menu-item a.ui-state-active {
+    font-weight: normal;
+    margin: -1px;
+}
+sup{
+    color: #FF0101;
+}
+
+</style>
+
+{% endblock %}
+{% block content %}
+{% load mytaghelper %}
+<div style="min-height:495px;" class="container">
+  <div class="row well alert alert-info">
+    <div class="span12">
+    <h3 class="text text-info" style="text-align:left;">Job Re-Posting</h3>
+    <form action="." method="post" name="postjobform" id="postjobform" >{% csrf_token %}
+    <input type="hidden" value="{{ user.id }}" name="user_id" >
+    <input type="hidden" name="rem" id="rem" value="{{remaining}}" >
+    {% for d in description %}
+    <table class="table table-borderless">
+      <tr>
+        <td>Job Title&nbsp;<sup>*</sup></td>
+        <td ><input name="title" type="text" style="width:260px;" value="{{d.title}}" autocomplete=off required >
+        <input name="id" type="hidden" style="width:260px;" value="{{d.id}}" >
+        <input name="empid" type="hidden" style="width:260px;" value="{{d.emp_id}}" >
+        </td>
+        <td>Job Code&nbsp;<sup>*</sup><br/><sub>(The job code should be different<br/> from the previous jobpost's code)</sub></td>
+        <td><input name="ref_code" placeholder="Job Code" type="text" id="code" required style="width:260px;" autocomplete=off ><p class="text-error"></p></td>
+      </tr>
+      <tr>
+        <td colspan="2">
+        <h4 class="text text-warning">Job Description</h4>
+        </td>
+      </tr>
+      <tr>
+        <td>Job Summary&nbsp;<sup>*</sup></td>
+        <td colspan="3"><textarea style="width:600px;height:130px;" id="some-textarea" name="jobsummary" required style="width:260px;">{{d.jobsummary}}</textarea>
+        <script type="text/javascript">
+          $('#some-textarea').wysihtml5();
+        </script>
+        </td>
+      </tr>
+      <tr>
+        <td>Job Details&nbsp;<sup>*</sup></td>
+        <td colspan="3" >
+        <textarea style="width:600px;height:130px;" name="jobdetails" id="some-textarea1"  style="width:260px;">{{d.jobdetails}}</textarea>
+        <script type="text/javascript">$('#some-textarea1').wysihtml5();</script>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+        <h4 class="text text-warning">Maching Criteria</h4>
+        </td>
+      </tr>
+      <tr>
+        <td>Key Skills&nbsp;<sup>*</sup></td>
+        <td><input style="width:260px;" name="key_skills" value="{% for ks in keyskills %}{{ ks.keyskills }}{% if not forloop.last %},&nbsp;{% endif %}{% endfor %}" required type="text">
+        </td>
+        <td>Industry&nbsp;<sup>*</sup></td>
+        <td>{% SelectEmpIndustry d.industry %}</td>
+        </tr>
+        <tr>
+        <td>Functional Area&nbsp;<sup>*</sup></td>
+        <td>{% SelectEmpFun d.functionalarea %}</td>
+        <td>Experience&nbsp;<sup>*</sup></td>
+        <td>{% SelectEmpExp d.min_exp 'min_exp' %} to {% SelectEmpExp d.max_exp 'max_exp' %} Years</td>
+        </tr>
+        <tr>
+        <td>Secret Clearance&nbsp;<sup>*</sup></td>
+        <td>{% SelectEmpSecretClear d.empsecretclear %}</td>
+        <td>Travel Required&nbsp;<sup>*</sup></td>
+        <td>{% SelectEmpTravelReq d.emptravel %}</td>
+        </tr>
+        <tr>
+        <td>Telecommute</td>
+        <td>
+        {% if d.emptele%}
+        <input type="checkbox" checked name="emptele" style="width:260px;" value="yes">
+        {% else %}
+        <input type="checkbox" name="emptele" style="width:260px;" value="yes">
+        {% endif %}
+        </td>
+        <td>Work Permit for USA</td>
+        <td>{% SelectEmpWorkPermit d.workpermit %}</td>
+
+        </tr>
+        <tr>
+        <td colspan="4"><strong>Search your address here&emsp;:</strong>&emsp;<input type="text" class="input-xxlarge" id="addresspicker_map" name="addresspicker" placeholder="Boylston Avenue, Princeton, MA 01541, USA" /> 
+        </td>
+        </tr>
+        <tr>
+        <td>Address 1</td>
+        <td><input type="text" name="address1" style="width:260px;" value="{{d.address1}}" ></td>
+        <td>Address 2</td>
+        <td><input type="text" name="address2" style="width:260px;" id="locality" value="{{d.address2}}" ></td>
+        </tr>
+        <tr>
+        <td>City&nbsp;<sup>*</sup></td>
+        <td>
+        <input type="text" name="city" style="width:260px;" required id="administrative_area_level_2" value="{{d.city}}" >
+        </td>
+        <td>State&nbsp;<sup>*</sup></td>
+        <td style="text-align: left;">
+        <input type="text" id="administrative_area_level_1" name="state" style="width:260px;" value="{{d.state}}" required >
+        </td>
+        </tr>
+        <tr>
+        <td>Country&nbsp;<sup>*</sup></td>
+        <td>
+        <input type="text" name="country" style="width:260px;" id="country" value="{{d.country}}" required>
+        </td>
+        <td>ZipCode&nbsp;<sup>*</sup></td>
+        <td>
+        <input type="text" style="width:260px;" name="zipcode" id="postal_code" maxlength="6" value="{{d.zipcode}}" required ><input type="hidden" id="lat" name="latitude" value="{{d.lat}}"><input type="hidden" id="lng" value="{{d.lng}}" name="longitude" ><input type="hidden" value="{{d.typ}}" name="type" id="type"/>
+        </td>
+        </tr>
+        <tr>
+        <td colspan="2"><h4 class="text text-warning">Job Owner Details</h4></td>
+        </tr>
+        <tr>
+        <td>Name&nbsp;<sup>*</sup></td>
+        <td><input type="text" name="ownername" style="width:260px;" value="{{d.ownername}}" required></td>
+        <td>Work Number&nbsp;<sup>*</sup></td>
+        <td><input type="text" name="workno" style="width:260px;" value="{{d.workno}}" required maxlength="10" id="workno" /></td>
+        </tr>
+        <tr>
+        <td>Hand Number&nbsp;<sup>*</sup></td>
+        <td><input type="text" name="handno" style="width:260px;" value="{{d.handno}}" required maxlength="10" id="handno" /></td>
+        <td>Fax</td>
+        <td><input type="text" name="fax" style="width:260px;" value="{{d.fax}}" required maxlength="10" id="faxno" /></td>
+        </tr>
+        <tr>
+        <td>Email&nbsp;<sup>*</sup></td>
+        <td><input type="text" name="email" style="width:260px;" value="{{d.email}}" required validType="email" /></td>
+        
+
+        </tr>
+        <tr>
+        <td>Company Profile&nbsp;<sup>*</sup></td>
+        <td colspan="3">
+        <textarea style="width:600px;height:130px;" id="some-textarea2" name="companyprofile" required>{% for a in cmpdetails %}{{a.companyprofile}}{% endfor %}</textarea>
+
+        <script type="text/javascript">
+            $('#some-textarea2').wysihtml5();
+        </script>
+        </td>
+        </tr>
+        {%if d.marklive and d.todate%}
+        <tr>
+        <td colspan="2"><h4 class="text text-warning">Schedule Job</h4></td>
+        </tr>
+        <tr>
+        <td>Mark Live</td>
+        <td>
+        <input type="text" required name="marklive" value="{{d.marklive|date:'m-d-Y'}}" placeholder='Enter Date(MM-DD-YYYY)' id="dpd1">
+        </td>
+        <td>Expiry Date</td>
+        <td>
+        <input type="text" required name="todate" value="{{d.todate|date:'m-d-Y'}}" placeholder='Enter Date(MM-DD-YYYY)' id="dpd2">
+        </td>
+        </tr>
+        {%endif%}
+        <tr>
+        <td colspan="2"><h4 class="text text-warning">Optional Informations</h4></td>
+        </tr>
+        <tr>
+        <td>Job Type</td>
+        <td>{% SelectEmpJobType d.jobtype %}</td>
+        <td>Salary Range</td>
+        <td>{% SelectEmpSalaryRange d.salary_range %}</td>
+        </tr>
+        <tr>
+        <td>Education Required</td>
+        <td>{% SelectEmpQualification d.qualification %}</td>
+        </tr>
+        <tr>
+        <td></td>
+        <td><button type="submit" id="repostjob" class="btn btn-success btn-large">Repost</button>
+        </tr>
+        </table>
+        {% endfor %}
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extrajavascript %}
+<script src="http://maps.google.com/maps/api/js?libraries=places&region=uk&language=en&sensor=true"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.ui.addresspicker.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/inputmask.js"></script>
+<script type="text/javascript">
+function initmasks(){
+    $('#workno').mask('+1-999-999-9999');
+    $('#handno').mask('+1-999-999-9999');
+    $('#faxno').mask('+1-999-999-9999');
+    
+}
+  function isNumberKey(evt)
+  {
+   var charCode = (evt.which) ? evt.which : event.keyCode
+   if (charCode > 31 && (charCode < 48 || charCode > 57))
+    return false;
+  return true;
+}
+
+$(document).ready(function()
+    {
+initmasks();
+  var nowTemp = new Date();
+    var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+     
+    var checkin = $('#dpd1').datepicker({
+    format: "mm-dd-yyyy",
+    onRender: function(date) {
+    return date.valueOf() < now.valueOf() ? 'disabled' : '';
+    }
+    }).on('changeDate', function(ev) {
+    if (ev.date.valueOf() > checkout.date.valueOf()) {
+    var newDate = new Date(ev.date)
+    newDate.setDate(newDate.getDate() + 1);
+    checkout.setValue(newDate);
+    }
+    checkin.hide();
+    $('#dpd2')[0].focus();
+    }).data('datepicker');
+    var checkout = $('#dpd2').datepicker({
+        format: "mm-dd-yyyy",
+        onRender: function(date) {
+            return date.valueOf() <= checkin.date.valueOf() ? 'disabled' : '';
+        }
+    }).on('changeDate', function(ev) {
+    checkout.hide();
+    }).data('datepicker');
+    $('#code').val('');
+    $('body').on('keyup','#code',function(){
+        if($('#code').val() != ''){
+            a={'jobcode' : $('#code').val()};
+            $.ajax({
+                url : '/accounts/PostJob/',
+                type : 'GET',
+                data : a,
+                success:function(data){
+                    if(data.tag == 0){$('.text-error').html(data.msg);$('#code').css('border','1px solid #B94A48');return false;}
+                    else{$('.text-error').html('');$('#code').css('border','1px solid #CCCCCC');return true;}
+                }
+            });
+        }
+        else{$('.text-error').html('');$('#code').css('border','1px solid #CCCCCC');}
+    });
+    $('body').on('submit','#postjobform',function(){
+        if($('.text-error').text() == ''){
+            return true;
+        }
+        else{
+            $(window).scrollTop(0);
+            return false;
+        }
+    });
+   
+
+    });
+
+
+$(function()
+
+{
+  var addresspicker = $( "#addresspicker" ).addresspicker();
+  var addresspickerMap = $( "#addresspicker_map" ).addresspicker(
+  {
+    regionBias: "fr",
+    updateCallback: showCallback,
+    elements:
+    {
+      map:"#map",
+      lat:"#lat",
+      lng:"#lng",
+      street_number:'#street_number',
+      route:'#route',
+      locality: '#locality',
+      administrative_area_level_2:'#administrative_area_level_2',
+      administrative_area_level_1:'#administrative_area_level_1',
+      country:'#country',
+      postal_code:'#postal_code',
+      type:'#type'
+    }
+  });
+
+  var gmarker = addresspickerMap.addresspicker( "marker");
+  gmarker.setVisible(true);
+  addresspickerMap.addresspicker( "updatePosition");
+
+  $('#reverseGeocode').change(function()
+  {
+    $("#addresspicker_map").addresspicker("option", "reverseGeocode", ($(this).val() === 'true'));
+  });
+  function showCallback(geocodeResult, parsedGeocodeResult)
+  {
+    $('#callback_result').text(JSON.stringify(parsedGeocodeResult, null, 4));
+  }
+});
+
+</script>
+{% endblock %}
+

@@ -1,0 +1,199 @@
+{% extends "registration/base/jobseekerbase.html" %}
+{% block extrahead %} 
+<style type="text/css">
+.bs-docs-sidenav a.section-head
+{
+  text-decoration: none;
+  /*background-color: #139cd2;*/
+  background-image: linear-gradient(#5d71b8, #B5BFE4);
+  background-repeat: repeat-x;
+  border-bottom: 1px solid #CCCCCC;
+  border-left: 0 none;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
+  color: #fff;
+  display: block;
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 20px;
+  padding: 10px;
+  cursor:default;
+}
+.bs-docs-sidenav > li > a
+{
+    display: block;
+    width: 190px \9;
+    margin: 0 0 -1px;
+    padding: 8px 14px;
+    border: 1px solid #e5e5e5;
+}
+.bs-docs-sidenav > li > a:hover
+{
+    background: #CED6F2;    
+}
+</style>
+{% endblock %}
+{% block content %}
+<div class="container-fluid" style="min-height:580px;">
+  <div class="row-fluid">
+    <div class="span3 sidebar">
+      <ul class="nav nav-list bs-docs-sidenav">
+         <a class="section-head">Interview Zone</a>
+          <li><a href="#" id="Schedule">Scheduled Interview</a></li>
+          <li><a href="#" id="Confirmed">Confirmed Interview</a></li>
+          <li><a href="#" id="pass">Passed Interview</a></li>
+          <li><a href="#" id="fail">Dropped Interview</a></li>
+          <li><a href="#" id="cancel">Cancelled Interview</a></li>
+      </ul>
+    </div>    
+    <div class="span9 rightside">
+      <div>
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        <h4 style="border-bottom:2px solid #FFB812;">Newly Scheduled Interview </h4>
+        <table class="table table-striped table-bordered">
+          <tr>
+            <th rowspan="2">Company Name</th><th rowspan="2">Position</th><th colspan="2">Scheduled by Employer</th><th colspan="2">Schedule by JobSeeker</th><th rowspan="2">Confirmation</th><th rowspan="2">Reschedule</th><th rowspan="2">Cancel</th>
+          </tr>
+          <tr><th>Date</th><th>Time</th><th>Date</th><th>Time</th></tr>
+          {% if interview %}
+          {% for interview in interview %}
+          {% if not interview.interview.Denied %}
+          {% if interview.JSconfirmation and interview.Empconfirmation %}
+          {% else %}
+          <tr>
+            <td>{{ companyname }}</td>
+            <td>{{ interview.Job.title }}</td>
+            {% if interview.empschedule_date5%}
+            <td>{{ interview.empschedule_date5 }}</td>
+            <td>{{ interview.empschedule_time5 }}</td>
+            {% elif interview.empschedule_date4%}
+            <td>{{ interview.empschedule_date4 }}</td>
+            <td>{{ interview.empschedule_time4 }}</td>
+            {% elif interview.empschedule_date3%}
+            <td>{{ interview.empschedule_date3 }}</td>
+            <td>{{ interview.empschedule_time3 }}</td>
+            {% elif interview.empschedule_date2%}
+            <td>{{ interview.empschedule_date2 }}</td>
+            <td>{{ interview.empschedule_time2 }}</td>
+            {% else %}
+            <td>{{ interview.empschedule_date1 }}</td>
+            <td>{{ interview.empschedule_time1 }}</td>
+            {% endif %}
+            {% if interview.jsschedule_date5%}
+            <td>{{ interview.jsschedule_date5 }}</td>
+            <td>{{ interview.jsschedule_time5 }}</td>
+            {% elif interview.jsschedule_date4%}
+            <td>{{ interview.jsschedule_date4 }}</td>
+            <td>{{ interview.jsschedule_time4 }}</td>
+            {% elif interview.jsschedule_date3%}
+            <td>{{ interview.jsschedule_date3 }}</td>
+            <td>{{ interview.jsschedule_time3 }}</td>
+            {% elif interview.jsschedule_date2%}
+            <td>{{ interview.jsschedule_date2 }}</td>
+            <td>{{ interview.jsschedule_time2 }}</td>
+            {% else %}
+            <td>{{ interview.jsschedule_date1 }}</td>
+            <td>{{ interview.jsschedule_time1 }}</td>
+            {% endif %}
+            {% if interview.interview.Denied %}
+            <td>Cancelled</td>
+            {% elif interview.JSconfirmation and interview.Empconfirmation %}
+            <td>Confirmed</td>
+            {% elif interview.JSconfirmation %}
+            <td>Waiting..</td>
+            {% else %}
+            <td><a href="/accounts/InterviewConfirmJS/{{ interview.interview.id}}/" >To be Confirm</a></td>
+            {% endif %}
+            {% if interview.interview.Denied %}
+            <td>Cancelled</td>
+            {% elif interview.JSconfirmation and interview.Empconfirmation %}
+            <td>Confirmed</td>
+            {% elif interview.JSconfirmation %}
+            <td>Waiting..</td>
+            {% else %}
+            <td><a href="#" id="reschedule{{ interview.interview.id}}">Click Here</a></td>
+            {% endif %}
+            {% if interview.interview.Denied %}
+            <td>Cancelled</td>
+            {% else %}
+            <td><a class="clickdel" id="{{ interview.interview.id}}" href="#deleteoneform"  data-toggle="modal">Click Here</a></td>
+            {% endif %}
+          </tr>
+          {% endif %}
+          {% endif %}
+          {% endfor %}
+          {% else %}
+          <tr>
+            <td colspan="11"><p style="text-align:center;">There is no Interview Schedule for you..</p></td>
+          </tr>
+          {% endif %}
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ************ POPUP FORM Cancel Interview ************** -->
+<div id="deleteoneform" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <form action="/accounts/CancelInterviewJS/" class="popupform" method="post">{% csrf_token %}
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>    <h3 id="myModalLabel">Cancel Interview</h3>
+    </div>
+
+    <div class="modal-body">
+      <input type="hidden" name="userid" value="{{user.id}}" >
+        <input type="hidden" id="txt1" name="intid" >
+        <p>Are you sure want to cancel Interview ?</p>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">No</button>&emsp;
+        <input type="submit" class="btn" value="Yes">
+      </div>
+    </form>
+</div>
+<!-- **************** End Model Form ***************************-->
+{% endblock %}
+{% block extrajavascript %}
+<script type="text/javascript">
+$(document).ready(function ()
+    {
+      $('.clickdel').click(function()
+        {
+          var id = $(this).attr('id');
+          $("#txt1").val(id);
+        });
+
+      $("#Schedule").click(function()
+        {
+          location.reload();
+        });
+
+      $("#Confirmed").click(function()
+        {
+          $('.rightside').load('/accounts/JSInterviewCofirmPage/');
+        });
+      $("#pass").click(function()
+        {
+          $('.rightside').load('/accounts/JSInterviewSuccessPage/');
+        });
+      $("#fail").click(function()
+        {
+          $('.rightside').load('/accounts/JSInterviewFailPage/');
+        });
+      $("#cancel").click(function()
+        {
+          $('.rightside').load('/accounts/JSInterviewCancelPage/');
+        });
+
+      {% for interview in interview %}
+      $("#reschedule{{ interview.interview.id}}").click(function()
+        {
+          $('.rightside').load('/accounts/RescheduleInterviewsJS/{{ interview.interview.id}}/');
+        });
+      {% endfor %}      
+      });
+</script>
+{% endblock %}

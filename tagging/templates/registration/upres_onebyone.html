@@ -1,0 +1,68 @@
+
+
+{% extends "registration/base/jobseekerbase.html" %}
+
+{% block extrahead %}
+<link rel="stylesheet" href="{{ STATIC_URL }}css/style.css"/>
+	<link rel="stylesheet" href="{{ STATIC_URL }}css/jquery-ui.css" />
+{% endblock %}
+{% block content %}
+<div style="width:1200px;padding:0px;margin:auto;" class="outerdiv">
+
+<div style="border:1px solid #9400D3;">
+	<div style="border:1px solid #009900;">
+
+<form action="." onsubmit="return validateForm1()" method="post" name="myForm1" enctype="multipart/form-data">{% csrf_token %}
+<span><input type="hidden" value="{{ user.id }}" name="user_id" ></span>
+<p style="text-align:center;"><b>Add New Resume</b></p><br/><br/>
+<table border="0"  align="center"  width="60%"   cellpadding="1" cellspacing="1">
+<tr>
+	<td width="30%">
+		Title:<br/>
+	</td>
+	<td width="30%">
+		<input id="h1" name="h1" type="text"  >
+	</td>
+</tr>
+<tr>
+	<td>
+		Select New Resume:<br/>
+	</td>
+	<td>
+		<input type="file" id="f1"  name="f1" >
+	</td>
+</tr>
+<tr>
+	<td colspan=3 style="text-align:center;">
+		<input type="submit" value="SUBMIT">
+	</td>
+</tr>
+</table>
+</form>
+<br>
+</div>
+<br>
+</div>
+</div>
+{% endblock %}
+{% block extrajavascript %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.9.1.js"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui.js"></script>
+	<!--<script type="text/javascript" src="{{ STATIC_URL }}js/validation.js"></script>-->
+	<script type="text/javascript">
+
+
+	function validateForm1()
+	{
+	var x=document.forms["myForm1"]["h1"].value;
+	var y=document.forms["myForm1"]["f1"].value;
+
+	if ((x==null || x=="") || (y==null || y==""))
+	  {
+	  alert("All fields must be filled out");
+	  return false;
+	  }
+	}
+
+</script>
+{% endblock %}

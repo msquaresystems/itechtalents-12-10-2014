@@ -1,0 +1,242 @@
+<link rel="stylesheet" href="{{ STATIC_URL }}css/style1.css" />
+<link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap-image-gallery.css">
+<script src="{{ STATIC_URL }}js/load-image.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-image-gallery.js"></script>
+<script type="text/javascript">
+$(function (){
+    'use strict';
+    // Start slideshow button:
+    $('#start-slideshow').button().click(function () {
+        var options = $(this).data(),
+            modal = $(options.target),
+            data = modal.data('modal');
+        if (data) {
+            $.extend(data.options, options);
+        } else {
+            options = $.extend(modal.data(), options);
+        }
+        modal.find('.modal-slideshow').find('i')
+            .removeClass('icon-play')
+            .addClass('icon-pause');
+        modal.modal(options);
+    });
+});
+</script>
+<script type="text/javascript">
+$(function(){
+    $('.upfile').bind('change', function(){
+        var a=(this.files[0].size);
+        var aa=document.getElementById('upimg').files[0].type  //mime type
+        if((aa=='image/jpeg') || (aa=='image/gif') || (aa=='image/jpg') || (aa=='image/png') || (aa=='image/bmp')){
+            if(a > 204800){
+                $('#errmsg1').html('Size is more than 200KB');
+                $('.upfile').val('');
+            }
+        }
+        else{
+            $('#errmsg1').html('Invalid file format');
+            $('.upfile').val('');
+        }
+    });
+    $('.upvfile').bind('change', function(){
+        var a=(this.files[0].size);
+        var aa=document.getElementById('upvid').files[0].type  //mime type
+        if((aa=='video/webm') || (aa=='video/ogg')){
+            if(a > 2621440){
+                $('#errmsg2').html('Size is not more than 2.5MB');
+                $('.upvfile').val('');
+            }
+        }
+        else{
+            $('#errmsg2').html('Invalid file format');
+            $('.upvfile').val('');
+        }
+    });
+    $('.clickdel').click(function(){
+        var id = $(this).attr('id');
+        $("#txtdelete").val(id);
+    });
+    $('.clickdelvideo').click(function(){
+        var id = $(this).attr('id');
+        $("#txtdeletevideo").val(id);
+    });
+    $('body').on('submit','#addVideoForm',function(){
+        if($('#upvid').val()==''){
+            $('#upvid').css('border','1px solid red');
+            return false;
+        }
+        else{
+            $('#upvid').css('border','1px solid #cccccc');
+            $('#errmsg2').html('');
+            return true;
+        }
+    });
+    $('body').on('submit','#addPhotoForm',function(){
+        if($('#upimg').val()==''){
+            $('#upimg').css('border','1px solid red');
+            return false;
+        }
+        else{
+            $('#upimg').css('border','1px solid #cccccc');
+            $('#errmsg1').html('');
+            return true;
+        }
+    });
+});
+</script>
+<div class="row-fluid">
+    <h3 class="text-info" style="border-bottom:2px solid #FFB812;">Picture Gallery</h3>
+    {% if picgallery %}
+    <header><button id="start-slideshow" class="btn btn-small btn-success" data-slideshow="5000" data-target="#modal-gallery" data-selector="#gallery [data-gallery=gallery]">Start Slideshow</button></header>
+    <div id="gallery" data-toggle="modal-gallery" data-target="#modal-gallery">
+        {% for a in picgallery %}
+        <div style="float:left;">
+            <div><a href="{{STATIC_URL}}{{ a.galpic }}" title="{{a.galpictitle}}" data-gallery="gallery"><img src="{{STATIC_URL}}{{ a.galpic }}" style="width:150px; height:100px;">&nbsp;&nbsp;</a></div>&nbsp;
+            <div><a style="text-decoration:none;" class="clickdel" id="{{a.id}}" href="#myModaldelete" role="button" data-toggle="modal"><span class="btn btn-mini btn-danger"> Delete</span></a></div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div>You have not added any pictures, To add pictures <a href="#addPhoto" data-toggle="modal" style="text-decoration:none;" id="empaddphotogallery" >click here</a></div>
+    {% endif %}
+</div>
+<div class="row-fluid">
+    <h3 class="text-info" style="border-bottom:2px solid #FFB812;">Video Gallery</h3>
+    {% if videogallery %}
+    <div>
+        {% for a in videogallery %}
+        <div style="float:left;">
+            <div>
+                <a title="{{a.galvideotitle}}" >
+                <video width="300" height="250" controls >
+                    <source src={{STATIC_URL}}{{ a.galvideo }} type="video/ogg">
+                    <source src={{STATIC_URL}}{{ a.galvideo }} type="video/mp4">
+                    <source src={{STATIC_URL}}{{ a.galvideo }} type="video/webm">
+                    Your browser does not support the video tag.
+                </video>&nbsp;&nbsp;</a>
+            </div>&nbsp;
+            <div>
+                <input type="hidden" name="galid" value="{{a.id}}">
+                <a style="text-decoration:none;" class="clickdelvideo" id="{{a.id}}" href="#myModaldeletevideo" role="button" data-toggle="modal"><span class="btn btn-mini btn-danger"> Delete</span></a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div>You have not added any videos, To add videos <a style="text-decoration:none;" id="empaddvideogallery" href="#addVideo" data-toggle="modal">click here</a></div>
+    {% endif %}
+</div><br><br><br>
+<!-- modal-gallery is the modal dialog used for the image gallery -->
+<div  id="modal-gallery" class="modal modal-gallery hide fade" tabindex="-1">
+    <div class="modal-header"> <a class="close" data-dismiss="modal">&times;</a>
+         <h3 class="modal-title"></h3>
+    </div>
+    <div class="modal-body" >
+        <div class="modal-image">
+        </div>
+    </div>
+    <div class="modal-footer"> <a class="btn modal-download" target="_blank">
+            <i class="icon-download"></i>
+            <span>View Original</span>
+        </a>
+ <a class="btn btn-success modal-play modal-slideshow" data-slideshow="5000">
+            <i class="icon-play icon-white"></i>
+            <span>Slideshow</span>
+        </a>
+ <a class="btn btn-info modal-prev">
+            <i class="icon-arrow-left icon-white"></i>
+            <span>Previous</span>
+        </a>
+ <a class="btn btn-primary modal-next">
+            <span>Next</span>
+            <i class="icon-arrow-right icon-white"></i>
+        </a>
+
+    </div>
+</div>
+<!-- modal form to delete video -->
+<div id="myModaldeletevideo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <form action="/accounts/DeleteEmpGalleryVideo/" method="post" enctype="multipart/form-data">{% csrf_token %}        
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+            <h3 id="myModalLabel">Delete Video</h3>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" name="galid" id="txtdeletevideo" value="{{a.id}}">
+            <p>Are you sure want to delete this video?</p>
+        </div>
+         <div class="modal-footer">
+            <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">No</button>&emsp;
+            <input name="submit" type="submit" class="btn btn-primary" value="Yes">
+        </div>
+    </form>
+</div>
+<!-- modal form to delete picture -->
+<div id="myModaldelete" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <form action="/accounts/DeleteEmpGallery/" method="post" enctype="multipart/form-data">{% csrf_token %}       
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+            <h3 id="myModalLabel">Delete Picture</h3>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" name="galid" id="txtdelete" value="{{a.id}}">
+            <p>Are you sure want to delete this picture ?</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">No</button>&emsp;
+            <input name="submit" type="submit" class="btn btn-primary" value="Yes">
+        </div>
+    </form>
+</div>
+<!-- Add Photo -->
+<div id="addPhoto" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<form  action="/accounts/AddEmpGallery/" method="post" id="addPhotoForm" enctype="multipart/form-data">{% csrf_token %}
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+<h3 id="myModalLabel">Add New Photo</h3>
+</div>
+<div class="modal-body">
+    <input type='hidden' name="user_id" value="{{ request.user.id }}">
+    <table class="table">
+        <tr>
+            <td>Select Picture</td>
+            <td><input type="file" accept="image/*" name="galpic" class="input-xlarge upfile" id="upimg" required ><p><sub>(.jpg, png, jpeg, gif, bmp, max.size 200KB)</sub></p><small id="errmsg1" style="color:red;"></small></td>
+        </tr>
+        <tr>
+            <td>Description</td>
+            <td><input type="text" name="galpictitle" class="input-xlarge" required ></td>
+        </tr>
+    </table>    
+</div>
+<div class="modal-footer">
+<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+<input type="submit" class="btn btn-primary" value="Save">
+</div>
+</form>
+</div>
+<!-- Add Video -->
+<div id="addVideo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<form  action="/accounts/AddEmpGalleryVideo/" id="addVideoForm" method="post" enctype="multipart/form-data">{% csrf_token %}
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+<h3 id="myModalLabel">Add New Video</h3>
+</div>
+<div class="modal-body">
+        <input type='hidden' name="user_id" value="{{ user.id }}">
+        <table class="table ">
+            <tr>
+                <td>Select Video</td>
+                <td><input type="file" accept="video/*" class="input-xlarge upvfile" id="upvid" name="galvideo" required ><p><sub>(ogg and webm max.size 2.5MB)</sub></p><small id="errmsg2" style="color:red;"></small></td>
+            </tr>
+            <tr>
+                <td>Description</td>
+                <td><input type="text" name="galvideotitle" class="input-xlarge" required ></td>
+            </tr>
+        </table>
+</div>
+<div class="modal-footer">
+<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+<input type="submit" class="btn btn-primary" value="Save">
+</div>
+</form>
+</div>

@@ -1,0 +1,369 @@
+<script type="text/javascript" src="{{ STATIC_URL }}js/datepicker/bootstrap-datepicker.js"></script>
+<link rel="stylesheet" href="{{ STATIC_URL }}js/datepicker/datepicker.css" />
+<script type="text/javascript">
+$(function(){
+    var nowTemp = new Date();
+    var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+     
+    var checkin = $('#startdate').datepicker({
+    format: "mm-dd-yyyy",
+    onRender: function(date) {
+    return date.valueOf() < now.valueOf() ? 'disabled' : '';
+    }
+    }).on('changeDate', function(ev) {
+    if (ev.date.valueOf() > checkout.date.valueOf()) {
+    var newDate = new Date(ev.date)
+    newDate.setDate(newDate.getDate() + 1);
+    checkout.setValue(newDate);
+    }
+    checkin.hide();
+    $('#enddate')[0].focus();
+    }).data('datepicker');
+    var checkout = $('#enddate').datepicker({
+    format: "mm-dd-yyyy",
+    onRender: function(date) {
+    return date.valueOf() <= checkin.date.valueOf() ? 'disabled' : '';
+    }
+    }).on('changeDate', function(ev) {
+    checkout.hide();
+    }).data('datepicker');
+    
+});
+</script>
+<script type="text/javascript">
+$(function()
+    {
+        $('#dpd').datepicker({
+            format: 'mm-dd-yyyy',
+            startDate: "+0d",
+        });
+        $("#actjob").click(function()
+            {
+                $('.span9').load('/accounts/RecruiterDashboard/1/');
+            });
+
+        $("#inactjob").click(function()
+            {
+                $('.span9').load('/accounts/RecruiterDashboard/2/');
+            });
+
+        $("#penjob").click(function()
+            {
+                $('.span9').load('/accounts/RecruiterDashboard/3/');
+            });
+
+        $("#alljob").click(function()
+            {
+                $('.span9').load('/accounts/RecruiterDashboard/4/');
+            });
+      
+        $('.clickdelete').click(function()
+        {
+          var id = $(this).attr('id');
+          $("#txtdelete").val(id);
+        });
+        $('.clickdel').click(function()
+        {
+          var id = $(this).attr('id');
+          $("#txt").val(id);
+        });
+        $('.clickactoday').click(function()
+        {
+          var id = $(this).attr('id');
+          $("#txt1").val(id);
+        });
+        $('.clickmakeact').click(function()
+        {
+          var id = $(this).attr('id');
+          $("#activejob").val(id);
+        });
+
+        // All Jobs
+
+        $('.activate').click(function()
+        {
+          var id = $(this).attr('id');
+          $("#activejob").val(id);
+        });
+        $('.deactivate').click(function()
+        {
+          var id = $(this).attr('id');
+          $("#deactive").val(id);
+        });
+
+    });
+</script>
+<style type="text/css">
+    sup{
+        color: red;
+
+    }
+    .datepicker{
+        z-index: 1151;
+    }
+</style>
+
+<div>
+    <table class="table">
+        <tr>
+            <td colspan="3"><h3> {{msg2}}</h3></td>
+            <td style="text-align:right;" colspan="3">
+                <a style="text-decoration:none;" id="actjob" href='#'><span>{{msgActive}}</span></a>&emsp;
+                <a style="text-decoration:none;" id="inactjob" href='#'><span>{{msgInactive}}</span></a>&emsp;
+                <a style="text-decoration:none;" id="penjob" href='#'><span>{{msgPending}}</span></a>&emsp;
+                <a style="text-decoration:none;" id="alljob" href='#'><span>{{msgAll}}</span></a>&emsp;
+            </td>
+        </tr>
+
+        
+        {% if ActJobList or InactJobList or PendingJobList or allpostedjobs %}
+        <tr >
+            <th width="10%">JobCode</th>
+            <th width="20%">Position</th>
+            <th width="10%">Status</th>
+            <th width="15%">Open Date</th>
+            <th width="15%">Expire Date</th>
+            <th width="35%">Activity</th>
+        </tr>
+        {% for joblist in ActJobList %}
+        <tr class="alert alert-success">
+            <td><label><a href="/accounts/JobFullDescription_emp/{{joblist.id}}/">{{ joblist.referencecode }}</a></label></td>
+            <td><label>{{ joblist.title }}</label></td>
+            <td><label>Open</label></td>
+            <td><label>Open from {{ joblist.marklive|date }}</label></td>
+            <td><label>Expire on {{ joblist.todate|date }}</label></td>
+            <td>
+                <a style="text-decoration:none;" title="Edit" href="/accounts/EditJobPost/{{joblist.id}}/"><i class="icon-edit"></i></a>
+                &nbsp;&nbsp;&nbsp;
+                <a style="text-decoration:none;" title="Repost" href="/accounts/RePost/{{joblist.id}}/"><i class="icon-repeat"></i></a>
+                &nbsp;&nbsp;&nbsp;
+                <a style="text-decoration:none;" class="clickdelete" id="{{joblist.id}}" title="Delete" href="#myModaldelete" role="button" data-toggle="modal"><i class="icon-trash"></i></a>
+                &nbsp;&nbsp;&nbsp;
+                <a style="text-decoration:none;" class="clickdel" id="{{joblist.id}}" title="Make Inactive" href="#myModal" role="button" data-toggle="modal"><span  class="btn btn-mini btn-danger" >Close this Job</span></a>
+            </td>
+        </tr>
+        {% endfor %}
+        {% for joblist in InactJobList %}
+        <tr class="alert alert-error">
+            <td><label><a href="/accounts/JobFullDescription_emp/{{joblist.id}}/">{{ joblist.referencecode }}</a></label></td>
+            <td><label>{{ joblist.title }}</label></td>
+            <td><label>Expired</label></td>
+            <td><label>Opened on {{ joblist.marklive|date }}</label></td>
+            <td><label>Expired on {{ joblist.todate|date }}</label></td>
+            <td>
+                <a style="text-decoration:none;" title="Edit" href="/accounts/EditJobPost/{{joblist.id}}/"><i class="icon-edit"></i></a>
+                &nbsp;&nbsp;&nbsp;
+                <a style="text-decoration:none;" title="Repost" href="/accounts/RePost/{{joblist.id}}/"><i class="icon-repeat"></i></a>
+                &nbsp;&nbsp;&nbsp;
+                <a style="text-decoration:none;" class="clickdelete" id="{{joblist.id}}" title="Delete" href="#myModaldelete" role="button" data-toggle="modal"><i class="icon-trash"></i></a>
+                &nbsp;&nbsp;&nbsp;
+                <a style="text-decoration:none;" class="clickmakeact" id="{{joblist.id}}" title="Active from Today" href="#activateJob" role="button" data-toggle="modal"><span  class="btn btn-mini btn-success" >Open this Job</span></a>
+               
+               
+            </td>
+        </tr>
+        {% endfor %}
+        {% for joblist in PendingJobList %}
+        <tr class="alert alert-block">
+            <td><label><a href="/accounts/JobFullDescription_emp/{{joblist.id}}/">{{ joblist.referencecode }}</a></label></td>
+            <td><label>{{ joblist.title }}</label></td>
+            <td><label>Future</label></td>
+            <td><label>To be open from {{ joblist.marklive|date }}</label></td>
+            <td><label>Expire on {{ joblist.todate|date }}</label></td>
+            <td>
+                <a style="text-decoration:none;" title="Edit" href="/accounts/EditJobPost/{{joblist.id}}/"><i class="icon-edit"></i></a>
+                &nbsp;&nbsp;&nbsp;
+                <a style="text-decoration:none;" title="Repost" href="/accounts/RePost/{{joblist.id}}/"><i class="icon-repeat"></i></a>
+                &nbsp;&nbsp;&nbsp;
+                <a style="text-decoration:none;" class="clickdelete" id="{{joblist.id}}" title="Delete" href="#myModaldelete" role="button" data-toggle="modal"><i class="icon-trash"></i></a>
+                &nbsp;&nbsp;&nbsp;
+                <a style="text-decoration:none;" class="clickactoday" id="{{joblist.id}}" title="Active from Today" href="#myModal1" role="button" data-toggle="modal"><span  class="btn btn-mini btn-success" >Open Today</span></a>
+               
+            </td>
+        </tr>
+        {% endfor %}
+        <!-- All Posted Jobs -->
+
+        {% for jobs in allpostedjobs %}
+        <tr class="alert alert-{% if jobs.is_active %}success{%else%}info{%endif%}">
+            <td><label><a href="/accounts/JobFullDescription_emp/{{jobs.id}}/">{{ jobs.referencecode }}</a></label></td>
+            <td><label>{{jobs.title}}</label></td>
+            <td><label>{%if jobs.is_active%}Open{%else%}Close{%endif%}</label></td>
+            <td><label>{{jobs.marklive|date }}</label></td>
+            <td><label>{{jobs.todate|date }}</label></td>
+            <td>
+                <a style="text-decoration:none;" title="Edit" href="/accounts/EditJobPost/{{jobs.id}}/"><i class="icon-edit"></i></a>
+                &nbsp;&nbsp;&nbsp;
+                <a style="text-decoration:none;" title="Repost" href="/accounts/RePost/{{jobs.id}}/"><i class="icon-repeat"></i></a>
+                &nbsp;&nbsp;&nbsp;
+                <a style="text-decoration:none;" class="clickdelete" id="{{jobs.id}}" title="Delete" href="#myModaldelete" role="button" data-toggle="modal"><i class="icon-trash"></i></a>
+                &nbsp;&nbsp;&nbsp;
+                <a style="text-decoration:none;" class="{% if jobs.is_active %}deactivate{% else %}activate{% endif %}" id="{{jobs.id}}" title="Active from Today" href="#{% if jobs.is_active %}deactivate{% else %}activateJob{% endif %}" role="button" data-toggle="modal"><span  class="btn btn-mini btn-{%if jobs.is_active%}danger{%else%}success{%endif%}">{%if jobs.is_active%}Make it De-activate{%else%}Make it Activate{%endif%}</span></a>               
+            </td>
+        </tr>
+        {% endfor %}
+        <!-- End Posted Jobs -->
+        {% else %}
+            <tr>
+                <td colspan="5"> Jobs not found. Please click <a href="/accounts/PostJob/" id="post">here</a> to post new job.</td>
+            </tr>
+        {% endif %}
+    </table>
+</div>
+
+<!-- ************** POPUP FORM to coform inactive job ************* -->
+
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <form action="/accounts/InactiveJobPost/" method="post">{% csrf_token %}
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+            <h3 id="myModalLabel">Make Job Close</h3>
+        </div>
+
+        <div class="modal-body">
+            <input type="hidden" value="{{ user.id }}" name="user_id" >
+            <input type="hidden" name="rem" id="rem" value="{{remaining}}" >
+            <input type="hidden" id="txt" value="" name="jobid">
+            <p>Are you sure want to close this job?</p>
+
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">No</button>&emsp;
+            <input name="submit" type="submit" class="btn btn-primary" value="Yes">
+            
+        </div>
+    </form>
+</div>
+
+<!-- ************** POPUP FORM to cofirm active job ************* -->
+
+<div id="myModal1" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <form action="/accounts/ActivateTodayJobPost/" method="post">{% csrf_token %}
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+            <h3 id="myModalLabel">Make Open from Today</h3>
+        </div>
+
+        <div class="modal-body">
+            <input type="hidden" value="{{ user.id }}" name="user_id" >
+            <input type="hidden" name="rem" id="rem" value="{{remaining}}" >
+            <input type="hidden" id="txt1" value="" name="jobid">
+            <p>Are you sure want to make this job Open from Today?</p>
+
+            <p>Select Expiry Date&nbsp;<sup>*</sup>&emsp;<input type="text" class="from" id="dpd" name="todate"  required placeholder="MM-DD-YYYY" readonly></p>
+
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">No</button>&emsp;
+            <input name="submit" type="submit" class="btn btn-primary" value="Yes">
+            
+        </div>
+    </form>
+</div>
+
+
+<!-- ********** POPUP FORM to make inactive job to be active********* -->
+
+<div id="myModal2" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <form action="/accounts/ActiveJobPost/" method="post">{% csrf_token %}
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+            <h3 id="myModalLabel">Make Job Open</h3>
+        </div>
+
+        <div class="modal-body">
+            <input type="hidden" value="{{ user.id }}" name="user_id" >
+            <input type="hidden" name="rem" id="rem" value="{{remaining}}" >
+            <input type="hidden" id="txt2" value="" name="jobid">
+
+            <p>Are you sure want to make this job ?</p>
+            <p>Select Live Date&nbsp;<sup>*</sup><input type="text" required name="marklive" value="" class="from" id="dpd1" readonly></p>
+
+            <p>Select Expiry Date&nbsp;<sup>*</sup><input type="text" required name="todate" value="" class="from" id="dpd2" readonly></p>
+
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">No</button>&emsp;
+            <input name="submit" type="submit" class="btn btn-primary" value="Yes">
+            
+        </div>
+    </form>
+</div>
+
+<!-- ********** POPUP FORM to delete job ********* -->
+<div id="myModaldelete" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <form action="/accounts/DeleteJobPost/" method="post">{% csrf_token %}
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+            <h3 id="myModalLabel">Delete Job</h3>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" value="{{ user.id }}" name="user_id" >
+            <input type="hidden" name="rem" id="rem" value="{{remaining}}" >
+            <input type="hidden" id="txtdelete" value="" name="jobid">
+            <p>Are you sure want to delete this job?</p>           
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">No</button>&emsp;
+            <input name="submit" type="submit" class="btn btn-primary" value="Yes">            
+        </div>
+    </form>
+</div>
+<!-- To activate the job -->
+<div id="activateJob" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <form action="/accounts/ActivateJob/" method="post">{% csrf_token %}
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+            <h3 id="myModalLabel">Activating the job</h3>
+        </div>
+        {% if jobcount%}
+        <div class="modal-body">
+            <input type="hidden" value="{{ user.id }}" name="user_id" >
+            <input type="hidden" id="activejob" value="" name="jobid">
+            <p>Are you sure want to activate the job?</p>
+            <p>If 'yes' filling out the following fields or 'no' click 'cancel' button</p>
+            <p>From date&nbsp;<sup>*</sup>&nbsp;:&emsp;<input id='startdate' type="text" name="fromdate" class="input-xlarge" value="" required></p>
+            <p>Expire date&nbsp;<sup>*</sup>&nbsp;:&emsp;<input type="text" name="todate" id='enddate' class="input-xlarge" required></p>
+            <p>Select pack&nbsp;<sup>*</sup>&nbsp;:&emsp;<select name="selectPackage" class="input-xlarge" required><option value="">Select Pack</option>            
+            {%for packs in employerPackages%}{%if packs.totaljobpost%}<option value="{{packs.id}}">{{packs.subscribed_pack.pack.pack_name}}</option>{%endif%}{%endfor%}
+            </select>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">No</button>&emsp;
+            <input name="submit" type="submit" class="btn btn-primary" value="Yes">            
+        </div>
+        {%else%}
+         <div class="modal-body">
+            <p><strong>You didn't activate any pack / Your pack has been expired. Please <a href="/accounts/EmpPackname/">click here</a> to subscribe.</strong></p>
+            {%endif%}
+        </div>
+        <div class="modal-footer">
+         <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">No</button>&emsp;
+        </div>
+    </form>
+</div>
+<!-- To Deactivate Job -->
+<div id="deactivate" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <form action="/accounts/InactiveJobPost/" method="post">{% csrf_token %}
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+            <h3 id="myModalLabel">Make Job Close</h3>
+        </div>
+
+        <div class="modal-body">
+            <input type="hidden" value="{{ user.id }}" name="user_id" >
+            <input type="hidden" id="deactive" value="" name="jobid">
+            <p>Are you sure want to close this job?</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">No</button>&emsp;
+            <input name="submit" type="submit" class="btn btn-primary" value="Yes">
+            
+        </div>
+    </form>
+</div>
+
+

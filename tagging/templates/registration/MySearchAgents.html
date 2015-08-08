@@ -1,0 +1,137 @@
+<div>
+	<h4 class="text text-info" style="border-bottom:2px solid #FFB812;">Search Agents</h4>
+	{% if savesearch %}<p><strong><a href="#deleteallform" class="p1" data-toggle="modal">Delete</a></strong></p>{% endif %}
+	<table class="table table-hover">
+		<tr>
+			<th width="6%"><input type="checkbox" id="selectall" name="selectall" ></th>
+			<th>Save Search Name</th>
+			<th>Action</th>
+		</tr>
+		{% if savesearch %}
+		{% for savesearch in savesearch %}
+		<tr>
+			<td><input type="checkbox" name="savejobid" value="{{ savesearch.id }}" ></td>
+			<td><a href="{{ savesearch.searchlink }}">{{ savesearch.searchname }}</a></td>
+			<td><a href="#editjssave" class="clickedit" id="{{ savesearch.id }}" data-toggle="modal">Edit</a>&emsp;&emsp;<a href="#deleteoneform" class="clickdel" id="{{ savesearch.id }}" data-toggle="modal">Delete</a></td>
+		</tr>
+		{% endfor %}
+		{% else %}
+		<tr>
+			<td colspan="3">You didn't save any search agents ... </td>
+		</tr>
+		{% endif %}
+	</table>
+</div>
+<!-- ************ POPUP FORM DELETE ALL ********* -->
+<div id="deleteallform" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<form action="/accounts/DeleteAllJSSaveJob/" method="post" class="form-search">{% csrf_token %}
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+<h3 id="myModalLabel">Delete All Saved Job</h3>
+</div>
+<div class="modal-body">
+<p>Are you sure want to Delete ?</p>
+<input type="hidden" id="txt" value="" name="saveresultid">
+</div>
+<div class="modal-footer">
+<button class="btn" data-dismiss="modal" aria-hidden="true"> No </button>
+<button class="btn btn-primary" type="submit" onclick="return delallval()"> Yes </button>
+</div>
+</form>
+</div>
+<!-- ************ POPUP FORM DELETE ONE BY ONE ********* -->
+
+<div id="deleteoneform" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<form action="/accounts/DeleteAllJSSaveJob/" method="post" class="form-search">{% csrf_token %}
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+<h3 id="myModalLabel">Delete Saved Job</h3>
+</div>
+<div class="modal-body">
+<p>Are you sure want to Delete ?</p>
+<input type="hidden" id="txt1" value="" name="saveresultid">
+</div>
+<div class="modal-footer">
+<button class="btn" data-dismiss="modal" aria-hidden="true"> No </button>
+<button class="btn btn-primary" type="submit"> Yes </button>
+</div>
+</form>
+</div>
+<!-- ********** POPUP EDIT FROM ********** -->
+<div id="editjssave" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<form action="/accounts/EditJSSaveJob/" method="post" class="form-search">{% csrf_token %}
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+<h3 id="myModalLabel">Edit Saved Job</h3>
+</div>
+<div class="modal-body">
+<input type="hidden" name="userid" value="{{user.id}}" ><input type="hidden" id="txt2" value="" name="saveresultid" >
+<p>Enter name to edit</p>
+<p><input type="text" value="" id="editsavejob" name="editsavejob" required ></p>
+</div>
+<div class="modal-footer">
+<button class="btn" data-dismiss="modal" aria-hidden="true"> No </button>
+<button class="btn btn-primary" type="submit"> Yes </button>
+</div>
+</form>
+</div>
+<script type="text/javascript">
+	$(document).ready(function ()
+		{
+			$('#selectall').click(function (event)
+				{
+					var selected = this.checked;
+					$(':checkbox[name=savejobid]').each(function ()
+						{
+							this.checked = selected;
+						});
+				});
+
+			$(".p1").click(function()
+				{
+					var array1 = [];
+					$("input:checkbox[name=savejobid]:checked").each(function ()
+						{
+							array1.push($(this).val());
+						});
+					$("#txt").val(array1.join(','));
+				});
+
+			$('.clickdel').click(function()
+				{
+					var id = $(this).attr('id');
+					$("#txt1").val(id);
+				});
+
+			$('.clickedit').click(function()
+				{
+					var id = $(this).attr('id');
+					$("#txt2").val(id);
+				});
+		   
+		});
+
+
+
+		function delallval()
+		{
+			var s=document.getElementById('txt').value;
+			if (s==""||s==null)
+			{
+				alert("Select the job");
+				return false;
+
+			}
+			else
+			{
+				return true;
+			}
+
+		}
+
+		
+
+	</script>
+
+
+

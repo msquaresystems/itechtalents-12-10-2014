@@ -1,0 +1,47 @@
+
+{% block candidateitemcontent %}
+  <div>
+
+<p><h3>Employment Details</h3></p>
+	<div>
+		{% for a in employer %}
+		<fieldset>
+			<legend>{{a.empstatus}}</legend>
+		<table class="table table-borderless">
+			
+			<tr>
+				<th width="20%">Employer Name</th>
+
+				<td>
+					{{a.employer_name}}
+				</td>
+
+			</tr>
+
+			<tr>
+				<th>Duration</th>
+				<td>
+					{{a.empstartdate}}
+					&emsp;to&emsp;
+					{{a.emptodate}}
+				</td>
+			</tr>
+
+			<tr>
+				<th>Designation</th>
+				<td>{{a.designation}}</td>
+			</tr>
+
+			<tr>
+				<th>Job Profile</th>
+				<td>
+					{{a.jobprofile|safe}}
+				</td>
+			</tr>
+			
+		</table>
+		</fieldset>
+		{% endfor %}
+	</div>
+</div>
+		{% endblock %}

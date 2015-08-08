@@ -1,0 +1,30 @@
+{% extends "quorum/base_quorum.html" %}
+{% block extrahead %}
+<link href="{{ STATIC_URL }}css/bootstrap-wysihtml5-0.0.2.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+	<div style="padding:50px:">
+	{% load crispy_forms_tags %}
+	{% crispy form %}
+</div>
+</div>
+{% endblock %}
+{% block extrajavascript %}
+<script src ="{{ STATIC_URL }}js/wysihtml5-0.3.0_rc2.js"></script>
+<script src ="{{ STATIC_URL }}js/bootstrap-wysihtml5-0.0.2.js"></script>
+<script>
+$('.textarea').wysihtml5();
+$("#questionForm").on("submit", function(event){
+    var qst=$(this).find('#id_question').val();
+    if(qst.length>20)
+      {        
+        alert('valid');
+      }
+    else{
+      alert("Question must have atleast 20 characters.");
+      return false;
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,111 @@
+I. UI description:
+
+1. Job Seeker:
+
+Screen 1: Create Video Resume
+
+- Display steps of how to provide access to webcam, how to record and playback the video
+- Display the Nimbb Video Record widget with all custom settings
+- Display custom buttons under the widget - Start Recording, Pause/Resume, Stop, Countdown timer
+
+Screen 2b: View Video Resume
+
+- Display Video Player widget with all custom options
+- Display actions - Delete video, Update Video
+
+
+Screen 2a: List Video Resumes
+
+- Display list of Video thumbnails as links along with recorded date
+- Button to make default/activate one of the videos from the list
+
+2. Employer:
+
+Screen 3: Video Resume
+
+- Display Nimbb Video Player widget with all custom options
+
+
+
+II. Technologies involved:
+
+1. Django:
+
+- Display templates with necessary widgets and configurations
+- Implement callbacks for video save event
+- Implement server side scripting for Delete and Update video
+- Admin end for configuration of Nimbb credentials
+- Admin end for configuration of Nimbb player options
+
+2. Javascript & jQuery/AJAX:
+
+- Write Nimbb event handlers using JS
+- Trigger callback for video save event using AJAX
+
+3. HTML:
+
+
+- Templates extending the Job seeker dashboard for Video Recording & Playback in Job seeker end
+- Templates extending the Profile page of Job seekers for Video Play in Employer end
+
+
+III. Functionality description:
+
+1. Job Seeker End:
+
+
+View 1: Create Video Resume
+
+- Check for Job seeker authentication & user type
+- Check for Quota usage limits(Hardcode for now) for video record attempts from record history
+- Render [Screen 1] with global settings  for Nimbb record widget
+
+- Clicking on "Start Recording" should initiate Nimbb start event
+- Clicking on "Pause" should initiate Nimbb pause event
+- Clicking on "Resume" should initiate Nimbb resume event
+- Clicking on "Stop" should initiate Nimbb stop event
+- Clicking on stop or expire of countdown timer, trigger server side callback
+- Display success message
+
+View 2b: View Video Resume
+
+- Check for Job seeker authentication & user type
+- Check for access rights for the video requested
+- Render [Screen 2b] with global settings  for Nimbb player widget
+
+
+View 2a: List Video Resumes
+
+- Check for Job seeker authentication & user type
+- Get the list of video records from the history, excluding the videos marked invisible
+- Render [Screen 2a] with thumbnails linked to View Video Resume page[View 2b]
+
+
+View 2c: Activate/Make default a Video(AJAX view)
+
+- Check for Job seeker authentication & user type
+- Check for access rights for the video requested
+- Make default the video requested as the active video resume of the user
+
+
+View 2d: Delete a Video Resume(AJAX view)
+
+- Check for Job seeker authentication & user type
+- Check for access rights for the video requested
+- Mark it as invisible the video requested
+
+
+View 2e: Update Video Resume(AJAX view)
+
+- Check for Job seeker authentication & user type
+- Check for access rights for the video requested
+- Mark it as invisible the video requested
+- Redirect to [View 1]
+
+
+2. Employer End:
+
+View 3: View Video Resume
+
+- Check for Employer authentication & user type
+- Render [Screen 3] with global settings  for Nimbb player widget

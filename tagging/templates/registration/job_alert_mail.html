@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body style="color: #191919;font-family: arial,sans-serif; font-size: 12px;line-height: 17px;">
+<div style="width:80%;margin:auto;padding:0px;background-color:#E2F0FD;padding:15px;">
+	<div style="padding:5px 0px 5px 25px;"><p style="font-size:36px;color: #357EC7;"><strong>ITechTalents <sub style="font-size:16px;"><i>"Smart Engine, Smart People"</i></sub></strong></p></div>
+	<hr style="color:#e9e9e9;">
+	<div>
+		<h3>Job Alert | {{now|date:"M d, Y"}}</h3>
+		<p><strong>Dear {{fname}}, </strong></p>
+		<p>Here is/are new job(s) matching the criteria set by you in Job Alert "<strong>{{searchname}}</strong>".</p>
+		<br>
+		{% for i in d %}
+		<p style="color:#3882C8;"><strong>{{i.title}}</strong>&nbsp;-&nbsp;{% for skill in i.employerkeyskills_set.all %}{{skill.keyskills}}{% if not forloop.last %},&nbsp;{% endif %}{% endfor %}&nbsp;<span style="color:#C11B17;">({{i.min_exp}}&nbsp;-&nbsp;{{i.max_exp}}&nbsp;Yrs)</span></p>
+		<p>{{i.emp.companyname}}&nbsp;<span style="color:green;">({{i.city}})</span></p>
+		<p style="color: #474A4B;font-family: arial,sans-serif;font-size: 11px;line-height: 16px;">{{i.jobdetails|truncatewords:20 }}</p>
+		<hr style="color:#e9e9e9;" /><br />
+		{% endfor %}
+		<br><br>
+		<p><a target="_blank" style="margin-right:5px;background:#3c98ed;font-size:17px;font-weight:bold;color:#fff;padding:7px 10px;font-family:Arial,Helvetica,sans-serif;text-decoration:none;" href="http://{{current_domain}}/accounts/login/">Apply Now</a></p>
+		<br><br><br>
+		<p>You last updated your profile on {{lastupdate}}. Remember, employers prefer recently updated profiles</p><br><br>
+		<p><a href="http://{{current_domain}}/accounts/login/" style="font-family:Arial,Helvetica,sans-serif;text-decoration:none;padding:7px 10px;font-size:13px;display:block;background:#FDE25E;border:solid 1px #ffc21f; width:150px;" target="_blank"><strong>Update your profile now</strong></a>&emsp;&emsp;<a href="http://{{current_domain}}/accounts/ForgotPassword/"style="font-family:Arial,Helvetica,sans-serif;text-decoration:none;padding:7px 10px;font-size:13px;display:block;background:#FDE25E;border:solid 1px #ffc21f; width:120px;" target="_blank"><strong>Forgot Password</strong></a></p>
+		<br><br><br>
+
+		<p>Thanks & Regards,</p>
+		<p>HR Staffing Team, ItechTalents.com</p>
+		<br><hr style="color:#e9e9e9;"><br>
+	</div>
+</div>
+</body>
+</html>
+
+
+
+
+

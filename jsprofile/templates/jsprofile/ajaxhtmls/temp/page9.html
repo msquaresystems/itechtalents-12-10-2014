@@ -1,0 +1,32 @@
+
+
+{% block candidateitemcontent %}
+  <div>
+
+<p><h3>Tech Skills</h3></p>
+<div>
+		
+		<table class="table table-striped">
+			
+			<tr>
+				<th><b>Skill</b></th>
+				<th><b>Version</b></th>
+				<th ><b>Last Used</b></th>
+				<th><b>Experience</b></th>
+				<th ></th>
+			</tr>
+	{% for a in skills %}
+		<tr >
+				<td>{{a.skill}}</td>
+				<td>{{a.version}}</td>
+				<td>{{a.lastused}}</td>
+				<td>{{a.skillyear}} Year(s) {{a.skillmon}} Month(s)</td>
+		</tr>
+		
+
+	{% endfor %}
+
+		</table>
+	</div>
+</div>
+		{% endblock %}

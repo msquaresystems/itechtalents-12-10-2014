@@ -1,0 +1,384 @@
+{% load jsprofile_extras %}
+{% load mytaghelper %}
+<style>
+    .editable form {
+        background-color: #F8F8F8;
+        border: 1px solid #EAD9CE;
+        cursor: default;
+        margin: 0;
+        padding: 13px;
+    }
+    hr {
+      margin: 5px;
+    }
+    .xgap{
+      margin-top:60px;
+    }
+    .item_tittle h1 span {
+        background: none repeat scroll 0 0 #74767A;
+        border-radius: 3px 3px 3px 3px;
+        color: #ffffff;
+        float: right;
+        font-size: 16px;
+        font-weight: bold;
+        margin: 7px 0 0;
+        padding: 0 5px;
+      margin-right: 0;
+     
+    }
+    .item_tittle h2 {
+      font-size: 18px;
+      font-weight:normal;
+      text-align: left;
+      color:#000;
+    }
+    .item_tittle h3{
+      font-size: 14px;
+      font-weight:normal;
+      text-align: right;
+      color:#000;
+    }
+</style>
+<div id="resume" class="xgap">
+    <h4 style="border-bottom:2px solid #FFB812;">Resume Upload <small> ( Maximum five resumes can be uploaded )</small></h4>
+    <div id="resumeview">
+        {% if resumes %}
+            <table class="table table-striped" id="resumeTable"> 
+            <tr class="info"><th>Resume Title</th><th>Uploaded Resume</th><th>Active/inactive</th><th>Action1</th><th>Action2</th></tr>
+            {% for l in resumes %}
+            <tr id="resume{{l.pk}}">
+            <td id="resumetitle{{l.pk}}" >{{ l.resumeTitle }}
+            </td>
+            <td id="resumefile{{l.pk}}">{{ l.resumeFile }}
+            </td>
+            <td>{% resactbtn l.pk %}</td>
+            <td><a class="btn btn-mini btn-danger deleteresume" data-resumeid="{{ l.pk }}" href="#">delete</a></td>
+            <td><a href="#myModal1" role="button" data-toggle="modal"class="btn btn-mini btn-default editresume" data-resumeid="{{ l.pk }}" href="#">edit</a></td>
+            </tr>
+            {% endfor %}
+            </table>
+        {% else %}
+        <div style="background-color:#ffa; padding:20px">
+            <strong>Please Add Resumes (Maximum five resumes can be uploaded)</strong>
+        </div>
+            {% endif %}
+    </div>
+    <div class="toggleview"> 
+        <button class="btn btn-success toggle-button" href="javascript:void(0);" data-sec='skills'>Add Resume</button>            
+    </div>
+    <br>
+    <div class="editable toggleform" style="display:none;">
+        <form id="resumeForm"  class="form-horizontal" enctype="multipart/form-data" action="" method="post">{% csrf_token %}
+            <input type="hidden" name="curform" value="resumeaddform">
+            <div class="control-group">
+                <label class="control-label">Resume title<sub>(250 words max)</sub></label>
+                <div class="controls">
+                    <input type="text" id="uploadtitle" name="jsResumeTitle" required>
+                </div>
+            </div>
+             <div class="control-group">
+                <label class="control-label">Upload Resume<sub>(.doc/.docx, .rtf, .pdf, .txt, .odt)</sub></label>
+                <div class="controls">
+                    <input type="file" name="jsResumeFile" class="upload" required>
+                </div>
+            </div>
+            <div id="valid_msg"/>
+        <!-- <tr>
+                <th>Text Resume</th>
+                <td><input type="text" name="textResumeTitle" value="" ></td>               
+            </tr>            
+            <tr>
+                <th>Video Resume</th>
+                <td>
+                    <video width="320" height="240" controls >
+                      <source src="{{ STATIC_URL }}{{ a.videoresume }}" type="video/ogg">
+                      <source src="{{ STATIC_URL }}{{ a.videoresume }}" type="video/mp4">
+                      <source src="{{ STATIC_URL }}{{ a.videoresume }}" type="video/webm">
+                       Your browser does not support the video tag.           
+                    </video>
+                </td>                
+                <td>
+                    <input type="file" accept="video/*" name="videoresume" ><label></label>
+                    <br><sub>(only mp4,ogg,ogv,webm acceptable)</sub> 
+                </td>
+            </tr> -->
+            <input class="btn btn-success" type="submit" id="sub" value="save" />
+            <a href="javascript:void(0);" class="btn btn-warning toggle-button">cancel</a>
+        </form>
+    </div>
+</div>
+<div id="summary" class="xgap">
+    <h4 style="border-bottom:2px solid #FFB812">Text Resume</h4>
+    <div id="summaryview">
+        
+    </div>
+    <div class="toggleview1">
+        <a href="javascript:void(0);"  rel="summary" class="btn btn-warning toggle-button1">Update</a>&emsp;           
+        {% if textresume %}
+        <button class="btn btn-{% if textresume.activetext_resume %}success{% else %}danger{% endif %}" id="actres" data-status="{% if textresume.activetext_resume %}1{% else %}2{% endif %}">Make it {% if textresume.activetext_resume %}deactive{% else %}active{% endif %}</button>
+        <div style="border:1px solid #ccc; padding:10px;">
+            
+            <div id="id_textresume">{{ textresume.resumeFile|safe }}</div>
+        </div>
+        {% else %}
+            <div style="background-color:#ffa; padding:20px">
+                <strong>Please <a style="cursor:pointer" class="toggle-button1">add</a> Your Text Resume ...</strong>
+            </div>
+        {% endif %}                     
+    </div>
+    <div class="editable toggleform1" style="display:none;">
+        <form id="textresumeForm" action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+        <input type="hidden" name="curform" value="textresumeform">
+        <textarea  name="resumeFile" id="some-textarea" style="width:600px;height:200px;" >{{textresume.resumeFile|safe}}</textarea><br>
+        <input class="btn btn-success" type="submit" value="save" />
+        <a href="javascript:void(0);" class="btn btn-danger toggle-button1">cancel</a>
+        <!--<input type="reset" class="btn btn-info" value="Reset">-->
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+ $(document).ready(function() {
+    /*$(".btn").each(function(){
+        alert("hi");
+        alert($(this).attr("title"));
+    });*/
+    $('.toggle-button1').click(function() {
+        //var section=$(this).attr('rel');
+        $('.toggleview1').toggle();
+        $('.toggleform1').toggle();        
+    });
+    $('#some-textarea').wysihtml5();
+    $('body').on("submit", "#textresumeForm", function(event){ 
+        $.post('/ajax/views/', $(this).serialize(), function(data){
+            $('.toggleview1').toggle();
+            $('.toggleform1').toggle();
+            $("#id_textresume").html(data.resumeFile);
+            //CreateRow(data);
+        }, "json"); 
+        event.preventDefault(); 
+    });
+    $('body').on('click','#actres',function(){
+        $.ajax({
+            url:'/resumeactivation/',
+            type:"GET",
+            data:{txtactres:$(this).data('status')},
+            success:function(data){
+                $('#ajaxBox').load('/ajax/views/?menu=1');
+            }
+        })
+    });
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="myModal1" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+<h3 id="myModalLabel">Edit Resume</h3>
+</div>
+<div class="modal-body">
+<form id="resumeupdateForm"  class="form-horizontal" enctype="multipart/form-data" action="" method="post">{% csrf_token %}
+       <!--  <input type="hidden" name="editformid" value="{{resumeid}}"> -->
+        <input type="hidden" name="curform" value="resumeeditform">
+            <div class="control-group">
+                <input type="hidden" name="resumeid" id="resumeid" />
+                <label class="control-label">Resume title<sub>(250 words max)</sub></label>
+                <div class="controls">
+                    <input type="text" id="restitle" name="jsResumeTitle" required>
+                </div>
+            </div>
+             <div class="control-group">
+                <label class="control-label">Upload Resume<sub>(.doc/.docx, .rtf, .pdf, .txt, .odt)</sub></label>
+                <div class="controls">
+                    <input type="file" name="jsResumeFile" id="upload" ><span id="spanfile"></span>
+                </div>
+            </div>
+            <div id="valid_msg"/>
+            <input class="btn btn-success" type="submit" value="save" />
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+            </div>
+        </form>
+</div>
+<!-- <div class="modal-footer">
+<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+<button class="btn btn-primary">Save changes</button>
+</div> -->
+</div>
+<script src="http://malsup.github.com/jquery.form.js"></script> 
+<script type="text/javascript">
+
+$(document).ready(function() {
+    if({{resumes.count}} >= 5){
+        $('.toggle-button').attr("disabled", "disabled");
+
+    }
+    if({{resumes.count}} < 5){
+        $('.toggle-button').removeAttr("disabled");  
+    }
+       
+    $('.toggle-button').click(function() {
+        //var section=$(this).attr('rel');
+        $('.toggleview').toggle();
+        $('.toggleform').toggle();
+        
+        if ($(this).hasClass('btn-success')) {
+            $('.toggleform').find("input[type=text], select, file").val("");
+            
+        }/*else if ($(this).hasClass('btn-default')) {
+            //show already selected opts
+            /*var curopt=$('#resumetitle').text();
+            alert(curopt);   
+            var curopt=$('#resumefile').text();  
+            //$('#cmbsecretopts option[value="'+curopt+'"]').prop('selected', true);
+            //$('#dpd11').val($('#fdate').text());
+            //$('#dpd22').val($('#tdate').text());
+            //Mark_selected_Options()
+        }*/
+    });
+    $('body').on("click",".deleteresume", function(e){     
+        e.preventDefault();
+         //alert('dele'); 
+        var answer = confirm ("Are you sure you want to delete from the database?");
+        if (answer)         
+            $.ajax({
+                type: "GET",
+                url: "/ajax/del/",
+                data: { resumeid: $(this).data('resumeid')}
+            }).done(function(msg) {
+                var tdname='#resume'+msg;
+                $('#resume'+msg).remove();
+                $('.toggle-button').removeAttr("disabled");
+                //i want to set the table hidden if there is no skills
+                if ($('#resumeTable tr').length == 0){
+                $("#resumeview").html('<div style="background-color:#ffa; padding:20px"><strong>Please Add Resumes</strong></div>');
+                  
+              
+            }
+        });
+    });
+    $('body').on("click",".editresume",function(e){
+        e.preventDefault();
+        resid=($(this).data('resumeid'));
+        $('#resumeid').val(resid);
+        $('#restitle').val($('#resumetitle'+resid).text());
+        var resumetitle=($('#resumetitle'+resid).text());
+        var resumefile=($('#resumefile'+resid).text());
+        $('#resfile').text($('#resumefile'+resid).text());
+        $('#spanfile').text($('#resumefile'+resid).text());
+        /*$('#resumetitle'+resid).val($('#title').text());*/
+        /*$.ajax({
+                type: "GET",
+                url: "/ajax/updateresume/",
+                data: { resumeid:resid,resumetitle:resumetitle,resumefile:resumefile}
+            }).done(function(msg) {
+                alert(msg);
+                $('#resumetitle'+msg).val($('#uploadtitle').text());
+                $('#resumefile'+msg).val($('#upload').text())
+            });
+       return false;*/
+    });  
+    
+
+    $('body').on('submit', "#resumeForm", function(e){
+        e.preventDefault();
+        myfile=$('.upload').val();
+        var ext = myfile.split('.').pop();
+        if(ext=="pdf" || ext=="docx" || ext=="doc" ||ext=="odt" || ext=="rtf" || ext=="txt") {
+            if(($(".upload")[0].files[0].size / 1024) <= 150 ){
+                var formObj = $(this);
+                var formData = new FormData(this);
+                edit(formData);
+            }
+            else{
+                alert("File size should not greater than 150");
+                return false;
+            }
+        }
+        else{
+            alert("File Type Not Allowed");
+            return false;
+        }        
+    });
+    $('body').on('submit', "#resumeupdateForm", function(e){
+        e.preventDefault();
+        myfile=$('#upload').val();
+        var ext = myfile.split('.').pop();
+        if(ext=="pdf" || ext=="docx" || ext=="doc" ||ext=="odt" || ext=="rtf" || ext=="txt") {
+            if(($("#upload")[0].files[0].size / 1024) <= 150 ){
+                var formObj = $(this);
+                var formData = new FormData(this);
+                edit(formData);
+            }
+            else{
+                alert("File size should not greater than 150");
+                return false;
+            }
+        }
+        else{
+            alert("File Type Not Allowed");
+            return false;
+        }        
+    });
+    $('body').on("click",".activeresume",function(e){
+        e.preventDefault();
+        resid=$(this).data('resumeid');
+        $.ajax({
+            type: "GET",
+            url: "/resumeactivation/",
+            data: { resumeid: resid},
+            success: function(data){
+                $('#ajaxBox').load('/ajax/views/?menu=1');    
+            }
+        });
+    });
+});
+</script> 
+<script>
+function edit(frmdata){
+    /*var resid=$('.editresume').data('resumeid');
+    alert(resid);0*/
+    $.ajax({
+        url: '/filesave/',
+        dataType: 'json',
+        data: frmdata,
+        mimeType: "multipart/form-data",
+        cache: false,
+        contentType: false,
+        processData: false,
+        type: "POST",
+        success: function(data){
+            alert("resume added");
+            $('#resumeTable').html(data.table);
+            $('.toggleview').toggle();
+            $('.toggleform').toggle();
+            $('#resumeForm').trigger('reset');
+            if(data.count >= 5) {
+                $('.toggle-button').attr("disabled", "disabled");
+            }
+        }
+    })
+}
+
+</script>

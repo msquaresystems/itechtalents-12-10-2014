@@ -1,0 +1,310 @@
+  {% extends "jsprofile/base.html" %}
+    {% block extrahead %} 
+<link rel="stylesheet" href="{{ STATIC_URL }}js/datepicker/datepicker.css" />
+<link href="{{STATIC_URL}}jsprofile_static/xeditable/bootstrap-editable.css" rel="stylesheet"/>  
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-wysihtml5.css"></link>
+<style>
+.editable form{
+    background-color: #F8F8F8;
+    border: 1px solid #EAD9CE;
+    ursor: default;
+    margin: 0;
+    padding: 13px;
+}
+hr{
+margin: 5px;
+}
+.item_tittle h1 span{
+    background: none repeat scroll 0 0 #74767A;
+    border-radius: 3px 3px 3px 3px;
+    color: #ffffff;
+    float: right;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 7px 0 0;
+    padding: 0 5px;
+    margin-right: 0;
+}
+.item_tittle h2 {
+    font-size: 18px;
+    font-weight:normal;
+    text-align: left;
+    color:#000;
+}
+.item_tittle h3{
+    font-size: 14px;
+    font-weight:normal;
+    text-align: right;
+    color:#000;
+}
+.bs-sidebar.affix {
+    position: static;
+}
+.sideheading{
+    background-color: #e0e0e0;
+    background-image: -moz-linear-gradient(#fafafa, #e0e0e0);
+    background-image: -webkit-linear-gradient(#fafafa, #e0e0e0);
+    background-image: linear-gradient(#fafafa, #e0e0e0);
+    background-repeat: repeat-x;
+    display: block;
+    padding: 10px 10px;
+    border-bottom: 1px solid #ccc;
+    color: #222;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 20px;
+    border-left: 0 none;
+}
+.bs-sidenav {
+    padding-top:    10px;
+    padding-bottom: 10px;
+    background-color: #fafafa;
+    border-radius: 5px;
+    border:1px solid #CCC;
+}
+.bs-sidebar .nav > li > a {
+    font-size: 1.2em;
+    display: block;
+    color: #716b7a;
+    padding: 10px 20px;
+    border-right: 4px solid transparent;
+}
+.bs-sidebar .nav > li > a:hover,.bs-sidebar .nav > li > a:focus{
+    text-decoration: none;
+    background-color: #fff;
+    border-right: 4px solid #dbd8e0;
+}
+.bs-sidebar .nav > .active > a,.bs-sidebar .nav > .active:hover > a,.bs-sidebar .nav > .active:focus > a {
+    font-weight: bold;
+    color: #418cd1;
+    background-color: #fff;
+    border-right: 4px solid #418cd1;
+}
+.editable form {
+	    background-color: #F8F8F8;
+	    border: 1px solid #EAD9CE;
+	    cursor: default;
+	    margin: 0;
+	    padding: 13px;
+	}
+	hr {
+	  margin: 5px;
+	}
+	.item_tittle h1 span {
+	    background: none repeat scroll 0 0 #74767A;
+	    border-radius: 3px 3px 3px 3px;
+	    color: #ffffff;
+	    float: right;
+	    font-size: 16px;
+	    font-weight: bold;
+	    margin: 7px 0 0;
+	    padding: 0 5px;
+	  margin-right: 0;
+	 
+	}
+	.item_tittle h2 {
+	  font-size: 18px;
+	  font-weight:normal;
+	  text-align: left;
+	  color:#000;
+	}
+	.item_tittle h3{
+	  font-size: 14px;
+	  font-weight:normal;
+	  text-align: right;
+	  color:#000;
+	}
+</style>
+{% endblock %}
+{% block content %}
+{% load mytaghelper %}
+{% load jsprofile_extras %}
+<div class="container-fluid" style="min-height:580px;">
+    <div class="row-fluid">
+        <div class="span3">
+            <div class="bs-sidebar">
+                <ul class="nav bs-sidenav">
+                    <li class='sideheading'>{{ request.user.username }}</li>
+                    <li class="active"><a href="/js/Dashboard/">Dashboard</a></li>{% for nav in navs %}<li{% ifequal next forloop.counter %} class="active"{% endifequal %}><a class="ajaxLoad" href="/js/{% sidebar nav %}/" data-ajxurl="{{ forloop.counter }}">{{nav}}</a></li>{% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="span9">
+            
+<div id="skills" class="xgap">
+	<h4 style="border-bottom:2px solid #FFB812;">Technical Skills</h4>
+	<br>
+	<div id="skillsview">				
+		{% if skills %}
+		<table class="table table-striped" id="SkillTable">
+			<tr class="info"><th>Skill</th><th>Version</th><th>Last Used</th>
+			    <th>Experience</th><th></th></tr>
+			{% for l in skills %}
+			<tr id="skill{{l.pk}}">
+			<td>
+<a href="#" class="editskill" data-type="text" data-title="Enter skill" data-pk="{{l.pk}}" data-url="/updateskill/" data-name="skill" data-params="{curtable:'skilltable'}">{{ l.skill }}</a>
+			</td>
+			<td>
+<a href="#" class="editskill" data-type="text" data-title="Enter the Version" data-pk="{{l.pk}}" data-url="/updateskill/" data-name="version" data-params="{curtable:'skilltable'}">{{ l.version }}</a>
+			</td>
+			<td>
+<a href="#" class="editskill" data-type="select" data-source="/fillcombo/lastused/" data-title="last Used Year?" data-pk="{{l.pk}}" data-url="/updateskill/" data-name="lastused" data-params="{curtable:'skilltable'}">{{l.lastused}}</a></td>
+			<td>
+<a href="#" class="editskill" data-type="select" data-source="/fillcombo/skillyear/" data-title="Years of Experience." data-pk="{{l.pk}}" data-url="/updateskill/" data-name="skillyear" data-params="{curtable:'skilltable'}">{{l.skillyear}}</a> Year(s) <a href="#" class="editskill" data-type="select" data-source="/fillcombo/skillmon/" data-title="Months" data-pk="{{l.pk}}" data-url="/updateskill/" data-name="skillmon" data-params="{curtable:'skilltable'}">{{l.skillmon}}</a> Month(s)
+			</td>
+
+			<td><a class="btn btn-mini btn-danger deleteskill" data-skillid="{{ l.pk }}" href="#">delete</a>
+			</td>	</tr>
+			{% endfor %}
+		</table>
+		{% else %}
+		<div style="background-color:#ffa; padding:20px">
+			<strong>Please Add Skills you Know</strong>
+		</div>
+		{% endif %}
+	</div>
+	<div class="toggleview"> 
+		<a class="btn btn-success toggle-button" href="javascript:void(0);" data-sec='skills'>add skill</a>			    
+	</div>
+	<div class="editable toggleform" style="display:none;">
+		<form action="" class="form-horizontal" id="skillForm">	{% csrf_token %}
+		<!-- curform value can be used to check which form is ajaxpost in a python view -->
+			<input type="hidden" name="curform" value="skillform">
+			<div class="control-group">
+				<label class="control-label">Skill</label>
+				<div class="controls">
+					<input id="skilladd" maxlength="100" name="skill" type="text" required/>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Verison</label>
+				<div class="controls">
+					<input id="verison" maxlength="5" name="version" type="text" required/>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Last Used </label>
+				<div class="controls">
+				{% create_select 'lastused' %}
+					
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Experience </label>
+				<div class="controls">{% create_select 'skillyear' %} Years {% create_select 'skillmon' %} Months</div>
+			</div>			
+			<br>
+		    <input class="btn btn-success" type="submit" value="save" />&emsp;<input type="reset" class="btn btn-warning toggle-button" href="javascript:void(0);" value="Cancel">
+	  </form>
+ 	</div><!-- .editable toggle form-->
+</div>
+</div></div></div>
+{% endblock %}
+{% block javascript %}
+<script src="{{STATIC_URL}}js/bootbox.min.js" ></script> 
+<script type="text/javascript">
+/*function CreateRow(jdata) { 
+	if($("#SkillTable").length == 0) {
+		$("#skillsview").html('<table class="table table-striped" id="SkillTable"><tr class="info"><th>Skill</th><th>Version</th><th>Last Used</th><th>Experience</th><th></th></tr></table>');		
+	}
+	
+	//$('#SkillTable').append(fulltr);
+	$('#SkillTable tr:last').after(jdata);
+    //$('#skillsview').fadeIn(1500);        
+	$('#skills .toggleview').toggle();
+	$('#skills .toggleform').toggle();	
+	$('.editskill').editable();
+} 
+*/
+$(document).ready(function(){
+    $('.bs-sidenav li').removeClass('active');
+    $(".bs-sidenav li:nth-child(7)" ).addClass("active");
+	$('.toggle-button').click(function() {
+        $('.toggleview').toggle();
+        $('.toggleform').toggle();
+        if ($(this).hasClass('btn-success')) {
+            $('.toggleform').find("input[type=text], select, file").val("");
+        }
+    });
+	$('body').on("submit", "#skillForm", function(event){
+        event.preventDefault();
+        $.ajax({
+            url:'/editskill/',
+            type:"POST",
+            data:$(this).serialize(),
+            success:function(data){  
+            	$('.editskill').editable();           
+                window.location='/js/Technical_Skill_Set/';
+            }
+        })
+    });
+	$('body').on('click','.deleteskill',function(e){
+        var ids= $(this).data('skillid'); 
+        bootbox.dialog({
+            message: "Are you sure want to delete this skill?",
+            title: "Delete Skill",
+            buttons: {
+                success: {
+                    label: "Yes",
+                    className: "btn-success",
+                    callback: function() {                        
+                        $.ajax({
+                            url:'/deleteSkill/',
+                            type:'GET',
+                            data:{skillid:ids},
+                            success : function(data){
+                                window.location='/js/Technical_Skill_Set/';
+                            }
+                        })
+                    }
+                },
+                danger: {
+                    label: "No",
+                    className: "btn-danger",
+                    callback: function() {
+                    }
+                },
+            }
+        });
+        e.preventDefault()
+            
+    });
+  	$.fn.editable.defaults.mode = 'popup';
+    $.fn.editable.defaults.ajaxOptions = {type: "GET"};
+    $('.editskill').editable();
+	/*$('body').on('click','.toggle-button',function () {
+    	var section=$(this).data('sec');
+        $('#'+section+' .toggleview').toggle();
+        $('#'+section+' .toggleform').toggle();
+        if ($(this).hasClass('btn-success')){	        	
+        	$('#'+section+' .toggleform').find("input[type=text], select").val("");
+        }	        
+    });*/
+	/*$('document').on("click",".deleteskill", function(e){   	
+   		e.preventDefault();
+   		//alert('dele'); 
+   		var answer = confirm ("Are you sure you want to delete from the database?");
+   		if (answer)  		
+   			$.ajax({
+		 		type: "GET",
+				url: "/ajax/del/",
+				data: { skillid: $(this).data('skillid')}
+			}).done(function(msg) {
+				var tdname='#skill'+msg;
+				$('#skill'+msg).remove();
+				//i want to set the table hidden if there is no skills
+				if ($('#SkillTable tr').length == 1){
+				$("#skillsview").html('<div style="background-color:#ffa; padding:20px"><strong>Please Add Skills you Know</strong></div>');
+			}
+ 		});
+	});*/
+	/*$("body").on("submit","#skillForm",function(event){	
+		$.post('/ajax/views/', $(this).serialize(),	function(data){
+			CreateRow(data);
+		});	
+		event.preventDefault();		
+	});*/
+	
+}); 
+</script>
+{% endblock %}

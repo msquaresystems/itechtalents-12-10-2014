@@ -1,0 +1,30 @@
+{% extends "registration/base/jobseekerbase.html" %}
+{% block content %}
+<div class="container" style="min-height:580px;">
+	<div class="row">
+		<div class="span12">
+			<h3 style="text-align:left;border-bottom:2px solid #FFB812;">Hot Resumes</h3>
+			<table class="table table-striped well">
+	 			<tr>
+	 				<th width="15%">Name</th>
+	 				<th width="25%">Qualification</th>
+	 				<th width="20%">Experience</th>
+	 				<th width="25%">Key Skills</th>
+	 				<th width="15%">Location</th>
+	 			</tr>			
+	 			{% if hotresumes %}
+		 		{% for a in hotresumes %}
+			 	<tr>
+			 		<td><a href="/accounts/JSDetails/{{ a.id }}/">{{ a.first_name }} {{ a.last_name }}</a></td>
+			 		<td>{% for qua in a.jsqualification_set.all %}{{qua.degree}}{% if not forloop.last %},&nbsp;{% endif %}{% endfor %}</td>
+			 		<td>{{a.jspersonal.work_expyears}} years {{a.jspersonal.work_expmonths}} months</td>
+			 		<td>{% for skil in a.jsskills_set.all %}{{ skil.skill }}{% if not forloop.last %},&nbsp;{% endif %}{% endfor %}</td>
+			 		<td>{{ a.jspersonal.state }}</td>
+			 	</tr>
+			 	{% endfor %}
+			 	{% endif %}
+			</table>
+		</div>
+	</div>
+</div>
+{% endblock %}

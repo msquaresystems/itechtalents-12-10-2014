@@ -1,0 +1,235 @@
+
+    
+<style type="text/css">
+#itkeyskills td
+{
+	text-align: center;
+
+}
+
+</style>
+
+
+{% load mytaghelper %}
+
+<div>
+<div>
+<form name="adddetails" action="/accounts/Edititskillsinfo/" method="post" enctype="multipart/form-data">{% csrf_token %}
+ 
+<table class="table table-borderless" id="outer">
+    <tr>
+        <td colspan="4" style="text-align:left;"><h4>TECHNICAL SKILL SET</h4></td>
+    </tr>
+    <tr>
+        <th>Skill</th>
+        <th>Version</th>
+        <th>Last Used</th>
+        <th>Experience</th>
+    </tr>
+    {% for a in details1 %}
+    <tr class="skill">
+	    <td width="30%">
+			
+			{% if a.skill %}
+			<input id="skill" type="text" name="skill{{forloop.counter}}" value="{{a.skill}}">
+			{% else %}
+			<input id="skill" type="text" name="skill{{forloop.counter}}" value="">
+			{% endif %}
+			
+		</td>
+
+		<td width="15%">
+			<input id="version" type="text" name="version{{forloop.counter}}" value="{% if a.version %}{{a.version }}{% endif %}" style="width:100px;">
+		</td>
+		<td width="15%">
+			{% if a.lastused %}
+			{% SelectSkillLastUsed a.lastused forloop.counter %}
+			{% else %}
+			<select name="lastused{{forloop.counter}}" value="" style="width:100px;">
+			<option value="" >Select</option>
+			<option value="2013" >2013</option>
+			<option value="2012" >2012</option>
+			<option value="2011" >2011</option>
+			<option value="2010" >2010</option>
+			<option value="2009" >2009</option>
+			<option value="2008" >2008</option>
+			<option value="2007" >2007</option>
+			<option value="2006" >2006</option>
+			<option value="2005" >2005</option>
+			<option value="2004" >2004</option>
+			<option value="2003" >2003</option>
+			<option value="2002" >2002</option>
+			<option value="2001" >2001</option>
+			<option value="2000" >2000</option>
+			<option value="1999" >1999</option>
+			<option value="1998" >1998</option>
+			<option value="1997" >1997</option>
+			<option value="1996" >1996</option>
+			<option value="1995" >1995</option>
+			<option value="1994" >1994</option>
+			<option value="1993" >1993</option>
+			<option value="1992" >1992</option>
+			<option value="1991" >1991</option>
+			<option value="1990" >1990</option>
+			</select>
+			{% endif %}
+		</td>
+
+		<td>
+			{% if a.skillyear %}
+			{% SelectSkillYear a.skillyear forloop.counter %}
+			{% else %}
+			<select style="width:100px;" name="skillyear{{forloop.counter}}" id="skillyear{{forloop.counter}}">
+			<option value="" >Select</option>
+			<option value="0" >0</option>
+			<option value="1" >1</option>
+			<option value="2" >2</option>
+			<option value="3" >3</option>
+			<option value="4" >4</option>
+			<option value="5" >5</option>
+			<option value="6" >6</option>
+			<option value="7" >7</option>
+			<option value="8" >8</option>
+			<option value="9" >9</option>
+			<option value="10" >10</option>
+			<option value="11" >11</option>
+			<option value="12" >12</option>
+			</select>Year(s)
+			{% endif %}
+			{% if a.skillmon %}
+			{% SelectSkillMonth a.skillmon forloop.counter %}
+			{% else %}
+			&nbsp;<select style="width:100px;" name="skillmon{{forloop.counter}}" id="skillmon{{forloop.counter}}">
+			<option value="" >Select</option>
+			<option value="1" >1</option>
+			<option value="2" >2</option>
+			<option value="3" >3</option>
+			<option value="4" >4</option>
+			<option value="5" >5</option>
+			<option value="6" >6</option>
+			<option value="7" >7</option>
+			<option value="8" >8</option>
+			<option value="9" >9</option>
+			<option value="10" >10</option>
+			<option value="11" >11</option>
+			</select>Month(s)
+			{% endif %}
+		</td>
+	</tr>
+{% endfor %}
+</table>
+<div>
+	<input type="hidden" name="skillcounter" id="skill-counter" >
+	<i id="addSkill" title="Add" class="icon-plus-sign icon-large icon-hover"></i>
+	<i id="removeSkill" title="Remove" class="icon-minus-sign icon-large  icon-hover"></i>
+</div>
+<table class="table table-borderless">	
+	<tr>
+		<td style="text-align:center;">
+			<input type="submit" value="Update" class="btn btn-success">
+			<input type="reset" value="Reset" class="btn btn-info">
+		</td>
+	</tr>
+</table>
+</form>
+</div>
+</div>
+
+
+
+<script type="text/javascript">
+$(document).ready(function()
+{
+var i = $('.skill').size();
+$("#skill-counter").val(i);
+$("#addSkill").click(function ()
+{
+var j = $('.skill').size()+1;
+$("#skill-counter").val(j);
+$(  '<tr class="skill">'+
+'<td width="30%">'+
+'<input type="text" name="skill' + j + '" id="skill' + j + '" ></td>'+
+'<td width="15%">'+
+'<input type="text" style="width:100px;" name="version' + j + '" id="version' + j + '" ></td>'+
+'<td width="15%">'+
+'<select style="width:100px;" name="lastused' + j + '" id="lastused' + j + '">' +
+'<option value="" >Select</option>'+
+'<option value="2013" >2013</option>'+
+'<option value="2012" >2012</option>'+
+'<option value="2011" >2011</option>'+
+'<option value="2010" >2010</option>'+
+'<option value="2009" >2009</option>'+
+'<option value="2008" >2008</option>'+
+'<option value="2007" >2007</option>'+
+'<option value="2006" >2006</option>'+
+'<option value="2005" >2005</option>'+
+'<option value="2004" >2004</option>'+
+'<option value="2003" >2003</option>'+
+'<option value="2002" >2002</option>'+
+'<option value="2001" >2001</option>'+
+'<option value="2000" >2000</option>'+
+'<option value="1999" >1999</option>'+
+'<option value="1998" >1998</option>'+
+'<option value="1997" >1997</option>'+
+'<option value="1996" >1996</option>'+
+'<option value="1995" >1995</option>'+
+'<option value="1994" >1994</option>'+
+'<option value="1993" >1993</option>'+
+'<option value="1992" >1992</option>'+
+'<option value="1991" >1991</option>'+
+'<option value="1990" >1990</option>'+
+'</select>'+
+'</td>'+
+'<td colspan="2">'+
+'<select style="width:100px;" name="skillyear' + j + '" id="skillyear' + j + '">'+
+'<option value="" >Select</option>'+
+'<option value="0" >0</option>'+
+'<option value="1" >1</option>'+
+'<option value="2" >2</option>'+
+'<option value="3" >3</option>'+
+'<option value="4" >4</option>'+
+'<option value="5" >5</option>'+
+'<option value="6" >6</option>'+
+'<option value="7" >7</option>'+
+'<option value="8" >8</option>'+
+'<option value="9" >9</option>'+
+'<option value="10" >10</option>'+
+'<option value="11" >11</option>'+
+'<option value="12" >12</option>'+
+'</select>Year(s)'+
+
+'&nbsp;<select style="width:100px;" name="skillmon' + j + '" id="skillmon' + j + '">'+
+'<option value="" >Select</option>'+
+'<option value="1" >1</option>'+
+'<option value="2" >2</option>'+
+'<option value="3" >3</option>'+
+'<option value="4" >4</option>'+
+'<option value="5" >5</option>'+
+'<option value="6" >6</option>'+
+'<option value="7" >7</option>'+
+'<option value="8" >8</option>'+
+'<option value="9" >9</option>'+
+'<option value="10" >10</option>'+
+'<option value="11" >11</option>'+
+'</select>Month(s)'+
+'</td>'+
+'</tr>'
+).fadeIn('fast').appendTo("#outer");
+j++;
+i++;
+});
+$("#removeSkill").click(function ()
+{
+    if (i > 1)
+    {
+        $('.skill:last').remove();
+        i--;
+        var j = $('.skill').size();
+        $("#skill-counter").val(j);
+    }
+});
+});
+</script>
+
+
+

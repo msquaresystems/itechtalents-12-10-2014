@@ -1,0 +1,93 @@
+<script type="text/javascript">
+
+$(document).ready(function ()
+  {
+    $('.clickdel').click(function()
+      {
+        var id = $(this).attr('id');
+        $("#txt1").val(id);
+      });
+  });
+
+</script>
+<div>
+  <h4 class="text text-info" style="border-bottom:2px solid #FFB812;">Confirmed Candidates for Interview</h4>
+  <table class="table table-striped">
+    <tr>
+      <th>Candidate Name</th>
+      <th>Position</th>
+      <th>Date</th>
+      <th>Time</th>
+      <th>Posted Date</th>
+      <th>Cancel</th>
+    </tr>
+    {%if confirm%}
+    {% for interview in confirm %}
+    <tr>
+      {% if interview.JSconfirmation and interview.Empconfirmation %}
+      <td><a href="/accounts/RoundsEmp/{{ interview.interview.id}}/">{{ interview.JSId.user.first_name}} {{ interview.JSId.user.last_name }}</a></td>
+      {% else %}
+      <td>{{ interview.JSId.user.first_name}} {{ interview.JSId.user.last_name }}</td>
+      {% endif %}
+      <td>{{ interview.Job.title }}</td>
+      {% if interview.jsschedule_date3%}
+      <td>{{ interview.jsschedule_date3 }}</td>
+      <td>{{ interview.jsschedule_time3 }}</td>
+      <td>{{ interview.jsupdate3 }}</td>              
+      {% elif interview.empschedule_date3%}
+      <td>{{ interview.empschedule_date3 }}</td>
+      <td>{{ interview.empschedule_time3 }}</td>
+      <td>{{ interview.empupdate3 }}</td>
+      {% elif interview.jsschedule_date2%}
+      <td>{{ interview.jsschedule_date2 }}</td>
+      <td>{{ interview.jsschedule_time2 }}</td>
+      <td>{{ interview.jsupdate2 }}</td>
+      {% elif interview.empschedule_date2%}
+      <td>{{ interview.empschedule_date2 }}</td>
+      <td>{{ interview.empschedule_time2 }}</td>
+      <td>{{ interview.empupdate2 }}</td>
+      {% elif interview.jsschedule_date1 %}
+      <td>{{ interview.jsschedule_date1 }}</td>
+      <td>{{ interview.jsschedule_time1 }}</td>
+      <td>{{ interview.jsupdate1 }}</td>
+      {% else %}
+      <td>{{ interview.empschedule_date1 }}</td>
+      <td>{{ interview.empschedule_time1 }}</td>
+      <td>{{ interview.empupdate1 }}</td>
+      {% endif %}
+      {% if interview.interview.Denied %}
+      <td>Cancelled</td>
+      {% endif %}
+      {% if not interview.interview.Denied %}
+      <td>
+         <a class="clickdel" id="{{ interview.interview.id}}" href="#myModal" role="button" data-toggle="modal">click here</a>
+      </td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+    {%else%}
+    <tr><td colspan="6" style="text-align:center;">There is no interview confirmed for candidates !</td></tr>
+    {%endif%}
+  </table>
+</div>
+
+
+<!-- ************** POPUP FORM DELETE ONE BY ONE *************** -->
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <form action="/accounts/CancelInterviewEmp/" method="post">{% csrf_token %}
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+      <h3 id="myModalLabel">Cancel Interview</h3>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" name="empid" value="{{user.id}}" >
+      <input type="hidden" id="txt1" name="intid"  >
+      <p>Are you sure want to cancel the interview ?</p>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn" data-dismiss="modal" aria-hidden="true">No</button>&emsp;
+      <input type="submit" class="btn" value="Yes">
+    </div>
+  </form>
+</div>

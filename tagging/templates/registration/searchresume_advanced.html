@@ -1,0 +1,296 @@
+{% extends "registration/base/jobseekerbase.html" %}
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-select1.min.css">
+<style type="text/css">
+.selectpicker{width:400px !important;}
+</style>
+{% endblock %}
+{% block content %}
+<div style="min-height:580px;" class="container">
+    <div class="row-fluid">
+        <div class="span10 offset1">
+            <h3 class="text text-info" style="border-bottom:2px solid #FFB812;">Search here for Candidates<sub id="adv_srch_msg">( Atleast one field is mandatory )</sub></h3>
+            <form name="CandiateSearchForm" id="CandiateSearchForm" action="/accounts/SearchResumeAdvancedResult/" method="GET" >{% csrf_token %}
+            <table class="table">
+                <tr>
+                    <td colspan="2"><label><h4>Skills</h4></label><input type="text" name="key_skills" id="skill" autocomplete="off" placeholder="Java, .Net,  Python" class="input-block-level" /><label><sub><strong>Exampe: Java,.Net,.Python,Oracle,C, C++, Android,etc..</strong></sub></label></td>
+                </tr>
+                <tr>
+                    <td><label><h4>Functional Area</h4></label>
+                        <select name="functional_area" class="selectpicker" data-live-search="true" style="width:500px;">
+                            <option value="">------ Select ------</option>
+                            <option value="Accounts/Finance/Tax/CS/Audit">Accounts/Finance/Tax/CS/Audit</option>
+                            <option value="Agent">Agent</option>
+                            <option value="Analytics & Business Intelligence">Analytics & Business Intelligence</option>
+                            <option value="Architecture/Interior Design">Architecture/Interior Design</option>
+                            <option value="Banking/Insurance">Banking/Insurance</option>
+                            <option value="Content/Journalism">Content/Journalism</option>
+                            <option value="Corporate Planning/Consulting">Corporate Planning/Consulting</option>
+                            <option value="Engineering Design/R&D">Engineering Design/R&D</option>
+                            <option value="Export/Import/Merchandising">Export/Import/Merchandising</option>
+                            <option value="Fashion/Garments/Merchandising">Fashion/Garments/Merchandising</option>
+                            <option value="Guards/Security Services">Guards/Security Services</option>
+                            <option value="Hotels/Restaurants">Hotels/Restaurants</option>
+                            <option value="HR/Administration/IR">HR/Administration/IR</option>
+                            <option value="IT Software-Client Server">IT Software-Client Server</option>
+                            <option value="IT Software-Mainframe">IT Software-Mainframe</option>
+                            <option value="IT Software-Middleware">IT Software-Middleware</option>
+                            <option value="IT Software-Mobile">IT Software-Mobile</option>
+                            <option value="IT Software-Other">IT Software-Other</option>
+                            <option value="IT Software-System Programming">IT Software-System Programming</option>
+                            <option value="IT Software-Telecom Software">IT Software-Telecom Software</option>
+                            <option value="IT Software-Application Programming/Maintenance">IT Software-Application Programming/Maintenance</option>
+                            <option value="IT Software-DBA/Datawarehousing">IT Software-DBA/Datawarehousing</option>
+                            <option value="IT Software-E-Commerce/Internet Technologies">IT Software-E-Commerce/Internet Technologies</option>
+                            <option value="IT Software-Embedded/EDA/VLSI/ASIC/Chip Des">IT Software-Embedded/EDA/VLSI/ASIC/Chip Des</option>
+                            <option value="IT Software-ERP/CRM">IT Software-ERP/CRM</option>
+                            <option value="IT Software-Network Administration/Security">IT Software-Network Administration/Security</option>
+                            <option value="IT Software-QA & Testing">IT Software-QA & Testing</option>
+                            <option value="IT Software-Systems/EDP/MIS">IT Software-Systems/EDP/MIS</option>
+                            <option value="IT-Hardware/Telecom/Technical Staff/Support">IT-Hardware/Telecom/Technical Staff/Support</option>
+                            <option value="ITES/BPO/KPO/Customer Service/Operations">ITES/BPO/KPO/Customer Service/Operations</option>
+                            <option value="Legal">Legal</option>
+                            <option value="Marketing/Advertising/MR/PR">Marketing/Advertising/MR/PR</option>
+                            <option value="Packaging">Packaging</option>
+                            <option value="Pharma/Biotech/Healthcare/Medical/R&D">Pharma/Biotech/Healthcare/Medical/R&D</option>
+                            <option value="Production/Maintenance/Quality">Production/Maintenance/Quality</option>
+                            <option value="Purchase/Logistics/Supply Chain">Purchase/Logistics/Supply Chain</option>
+                            <option value="Sales/BD">Sales/BD</option>
+                            <option value="Secretary/Front Office/Data Entry">Secretary/Front Office/Data Entry</option>
+                            <option value="Self Employed/Consultants">Self Employed/Consultants</option>
+                            <option value="Shipping">Shipping</option>
+                            <option value="Site Engineering/Project Management">Site Engineering/Project Management</option>
+                            <option value="Teaching/Education">Teaching/Education</option>
+                            <option value="Ticketing/Travel/Airlines">Ticketing/Travel/Airlines</option>
+                            <option value="Top Management">Top Management</option>
+                            <option value="TV/Films/Production">TV/Films/Production</option>
+                            <option value="Web/Graphic Design/Visualiser">Web/Graphic Design/Visualiser</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <label><sub><strong>Example: IT Software-System Programming or Site Engineering/Project Management, etc..</strong></sub></label>
+                    </td>
+                    <td><h4>Employment Type</h4>
+                        <select id="emp_type"  name="emp_type" class="selectpicker" data-live-search="true" style="width:500px;">
+                            <option value="">------ Select ------</option>
+                            <option value="Full time">Full time</option>
+                            <option value="Contract - Corp to Corp" >Contract - Corp to Corp</option>
+                            <option value="Contract - Independent">Contract - Independent</option>
+                            <option value="Contract - W2">Contract - W2</option>
+                            <option value="Contract to Hire - Corp to Corp">Contract to Hire - Corp to Corp</option>
+                            <option value="Contract to Hire - Independent">Contract to Hire - Independent</option>
+                            <option value="Contract to Hire - W2">Contract to Hire - W2</option>
+                            <option value="Part time">Part time</option>
+                        </select><label><sub><strong>Example : Full time or Contract to Hire - W2, etc.. </strong></sub></label>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td><h4>Work Permit for USA</h4>
+                        <select id="workpermit"  name="workpermit" class="selectpicker" data-live-search="true" style="width:500px;">
+                            <option value="">------ Select ------</option>
+                            <option value="Have H1 Visa">Have H1 Visa</option>
+                            <option value="Need H1 Visa">Need H1 Visa</option>
+                            <option value="TN Permit Holder">TN Permit Holder</option>
+                            <option value="Green Card Holder">Green Card Holder</option>
+                            <option value="US Citizen">US Citizen</option>
+                            <option value="Authorize to work in US">Authorize to work in US</option>
+                        </select><label><sub><strong>Example : US Citizen or TN Permit Holder</strong></sub></label>
+                    </td>
+                    <td><h4>Telecommunicate</h4>
+                        <select name="telecommute" class="selectpicker" data-live-search="true" style="width:500px;">
+                            <option value="">------ Select ------</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                        <label><sub><strong>Example : Yes or No, Select Whether they are willing to telecommunicate</strong></sub></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td><h4>Experience - Min Years</h4>
+                        <select name="min_exp" class="selectpicker" data-live-search="true">
+                            <option value="">------ Year ------</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                            <option value="15">15</option>
+                            <option value="16">16</option>
+                            <option value="17">17</option>
+                            <option value="18">18</option>
+                            <option value="19">19</option>
+                            <option value="20">20</option>
+                            <option value="21">21</option>
+                            <option value="22">22</option>
+                            <option value="23">23</option>
+                            <option value="24">24</option>
+                            <option value="25">25</option>
+                            <option value="26">26</option>
+                            <option value="27">27</option>
+                            <option value="28">28</option>
+                            <option value="29">29</option>
+                        </select>
+                    </td>
+                    <td><h4>Experience - Max Years</h4>
+                        <select name="max_exp" class="selectpicker" data-live-search="true">
+                            <option value="">------ Year ------</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                            <option value="15">15</option>
+                            <option value="16">16</option>
+                            <option value="17">17</option>
+                            <option value="18">18</option>
+                            <option value="19">19</option>
+                            <option value="20">20</option>
+                            <option value="21">21</option>
+                            <option value="22">22</option>
+                            <option value="23">23</option>
+                            <option value="24">24</option>
+                            <option value="25">25</option>
+                            <option value="26">26</option>
+                            <option value="27">27</option>
+                            <option value="28">28</option>
+                            <option value="29">29</option>
+                            <option value="30">30</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><h4>Location</h4>
+                    <input type="text" name="location" placeholder="City/State/Country/Zipcode" class="input-xxlarge" id="state" autocomplete=off />&emsp;
+                    <select name="miles" id="miles" class="selectpicker" data-live-search="true">
+                        <option value="">------ Select Miles ------</option>
+                        <option value="10">10 miles</option>
+                        <option value="20">20 miles</option>
+                        <option value="50">50 miles</option>
+                        <option value="100">100 miles</option>
+                        <option value="150">150 miles</option>
+                    </select>
+                    <label><strong><sub>Example : Enter the City or State or Country or Zipcode and Select Miles to search around the radius</sub></strong></label></td>
+                </tr>
+
+                <tr>
+                    <td colspan="2"><input type="submit" class="btn btn-large btn-primary" value="Search" /></td>
+                </tr>
+            </table>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extrajavascript %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap-select.min.js"></script>
+<script type="text/javascript">
+jQuery(function($) {
+    $('#checkboxOne').click(function() {
+        var cb1 = $('#checkboxOne').is(':checked');
+        $('#secretclear').prop('disabled', !(cb1 ));
+        
+    });
+});
+
+   $(function()
+    {
+        $('.selectpicker').selectpicker();
+        $("#CandiateSearchForm").submit(function()
+            {
+                var valid=0;
+                $(this).find('input:text,textarea,select:not("#miles")').each(function()
+                    {
+                        if($(this).val() != "") valid+=1;
+                    });
+
+                if(valid)
+                    {
+                        
+                        return true;
+                    }
+                else
+                    {
+                        $('#adv_srch_msg').attr('style', 'color: red');
+                        $(window).scrollTop(0);
+                        return false;
+                    }
+            });
+    });
+   !function(source) {
+    function extractor(query) {
+        var result = /([^,]+)$/.exec(query);
+        if(result && result[1])
+            return result[1].trim();
+        return '';
+    }
+    
+    $('#skill').typeahead({
+        source: source,
+        updater: function(item) {
+            return this.$element.val().replace(/[^,]*$/,'')+item+',';
+        },
+        matcher: function (item) {
+          var tquery = extractor(this.query);
+          if(!tquery) return false;
+          return ~item.toLowerCase().indexOf(tquery.toLowerCase())
+        },
+        highlighter: function (item) {
+          
+          var query = extractor(this.query).replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, '\\$&')
+          return item.replace(new RegExp('(' + query + ')', 'ig'), function ($1, match) {
+            return '<strong>' + match + '</strong>'
+          })
+        }
+    });
+    
+}(["Android","Assembler","ASP","Ajax","C","c#","C++","Css","HTML","HTML5","Java","JavaScript","ASP.NET","A# (Axiom)","ActionScript","ALGOL","APL","AppleScript","Arc","AutoIt","Babbage","Bash","BASIC","BETA","Boomerang","Basic","C--","C#","CMS","COBOL","CobolScript","Cobra","CODE","CoffeeScript","Cola","ColdC","COMAL","Coral","Clojure","Corn","Csound","Curl","Curry","Cyclone","Cython","DASL","DataFlex","DYNAMO","Erlang","Emerald","Epigram","ESPOL","Euler","Falcon","Flavors","Flex","Fortran","FoxPro","G-code","Genie","Godiva","Haskell","HLSL","Hume","HyperTalk","IBM","IBM AScript","Icon","JADE","Jython","JASS","JQuery","JCL","JEAN","ECMAScript","JScript","Karel","Kaya","KRYPTON","LabVIEW","Ladder","Lua","Lisp","Scheme","Legoscript","Limbo","Lite-C","Lucid","Magma","Maple","MASM","Mathematica","MATLAB","Maxima","Maya","Mercury","Mesa","MetaL","Microcode","MicroScript","Mouse","NASM","NATURAL","Nemerle","NetLogo","NewtonScript","Nickle","o:XML","Oberon","Obix","Obliq","Octave","Oxygene","Pascal","Pawn","PEARL","Perl","PDL","PHP","PILOT","PortablE","PostScript","PowerBuilder","Powerhouse","PowerShell","Pascal","Pro*C","Processing","Processing.js","Prograph","PROIV","Prolog","Promela","PROTEL","ProvideX","Pure","Python","Visual Prolog","MS Visual C++","QBasic","QPL","QtScript","QuakeC","REBOL","Redcode","REFAL","REXX","Ruby","Ruby on Rails","Rust","Scala","SIMPOL","SIMSCRIPT","Simula","SQL","Simulink","SOL","Tcl","Tea","TECO","TELCOMP","TOM","UCSD Pascal","Unicon","Unix shell","VBScript","Verilog","VHDL","Visual Basic .NET","Visual Basic","Visual C#","Visual DataFlex","Visual DialogScript","Visual Fortran","Visual FoxPro","Visual J#","Visual J++","Visual Objects","XML",".net Developer","Account Manager","Accountant","Accounting Manager","Administrator Payroll","Assistant Controller","Auditor","Business Analyst","Business Development Manager","Controller","Cost Accountant","Design Engineer","Director Business Development","Electrical Engineer","Engineer","Engineering Technician","Financial Analyst","Human Resources Assistant","Human Resources Coordinator","Human Resources Specialist","Java Developer","LPN","Manufacturing Engineer","Marketing","Marketing Director","Marketing Manager","Mechanical Engineer","Network Engineer","Nurse","Occupational Therapist","Occupational Therapist Occupation","Payroll Clerk","Payroll Specialist","Pharmacist","Physical Therapist","Physical Therapist Thera","Process Engineer","Product Manager","Product Marketing Manager","Project Engineer","Project Manager","Quality Engineer","Recruiter","Registered Nurse","Senior Accountant","Senior Financial Analyst","Senior Marketing Manager","Senior Product Manager","Senior Software Engineer","Software Engineer","Speech Language Pathologist","Speech Pathologist Assistant","Systems Administrator","Systems Engineer","Tax Manager","Technical Recruiter","Technician","Trainer","Training Specialist","Web Developer","Applications Engineer","Chief Information Office","Chief Technology Office","Computer and Information Systems Manager","Database Administrator","Help Desk Technician","Information Technology Director","Information Technology Manager","Management Information Systems Director","Network Architect","Network Engineer","Network System Administrator","Programmer","Programmer Analyst","Security Specialist","Senior Applications Enginee","Senior Database Administrato","Senior Network Architec","Senior Network Enginee","Senior Network System Administrator","Senior Programme","Senior Programmer Analys","Senior Security Specialist","Senior Support Specialist","Senior System Administrator","Senior System Analyst","Senior System Architect","Senior System Designer","Senior Systems Analyst","Senior Systems Software Engineer","Senior Web Administrator","Senior Web Developer","Software Developer","Software Quality Assurance Analyst","Support Specialist","System Administrator","System Analyst","System Architect","System Designer","Systems Analyst","Systems Software Engineer","Technical Specialist","Telecommunications Specialist","Web Administrator","Web Developer","Webmaster"]);
+
+!function(source) {
+    function extractor(query) {
+        var result = /([^,]+)$/.exec(query);
+        if(result && result[1])
+            return result[1].trim();
+        return '';
+    }
+    
+    $('#state').typeahead({
+        source: source,
+        updater: function(item) {
+            return this.$element.val().replace(/[^,]*$/,'')+item+',';
+        },
+        matcher: function (item) {
+          var tquery = extractor(this.query);
+          if(!tquery) return false;
+          return ~item.toLowerCase().indexOf(tquery.toLowerCase())
+        },
+        highlighter: function (item) {
+          
+          var query = extractor(this.query).replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, '\\$&')
+          return item.replace(new RegExp('(' + query + ')', 'ig'), function ($1, match) {
+            return '<strong>' + match + '</strong>'
+          })
+        }
+    });
+    
+}(["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Dakota","North Carolina","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming","Los Angeles","Chicago","Houston","Phoenix","Philadelphia","San Antonio","San Diego","Dallas","San Jose","Detroit","Jacksonville","Indianapolis","San Francisco","Columbus","Austin","Memphis","Fort Worth","Baltimore","Charlotte","75462","02115","33122","33125","33126","33127","33129","33130","33131","33132","33133","33136","02116","33137","33138","33139","33140","33142","33143","33145","33150","33156","33161","02138","33166","33169","33172","33173","33175","33176","33178","33179","33181","33184","10001","33186","33301","33304","33305","33306","33308","33309","33312","33315","33316","10019","33334","33431","33441","33442","33458","33510","33548","33549","33566","33570","10021","33594","33601","33602","33603","33604","33605","33606","33607","33609","33610","10022","33611","33612","33613","33614","33615","33616","33618","33619","33624","33625","10036","33626","33629","33634","33635","33637","33647","33755","33756","33762","33765","10065","33901","33904","33907","33908","33912","33914","33950","33952","33980","34102","10502","34103","34104","34108","34109","34110","34113","34114","34119","34134","34145","98104","10506","34242","10533","10583","10701","10704","19147","20005","20036","20850","21201","90210","21740","22201","22314","23185","28092","28262","30004","30005","30013","30022","02871","30067","30075","30083","30084","30096","30097","30144","30303","30305","30308","60607","30309","30313","30318","30324","30328","30329","30339","30342","32118","32207","77304","32216","32218","32256","32301","32303","32401","32408","32541","32601","32608","32780","32801","32808","32809","32812","32817","32819","32821","32822","89052","32826","32836","32837","32901","32926","32931","32952","33004","33009","33012","33013","33016","33019","33020","33021","33030","33040","33060","33062","33069"]);
+</script>
+{% endblock %}

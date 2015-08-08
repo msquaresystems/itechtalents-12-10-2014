@@ -1,0 +1,123 @@
+<!-- template footer.html -->
+<!--
+<div id="ground">
+    <div class="content-wrapper">
+        {% if settings.USE_LICENSE %}{# could be factored out into separate template #}
+            {% if settings.LICENSE_USE_URL %}
+            <div class="copyright">
+                {% if settings.LICENSE_USE_LOGO %}
+                <a href="{{ settings.LICENSE_URL}}">
+                        <img
+                            class="license-logo"
+                            src="{{settings.LICENSE_LOGO_URL|media }}"
+                            title="{{settings.LICENSE_ACRONYM}}"
+                            alt="{{settings.LICENSE_ACRONYM}}"
+                        />
+                </a>
+                {% endif %}
+                {{settings.APP_COPYRIGHT}} {% trans 
+                    license_title=settings.LICENSE_TITLE,
+                    license_url=settings.LICENSE_URL
+                %}Content on this site is licensed under a <a href="{{license_url}}">{{license_title}}</a> license.{% endtrans %}
+
+            </div>
+            {% else %}
+            <div class="copyright">
+                {% if settings.LICENSE_USE_LOGO %}
+                <img 
+                    class="license-logo"
+                    src="{{settings.LICENSE_LOGO_URL|media }}"
+                    title="{{settings.LICENSE_ACRONYM}}"
+                    alt="{{settings.LICENSE_ACRONYM}}"
+                />
+                {% endif %}
+                {{settings.APP_COPYRIGHT}} {% trans license=settings.LICENSE_TITLE %}Content on this site is licensed under a {{license}}{% endtrans %}
+            </div>
+            {% endif %}
+        {% endif %}
+        <div class="footer-links" >
+            <a href="{% url about %}">{% trans %}about{% endtrans %}</a><span class="link-separator"> |</span>
+            <a href="{% url faq %}">{% trans %}faq{% endtrans %}</a><span class="link-separator"> |</span>
+            <a href="{% url help %}" title="{% trans %}help{% endtrans %}">{% trans %}help{% endtrans %}</a>
+            <span class="link-separator"> |</span>
+            <a href="{% url privacy %}">{% trans %}privacy policy{% endtrans %}</a><span class="link-separator"> |</span>
+            {% spaceless %}
+            <a href=
+                        {% if settings.FEEDBACK_SITE_URL %}
+                            "{{settings.FEEDBACK_SITE_URL}}"
+                            target="_blank">
+                        {% else %}
+                            "{% url feedback %}?next={{request.path|escape}}">
+                        {% endif %}
+                        {% trans %}give feedback{% endtrans %}
+                    </a>
+                    {% endspaceless %}
+        </div>
+        <div class="powered-link">
+            <a href="http://askbot.com" target="_blank">
+                Powered by Askbot version {{settings.ASKBOT_VERSION}}
+            </a>
+        </div>
+        <div class="clean"></div>
+    </div>
+</div>-->
+<!-- end template footer.html -->
+<style>
+/*------------------------------------------------------------------
+[ Extra / .extra ]
+*/
+.extra {
+  /*border-top: 4px solid #ccc;
+  padding: 20px 0;*/
+  font-size: 15px;
+  color: #BBBBBB;
+  text-align:center;
+  background: #1A1A1A; 
+  clear:both; 
+
+ position: relative;
+ z-index: 10;
+
+ margin-top: -3em;
+   }
+.extra a {
+  color: #666666;
+}
+.extra a:hover {
+  color: #0088CC;
+  text-decoration: none;
+  
+}
+.extra h4 {
+  margin-bottom: 1em;
+  color: #BBBBBB;  
+  font-weight: 500;
+}
+.extra ul {
+  padding: 0;
+  margin: 0;
+}
+.extra ul li {
+  margin-bottom: .6em;
+  list-style: none;
+}
+.container
+    {
+        width: 1200px;
+        margin: auto;
+        padding: 0px;
+        border-top: 1px solid #000000;
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3) inset;
+    }
+    .span3
+    {
+        width: 200px;
+    }
+    .span12
+    {
+        width:100%;
+    }
+</style>
+
+
+<div class="extra"> <div class="container"> <div class="row"> <div style="padding-left:80px;"> <div class="span3" style="text-align:left;"> <h4>About</h4> <ul> <li><a href="/accounts/AboutUs/">About Us</a></li> <li><a href="/accounts/TechNews/">TechNews</a></li> <li><a href="/accounts/MarketReport/">ItectTalent's Report</a></li> <li><a href="/accounts/PressRelease/">Press Release</a></li> </ul> </div> <div class="span3" style="text-align:left;"> <h4>Support</h4> <ul> <li><a href="/accounts/FAQ/">FAQ's</a></li> <li><a href="/accounts/sitemap/">Site map</a></li> <li><a href="/accounts/Help/">Help</a></li> <li><a href="/accounts/Feedback/">Feedback</a></li> </ul> </div> <div class="span3" style="text-align:left;"> <h4>Legal</h4> <ul> <li><a href="#">Languages</a></li> <li><a href="/accounts/TermsOfUse/">Terms of use</a></li> <li><a href="/accounts/Privacy&Policy/">Privacy Policy</a></li> <li><a href="/accounts/ContactUs/">Contact Us</a></li> </ul> </div> <div class="span3" style="text-align:left;"> <h4>Advertising</h4> <ul> <li><a href="/accounts/JobFair/">JobFair</a></li> <li><a href="/accounts/Testmonial/">Testimonial</a></li> <li><a href="/accounts/Events/">Events</a></li> <li><a href="/accounts/Webinars/">Webinars</a></li> </ul> </div> <div class="span3" style="text-align:left;"> <h4>Jobs</h4> <ul> <li><a href="/accounts/JobsContract/">Jobs by Type</a></li> <li><a href="/accounts/JobsCity/">Jobs by City</a></li> <li><a href="/accounts/JobsCompany/">Jobs by Company</a></li> <li><a href="/accounts/JobsCategory/">Jobs by Category</a></li> </ul> </div> </div> </div> <div class="row"> <div class="span12" style="padding-top:10px;">All rights reserved © 2013 iTechTalents</div> </div> </div> </div> 

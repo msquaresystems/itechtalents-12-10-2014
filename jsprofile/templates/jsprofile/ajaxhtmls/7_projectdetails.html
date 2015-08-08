@@ -1,0 +1,336 @@
+{% extends "jsprofile/base.html" %}
+{% block extrahead %} 
+<link rel="stylesheet" href="{{ STATIC_URL }}js/datepicker/datepicker.css" />
+<link href="{{STATIC_URL}}jsprofile_static/xeditable/bootstrap-editable.css" rel="stylesheet"/>  
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-wysihtml5.css"></link>
+<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/daterangepicker-bs2.css" />
+<style>
+.editable form{
+    background-color: #F8F8F8;
+    border: 1px solid #EAD9CE;
+    ursor: default;
+    margin: 0;
+    padding: 13px;
+}
+.item_tittle h1 span{
+    background: none repeat scroll 0 0 #74767A;
+    border-radius: 3px 3px 3px 3px;
+    color: #ffffff;
+    float: right;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 7px 0 0;
+    padding: 0 5px;
+    margin-right: 0;
+}
+.item_tittle h2 {
+    font-size: 18px;
+    font-weight:normal;
+    text-align: left;
+    color:#000;
+}
+.item_tittle h3{
+    font-size: 14px;
+    font-weight:normal;
+    text-align: right;
+    color:#000;
+}
+.bs-sidebar.affix {
+    position: static;
+}
+.sideheading{
+    background-color: #e0e0e0;
+    background-image: -moz-linear-gradient(#fafafa, #e0e0e0);
+    background-image: -webkit-linear-gradient(#fafafa, #e0e0e0);
+    background-image: linear-gradient(#fafafa, #e0e0e0);
+    background-repeat: repeat-x;
+    display: block;
+    padding: 10px 10px;
+    border-bottom: 1px solid #ccc;
+    color: #222;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 20px;
+    border-left: 0 none;
+}
+.bs-sidenav {
+    padding-top:    10px;
+    padding-bottom: 10px;
+    background-color: #fafafa;
+    border-radius: 5px;
+    border:1px solid #CCC;
+}
+.bs-sidebar .nav > li > a {
+    font-size: 1.2em;
+    display: block;
+    color: #716b7a;
+    padding: 10px 20px;
+    border-right: 4px solid transparent;
+}
+.bs-sidebar .nav > li > a:hover,.bs-sidebar .nav > li > a:focus{
+    text-decoration: none;
+    background-color: #fff;
+    border-right: 4px solid #dbd8e0;
+}
+.bs-sidebar .nav > .active > a,.bs-sidebar .nav > .active:hover > a,.bs-sidebar .nav > .active:focus > a {
+    font-weight: bold;
+    color: #418cd1;
+    background-color: #fff;
+    border-right: 4px solid #418cd1;
+}
+.editable form {
+	background-color: #F8F8F8;
+	border: 1px solid #EAD9CE;
+	cursor: default;
+	margin: 0;
+	padding: 13px;
+}
+.projects{border-bottom: 2px solid #FFB812;margin-bottom: 10px;}
+sup{color: red;}
+</style>
+{% endblock %}
+{% block content %}
+{% load mytaghelper %}
+{% load jsprofile_extras %}
+<div class="container-fluid" style="min-height:580px;">
+    <div class="row-fluid">
+        <div class="span3">
+            <div class="bs-sidebar">
+                <ul class="nav bs-sidenav">
+                    <li class='sideheading'>{{ request.user.username }}</li>
+                    <li class="active"><a href="/js/Dashboard/">Dashboard</a></li>{% for nav in navs %}<li{% ifequal next forloop.counter %} class="active"{% endifequal %}><a class="ajaxLoad" href="/js/{% sidebar nav %}/" data-ajxurl="{{ forloop.counter }}">{{nav}}</a></li>{% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="span9">
+        	<div id="projectdetails" class="xgap">
+        		<h4 style="border-bottom:2px solid #FFB812;">Project Details</h4><br><br>
+        		<div id="projectview">
+        			{% if project %}
+        			{% for l in project %}
+        			<div class="projects">
+        				<table  class="table table-borderless info" id="project{{l.pk}}">
+        					<tr>
+        						<td colspan="4"><strong>Project {{forloop.counter}} : </strong><a href="#" class="editproject" data-type="textarea" data-title="Enter project title" data-pk="{{l.pk}}" data-url="/updateproject/" data-name="project_title" data-params="{curtable:'projecttable'}">{{l.project_title}}</a><a class="deleteproject pull-right btn btn-danger" data-projectid="{{ l.pk }}" href="#"><i class="icon-trash"></i></a></td>
+        					</tr>
+        					<tr>
+        						<td colspan="4">Client : <a href="#" class="editproject" data-type="textarea" data-title="Enter Client" data-pk="{{l.pk}}" data-url="/updateproject/" data-name="client" data-params="{curtable:'projecttable'}">{{ l.client }}</a>, Location : <a href="#" class="editproject" data-type="textarea" data-title="Enter location" data-pk="{{l.pk}}" data-url="/updateproject/" data-name="project_loc" data-params="{curtable:'projecttable'}">{{ l.project_loc}}</a> , Onsite/Offsite : <a href="#" class="editproject" data-type="textarea" data-title="Enter onsite or offsite" data-pk="{{l.pk}}" data-url="/updateproject/" data-name="on_offsite" data-params="{curtable:'projecttable'}">{{l.on_offsite}}</a>&emsp;Duration&emsp;:&emsp;<a href="#" data-type="date" data-pk="{{l.pk}}" data-viewformat="mm-yyyy" data-format="mm-yyyy" data-title=" Project Start date" class="editproject" data-url="/updateproject/" data-name="projstartdate" data-params="{curtable:'projecttable'}">{{l.projstartdate}}</a>&emsp;to&emsp;<a href="#" data-type="date" data-pk="{{l.pk}}" data-viewformat="mm-yyyy" data-format="mm-yyyy" data-title=" Project End date" class="editproject" data-url="/updateproject/" data-name="projtodate" data-params="{curtable:'projecttable'}">{{l.projtodate}}</a></td>
+        					</tr>
+        					<tr>
+        						<td colspan="4"><label>Project Description</label>&emsp;<a href="#" class="editproject" data-type="textarea" data-title="Enter project details" data-pk="{{l.pk}}" data-url="/updateproject/" data-name="project_details" data-params="{curtable:'projecttable'}">{{l.project_details|safe}}</a></td>
+        					</tr>
+        					<tr>
+        						<td colspan="4"><label>Role Description</label>&emsp;<a href="#" class="editproject" data-type="textarea" data-title="Enter Role Description" data-pk="{{l.pk}}" data-url="/updateproject/" data-name="role_desc" data-params="{curtable:'projecttable'}">{{l.role_desc|safe}}</a></td>
+        					</tr>
+        					<tr>
+        						<td colspan="4">Role :&emsp;<a href="#" class="editproject" data-type="select" data-source="/fillcombo/role/" data-title="Enter Role" data-pk="{{l.pk}}" data-url="/updateproject/" data-name="role" data-params="{curtable:'projecttable'}">{{l.role}}</a>&emsp;Team size :&emsp;<a href="#" class="editproject" data-type="select" data-source="/fillcombo/teamsize/" data-title="Enter Teamsize" data-pk="{{l.pk}}" data-url="/updateproject/" data-name="teamsize" data-params="{curtable:'projecttable'}">{{l.teamsize}}</a>&emsp;Employment type :&emsp;<a href="#" class="editproject" data-type="textarea" data-title="Enter Employment type" data-pk="{{l.pk}}" data-url="/updateproject/" data-name="emp_type" data-params="{curtable:'projecttable'}">{{l.emp_type}}</a></td>
+        					</tr>
+        					<tr>
+        						<td colspan="4">Skills used : <a href="#" class="editproject" data-type="textarea" data-title="Enter Skills used (Seperated by comma ',')" data-pk="{{l.pk}}" data-url="/updateproject/" data-name="skill_used" data-params="{curtable:'projecttable'}">{{l.skill_used}}</a></td>
+        					</tr>
+        				</table>
+        			</div>
+        			{% endfor %}
+        			{% else %}
+        			<div class="noitems" style="background-color:#ffa; padding:20px">
+        				<strong>Please Add Project details</strong>
+        			</div>
+        			{% endif %}
+        		</div>
+        		<div class="toggleview" style="margin-bottom:20px;">
+        			<a class="btn btn-success toggle-button" href="javascript:void(0);" rel="project">Add Project Details</a>
+        		</div>
+        		<div class="editable toggleform" style="display:none;">
+        			<form action="" class="form-horizontal"  id="projectForm">{% csrf_token %}
+        				<input type="hidden" name="curform" value="projectform" autocomplete="off">
+        				<legend>Project Details </legend>
+        				<table class="table table-borderless">
+        				<tr>
+        					<td>Client <sup>*</sup></td>
+        					<td><input type="text" name="client" class="input-xlarge" autocomplete="off" required>&emsp;Project Title <sup>*</sup>&emsp;<input type="text" name="project_title"  class="input-xlarge" autocomplete="off" required></td>
+        				</tr>
+					
+        				<tr>
+        					<td>Duration </td>
+        					<td><input type="text" name="projstartdate" id="dpd1" autocomplete="off" readonly required >&emsp;to&emsp;
+						<input type="text" name="projtodate" id="dpd2" readonly required>
+						    &emsp;Employment Type <sup>*</sup>&emsp;<input type="radio" name="emp_type" value="Full Time" required />&nbsp;Full Time&emsp;<input type="radio" required name="emp_type" value="Part Time" />&nbsp;Part Time&emsp;<input required type="radio" name="emp_type" value="Contractual Project" />&nbsp;Contractual Project</td>
+        				</tr>
+        				
+					
+					<tr>
+        					<td>Project Location</td>
+        					<td><input type="text"  name="project_loc" class="input-xlarge"  autocomplete="off" />&emsp;Onsite/Offsite <sup>*</sup>&emsp;<input type="radio" name="on_offsite" required value="Onsite" >&nbsp;Onsite&emsp;<input type="radio" name="on_offsite" required value="Offsite">&nbsp;Offsite</td>
+        				</tr>
+        				<tr>
+        					
+        				</tr>
+        				<tr>
+        					<td>Project Details</td>
+        					<td><textarea name="project_details" class="sometextarea" id="txtprojectdetails" style="width:600px;height:100px;"></textarea></td>
+        				</tr>
+        				<tr>
+        					<td>Role Description</td>
+        					<td><textarea name="role_desc" class="sometextarea" id="txtprojectdesc" style="width:600px;height:100px;"></textarea></td>
+        				</tr>
+        				<tr>
+        					<td>Skills Used <sup>*</sup></td>
+        					<td><input type="text" name="skill_used" class="input-xxlarge" autocomplete="off" required></td>
+        				</tr>
+        				<tr>
+        					<td>Role</td>
+        					<td><select name="role" class="input-xlarge">
+        						<option value=""> Select </option>
+								<option value="Domain Expert">Domain Expert</option>
+								<option value="Sr.Project Leader">Sr.Project Leader</option>
+								<option value="Solution Architect">Solution Architect</option>
+								<option value="Quality Analyst">Quality Analyst</option>
+								<option value="Database Architect/DBA">Database Architect/DBA</option>
+								<option value="Network/System Administrator">Network/System Administrator</option>
+								<option value="Project Leader">Project Leader</option>
+								<option value="Module Leader">Module Leader</option>
+								<option value="Sr.Programmer">Sr.Programmer</option>
+								<option value="Programmer">Programmer</option>
+								<option value="Test Engineer">Test Engineer</option>
+								<option value="Other">Other</option>
+								</select>Team Size<select name="teamsize" class="input-xlarge">
+								<option value="">Select</option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+								<option value="6">6</option>
+								<option value="7">7</option>
+								<option value="8">8</option>
+								<option value="9">9</option>
+								<option value="10">10</option>
+								<option value="11">11</option>
+								<option value="12">12</option>
+								<option value="13">13</option>
+								<option value="14">14</option>
+								<option value="15">15</option>
+								<option value="16">16</option>
+								<option value="17">17</option>
+								<option value="18">18</option>
+								<option value="19">19</option>
+								<option value="20">20</option>
+								<option value="21">21</option>
+								<option value="22">22</option>
+								<option value="23">23</option>
+								<option value="24">24</option>
+								<option value="25">25</option>
+								<option value="26">26</option>
+								<option value="27">27</option>
+								<option value="28">28</option>
+								<option value="29">29</option>
+								<option value="30">30</option></select>
+							</td>
+						</tr>
+						</table><br>
+						<input class="btn btn-success" type="submit" value="Save" />&emsp;
+						<input type="reset" class="btn btn-warning toggle-button" href="javascript:void(0);" value="Cancel" rel="emp" >
+					</form>
+				</div><!-- .editable toggle form-->
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/datepicker/bootstrap-datepicker.js"></script>
+<script src="{{STATIC_URL}}jsprofile_static/xeditable/bootstrap-editable.min.js"></script>
+<script src="{{ STATIC_URL }}js/wysihtml5-0.3.0.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-wysihtml5.js"></script>
+<script src="{{STATIC_URL}}js/bootbox.min.js" ></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/moment.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/datepicker.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    
+	$('.bs-sidenav li').removeClass('active');
+    $(".bs-sidenav li:nth-child(10)" ).addClass("active");
+	$.fn.editable.defaults.mode = 'popup';
+    $.fn.editable.defaults.ajaxOptions = {type: "GET"};
+    $('.editproject').editable();
+	$('.toggle-button').click(function() {
+        
+	$('.toggleview').toggle();
+        $('.toggleform').toggle();
+        if ($(this).hasClass('btn-success')) {
+            $('.toggleform').find("input[type=text], select, file").val("");
+            $('textarea').val('');
+        }
+    });
+	
+	var currentYear = (new Date).getFullYear();
+    var ed='12-'+ (currentYear+5);
+    $('#dpd1').datepicker({
+        startView: "decade",
+	    format: "mm-yyyy",
+        endDate: ed,
+	    minViewMode: 1,
+	    autoclose:true,
+	});
+    
+    $( "#dpd2" ).datepicker({
+        startView: "decade",
+	    format: "mm-yyyy",
+        endDate: ed,
+	    minViewMode: 1,
+	    autoclose:true,
+	});
+	
+    
+	$('.sometextarea').wysihtml5();	
+	$('body').on("submit", "#projectForm", function(event){
+        event.preventDefault();
+	
+	$(this).serialize()
+	
+        $.ajax({
+            url:'/editproject/',
+            type:"POST",
+            data:$(this).serialize(),
+	    
+            success:function(data){
+		
+            	$('.editproject').editable();           
+                window.location='/js/Project_Details/';
+            }
+        })
+    });
+    $('body').on('click','.deleteproject',function(e){
+        var ids= $(this).data('projectid'); 
+        bootbox.dialog({
+            message: "Are you sure want to delete this project details?",
+            title: "Delete Project Details",
+            buttons: {
+                success: {
+                    label: "Yes",
+                    className: "btn-success",
+                    callback: function() {                        
+                        $.ajax({
+                            url:'/deleteProject/',
+                            type:'GET',
+                            data:{projectid:ids},
+                            success : function(data){
+                                window.location='/js/Project_Details/';
+                            }
+                        })
+                    }
+                },
+                danger: {
+                    label: "No",
+                    className: "btn-danger",
+                    callback: function() {
+                    }
+                },
+            }
+        });
+        e.preventDefault()
+            
+    });
+}); 
+</script>   
+{% endblock %}

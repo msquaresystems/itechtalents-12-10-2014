@@ -1,0 +1,54 @@
+<div > 
+    <form name="edit_personal_info_form" action="/accounts/Editprofilepicinfo/" method="post" enctype="multipart/form-data">{% csrf_token %}
+
+        <input type="hidden" value="{{ user.id }}" name="user_id" >
+
+        <p><h3 >Profile Picture Update</h3></p>
+        <table cellpadding="10" >
+            <tr>
+                <td>Current Profile picture</td>
+                <td>
+                    <div style="border:2px solid #a1a1a1;background:#dddddd; width:100px; height:100px;">
+                        <img style="width:100px;height:100px;" src="{{ STATIC_URL }}{% for detail in details1 %}{{ detail.profile_pic }}{% endfor %}" />
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Upload new Profile picture</td>
+
+                <td><input type="file" accept="image/*" name="profile_pic" value="{% for a in details1 %}{{a.profile_pic}}{% endfor %}" class="input-xlarge upfile" id="Gfile_1" required ><p><sub>(max.size 200KB, .jpeg, .jpg, .png, .gif, .bmp)</sub></p></td>
+                
+            </tr>
+            <tr>
+                <tr>
+                    <td colspan="2" style="text-align:center;">
+                        <input type="submit" class="btn btn-success" value="Update">&nbsp;&nbsp;
+                        <input type="reset" class="btn btn-warning" value="Reset">
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('.upfile').bind('change', function(){
+        var a=(this.files[0].size);
+        var aa=document.getElementById('Gfile_1').files[0].type  //mime type
+        if((aa=='image/jpeg') || (aa=='image/gif') || (aa=='image/jpg') || (aa=='image/png') || (aa=='image/bmp'))
+            {
+                if(a > 204800)
+                    {
+                        alert('Size is more than 200KB');
+                        $('.upfile').val('');
+                    }
+            }
+        else
+            {
+                alert('Invalid file format');
+                $('.upfile').val('');
+            }
+        });
+    });
+</script>
+

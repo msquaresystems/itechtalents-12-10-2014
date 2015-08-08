@@ -1,0 +1,40 @@
+{% extends "feed/base_feed.html" %}
+{% block content %}
+{% load classfeed %}
+<div class="container">
+    <!-- Docs nav
+    ================================================== -->
+    <div class="row">
+      <div class="span3 sidebar">
+        <ul class="nav nav-list bs-docs-sidenav"><!-- affix">-->
+          
+        {% for fd in feedlist %}
+          <li{% ifequal fd.pk url.pk %} class="active"{% endifequal %}><a href="/feeds/guest/?feedid={{ fd.pk }}"><i class="icon-chevron-right"></i> {{ fd.name }}</a></li>
+        {% endfor %}         
+              
+        </ul>
+      </div>
+      <div class="span8 offset1">
+      <!-- sample modal content ###################################################-->
+        <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">ItechTalents News</h3>
+          </div>
+          <div class="modal-body">
+            <h4 id="feedtitle"><a id="feedurl"></a></h4>
+            <p><small id="feedpublished"></small></p>
+            <img id='img-in-modal'>
+            <hr>
+            <p id="feeddescription"></p><a id="feedmore"> (Click to read more..)</a>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-danger" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      <!-- /sample modal content -->
+        {% get_feed_thumb url.link %}
+      </div>
+    </div>
+</div>
+{% endblock %}

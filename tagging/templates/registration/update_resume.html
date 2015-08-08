@@ -1,0 +1,189 @@
+
+<script type="text/javascript">
+
+function disableElements()
+{
+document.getElementById("title").disabled=false;
+document.getElementById("file").disabled=false;
+
+}
+
+function disableElement1()
+{
+document.getElementById("one").disabled=true;
+document.getElementById("f1").disabled=false;
+document.getElementById("h1").disabled=false;
+
+}
+function disableElement2()
+{
+document.getElementById("two").disabled=true;
+document.getElementById("f2").disabled=false;
+document.getElementById("h2").disabled=false;
+}
+function disableElement3()
+{
+document.getElementById("three").disabled=true;
+document.getElementById("f3").disabled=false;
+document.getElementById("h3").disabled=false;
+}
+function disableElement4()
+{
+document.getElementById("four").disabled=true;
+document.getElementById("f4").disabled=false;
+document.getElementById("h4").disabled=false;
+}
+function disableElement5()
+{
+document.getElementById("five").disabled=true;
+document.getElementById("f5").disabled=false;
+document.getElementById("h5").disabled=false;
+}
+
+</script>
+
+<style type="text/css">
+.success
+    {
+      color: green;
+      font-weight: bold;
+      font-size: 12px;
+      text-align: center;
+      font-family: "Lucida Sans Unicode","Lucida Grande",Sans-Serif;
+    }
+</style>
+<form name="updateResumeForm" action="/accounts/Updateresume/" method="post" enctype="multipart/form-data">{% csrf_token %}
+    		<div>
+    			<span>
+    				<input type="hidden" value="{{ user.id }}" name="user_id" >
+    			</span>
+    			<p><h4>Edit and Delete Resume</h4></p>
+                {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                    <img style="width:20px;height:20px;" src="{{ STATIC_URL }}images/success.jpeg" >&nbsp;&nbsp;{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                <p><label>{{msg}}<a href="/accounts/ProfileDetails/">{{msg1}}</a></label></p>
+    			<div >
+    				<table>
+    					<tr>
+                <td colspan="4"><h5>Uploaded Resume</h5></td>
+              </tr>
+              <tr>
+                <th>Resume title</th>
+                <th>Add or edit Resume</th>
+                <th>Document Name</th>
+                <th>Action</th>
+              </tr>
+              {% for a in details1 %}
+              {% if a.resumeTitle or a.resumeFile %}
+    					<tr>
+    						<td>
+    							<input type="text"  name="jsResumeTitle{{forloop.counter}}" value="{{a.resumeTitle}}">
+    							<input type="hidden" name="jsResumeID{{forloop.counter}}" value="{{a.id}}">
+    						</td>
+    						<td>
+    							<input type="file"  name="jsResumeFile{{forloop.counter}}" value="{{a.resumeFile}}">
+                </td>
+
+                <td>
+    							{{a.resumeFile|cut:"documents/"}}
+                </td>
+                <td>
+    							<a href="/accounts/DeleteResume/{{a.id}}/">&emsp;Delete</a>
+    						</td>
+    					</tr>
+              {% else %}
+              <tr>
+
+    						<td>
+    							<input type="text"  name="jsResumeTitle{{forloop.counter}}" value="">
+    							<input type="hidden" name="jsResumeID{{forloop.counter}}" value="{{a.id}}">
+    						</td>
+    						<td>
+    							<input type="file"  name="jsResumeFile{{forloop.counter}}" value="">
+    							
+    						</td>
+    					</tr>
+
+    					{% endif %}
+
+    					{% endfor %}
+
+              <tr>
+                <td colspan="4"><h5>Text Resume</h5></td>
+              </tr>
+    					<tr>
+    						{% for a in details2 %}
+    						<td>
+                  {% if a.resumeTitle %}
+                  <input type="text" name="textResumeTitle" value="{{a.resumeTitle}}" >
+                  {% else %}
+                  <input type="text" name="textResumeTitle" value="" >
+                  {% endif %}
+    						</td>
+    						<td colspan="3">
+                  {% if a.resumeFile %}
+		              <textarea style="height:200px;width:500px;" name="textResumeFile" id="txtres" >{{a.resumeFile|safe}}</textarea>
+                  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-wysihtml5-0.0.2.css"></link>
+                    <script src="{{ STATIC_URL }}js/wysihtml5-0.3.0_rc2.js"></script>
+                    <script src="{{ STATIC_URL }}js/bootstrap-wysihtml5-0.0.2.js"></script>
+                    <script type="text/javascript">
+                      $('#txtres').wysihtml5();
+                  </script>
+                  {% else %}
+                  <textarea style="height:200px;width:500px;" name="textResumeFile"  id="txtres1"></textarea>
+                  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-wysihtml5-0.0.2.css"></link>
+                    <script src="{{ STATIC_URL }}js/wysihtml5-0.3.0_rc2.js"></script>
+                    <script src="{{ STATIC_URL }}js/bootstrap-wysihtml5-0.0.2.js"></script>
+                    
+                  <script type="text/javascript">
+                      $('#txtres1').wysihtml5();
+                  </script>
+                  {% endif %}
+
+    						</td>
+    						{% endfor %}
+    					</tr>
+              <tr>
+                <td><h5>Video Resume</h5></td>
+              </tr>
+    					<tr>
+    						
+    						<td colspan="2">
+    							<video width="320" height="240" controls >
+
+                          <source src={{ STATIC_URL }}{% for a in videoresume %}{{ a.videoresume }}{% endfor %} type="video/ogg">
+                          <source src={{ STATIC_URL }}{% for a in videoresume %}{{ a.videoresume }}{% endfor %} type="video/mp4">
+                          <source src={{ STATIC_URL }}{% for a in videoresume %}{{ a.videoresume }}{% endfor %} type="video/webm">
+                          Your browser does not support the video tag.
+                  </video>
+    						</td>
+    						<td cospan="2">
+                   {% for a in videoresume %}
+                   {% if a.videoresume %}
+
+                   <input type="file" accept="video/*" name="videoresume" >
+                  {{ a.videoresume|cut:"image/" }}
+                   <a href="/accounts/DeleteVideoResume/{{ a.id }}/" >&emsp;Delete</a>
+                   <br><sub>(only mp4,ogg,ogv,webm acceptable)</sub> 
+    					     
+                      
+                      {% endif %}
+                    {% endfor %}
+                </td>
+    					</tr>
+
+    					<tr>
+    						<td colspan="3" style="text-align:center;">
+    							<input type="submit" value="SAVE">&emsp;
+    							<input type="reset" value="RESET">
+    						</td>
+    					</tr>
+    				</table>
+   			</div>
+</form>
+

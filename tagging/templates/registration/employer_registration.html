@@ -1,0 +1,69 @@
+<html>
+<head>
+
+</head>
+
+<body>
+
+<form method="POST" action="">
+{% csrf_token %}
+<table style=" padding-bottom:40px;">
+
+<tr>
+<td><label for="id_username">User name <k style="color:red;">&nbsp;*</k></label></td>
+<td>{{ form.username }}</td>
+{% if form.username.errors %}
+<td><span class="error">{{ form.username.errors|join:", " }}</span></td>
+{% endif %}
+</tr>
+
+<tr>
+	<td><label for="id_email">Email address<k style="color:red;">&nbsp;*</k></label></td>
+	<td>{{ form.email }}</td>
+	{% if form.email.errors %}
+	<td><span class="error">{{ form.email.errors|join:", " }}</span></td>
+	{% endif %}
+</tr>
+
+<tr>
+	<td><label for="id_password1">Password<k style="color:red;">&nbsp;*</k></label></td>
+	<td>{{ form.password1 }}</td>
+	{% if form.password1.errors %}
+	<td><span class="error">{{ form.password1.errors|join:", " }}</span></td>
+	{% endif %}
+</tr>
+
+<tr>
+	<td><label for="id_password2">Confirm Password<k style="color:red;">&nbsp;*</k></label></td>
+	<td>{{ form.password2 }}</td>
+	{% if form.password2.errors %}
+	<td><span class="error">{{ form.password2.errors|join:", " }}</span></td>
+	{% endif %}
+</tr>
+
+<tr>
+	<td><label for="id_resume">Upload Resume</label></td>
+	
+	<td><input type="file" accept="image/*" class="input" /></td>
+	<td></td>
+</tr>
+
+<tr>
+	<td colspan="2">{{ form.tos }}&nbsp;<label for="id_tos" class ="term_condition">I have read and agree to the <a href="/about/tos/">Terms of Service</a></label></td>
+	{% if form.tos.errors %}
+	<td><span class="error">{{ form.tos.errors|join:", " }}</span></td>
+	{% endif %}
+</tr>
+
+<tr>
+	<td></td>
+	<td><input type="submit" value="Register" style="width:90px;" />&nbsp;&nbsp;<input type="reset" style="width:90px;" value="Cancel" /></td>
+	<td></td>
+</tr>
+
+</table>
+<h1> this is test</h1>
+</form>
+</body>
+
+</html>

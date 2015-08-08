@@ -1,0 +1,85 @@
+
+{% extends "registration/base/jobseekerbase.html" %}
+{% block extrahead %}
+<style type="text/css">
+	#home
+	{
+	font-family: "Lucida Sans Unicode","Lucida Grande",Sans-Serif;
+	}
+	</style>
+{% endblock %}
+{% block content %}
+<div id="home" style="width:1200px; padding:0px;margin:auto;position:relative;min-height:495px;">
+
+	<div style="width:300px; height:500px;overflow:scroll; float:left;">
+		<h4 style="text-align:center;">Latest Jobs</h4>
+		{% if latest %}
+		 {% for l in latest %}
+		 		
+		 <blink onmouseover="this.stop()" onmouseout="this.start()" >
+		 <div>
+
+		 <p>
+		 	<label><a href="/accounts/JobFullDescription/{{ l.id }}/">{{ l.title }}</a></label>&nbsp;
+		
+		<label>Posted Date : </label> <label>{{ l.marklive }}</label>
+		
+			</p>
+		</div>
+		</blink>
+		 {% endfor %}
+
+
+		 {% endif %}
+
+
+	</div>
+
+	<div style="width:300px; height:500px;overflow:scroll; float:left;">
+		<h4 style="text-align:center;">Trending Jobs</h4>
+	
+	 {% if trending %}
+	 {% for t in trending %}
+	 		
+	 
+	 	<div>
+
+			 <p>
+			 	<label><a href="/accounts/JobFullDescription/{{ t.id }}/">{{ t.title }}</a></label>&nbsp;
+			
+			<label>Posted Date : </label> <label>{{ t.marklive }}</label>
+			</p>
+		</div>
+
+
+ {% endfor %}
+
+
+ {% endif %}
+
+</div>
+
+
+<div style="width:300px; height:500px;overflow:scroll; float:left;">
+
+	<h4 style="text-align:center;">Company Directory List</h4>
+	<div style="text-align:center;">
+	{% for d1 in details2 %}
+	<li><a style="text-decoration:none;" href="/accounts/CompanyList/{{d1.companyname}}/" >{{ d1.companyname }}({{ d1.job_count }})</a></li><br>
+	{% endfor %}
+	</div>
+</div>
+<div style="width:300px; height:500px;overflow:scroll; float:left;">
+	<h4 style="text-align:center;">Demand Region</h4>
+	<div style="text-align:center;">
+		{% for d in demand %}
+		<li><a style="text-decoration:none;" href="/accounts/CompanyList/{{d.state}}/" >{{ d.state }}</a></li><br>
+		{% endfor %}
+	</div>
+</div>
+
+<div style="clear:both;"></div>
+
+</div>
+{% endblock %}
+

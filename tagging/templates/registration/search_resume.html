@@ -1,0 +1,88 @@
+
+{% extends "registration/base/jobseekerbase.html" %}
+{% extends "registration/base/headerbasenosearch.html" %}
+
+{% block extrahead %}
+<link rel="stylesheet" href="{{ STATIC_URL }}css/style.css"/>
+<link rel="stylesheet" href="{{ STATIC_URL }}css/jquery-ui.css" />
+
+{% endblock %}
+{% block content %}
+<div style="width:1200px;padding:0px;margin:auto;" class="outerdiv">
+        
+
+        <div align="center" style="border:1px solid red;">
+
+                <div style="border:1px solid green; width:700px; background-color:#FFFACD;" >
+                        <form name="CandiateSearchForm" action="/accounts/CandidateSearchResult/" method="GET" onsubmit="return validateForm()">{% csrf_token %}
+                                <table>
+                                        <tr>
+                                                <td colspan="2">
+                                                        <label><h3>Find Candidates</h3></label>
+                                                </td>
+                                        </tr>
+                                        <tr>
+                                                <td><label>Job Title/Skills</label></td>
+                                                <td>
+                                                        <input type="text" name="skills" AUTOCOMPLETE=ON list="skill_list" id="skill" style="border:2px solid #A0A0A0; "/>
+                                                        <datalist id="skill_list">
+                                                        <script language="javascript">
+                                                        var skill=new Array("Android","Assembler","ASP","Ajax","C","c#","C++","Css","HTML","HTML5","Java","JavaScript","Python","ASP.NET","A# (Axiom)","ActionScript","ALGOL","APL","AppleScript","Arc","AutoIt","Babbage","Bash","BASIC","BETA","Boomerang","Basic","C--","C Shell","CMS","COBOL","CobolScript","Cobra","CODE","CoffeeScript","Cola","ColdC","COMAL","Coral","Clojure","Corn","Csound","Curl","Curry","Cyclone","Cython","DASL","DataFlex","DYNAMO","Erlang","Emerald","Epigram","ESPOL","Euler","Falcon","Flavors","Flex","Fortran","FoxPro","G-code","Genie","Godiva","Haskell","HLSL","Hume","HyperTalk","IBM","IBM HAScript","Icon","JADE","Jython","JASS","JQuery","JCL","JEAN","ECMAScript ","JScript","Karel","Kaya","KRYPTON","LabVIEW","Ladder","Lua","Lisp","Scheme","Legoscript","Limbo","Lite-C","Lucid","Magma","Maple","MASM","Mathematica","MATLAB","Maxima","Maya","Mercury","Mesa","MetaL","Microcode","MicroScript","Mouse","NASM","NATURAL","Nemerle","NetLogo","NewtonScript","Nickle","o:XML","Oberon","Obix","Obliq","Octave","Oxygene","Pascal","Pawn","PEARL","Perl","PDL","PHP","PILOT","PortablE","PostScript","PowerBuilder","Powerhouse","PowerShell","Pascal","Pro*C","Processing","Processing.js","Prograph","PROIV","Prolog","Promela","PROTEL","ProvideX","Pure","Python","Visual Prolog","MS Visual C++","QBasic","QPL","QtScript","QuakeC","REBOL","Redcode","REFAL","REXX","Ruby","Ruby on Rails","Rust","Scala","SIMPOL","SIMSCRIPT","Simula","SQL","Simulink","SOL","Tcl","Tea","TECO","TELCOMP","TOM","UCSD Pascal","Unicon","Unix shell","VBScript","Verilog","VHDL","Visual Basic .NET","Visual Basic","Visual C#","Visual DataFlex","Visual DialogScript","Visual Fortran","Visual FoxPro","Visual J#","Visual J++","Visual Objects","XML",".net Developer","Account Manager","Accountant","Accounting Manager","Administrator Payroll","Assistant Controller","Auditor","Business Analyst","Business Development Manager","Controller","Cost Accountant","Design Engineer","Director Business Development","Electrical Engineer","Engineer","Engineering Technician","Financial Analyst","Human Resources Assistant","Human Resources Coordinator","Human Resources Specialist","Java Developer","LPN","Manufacturing Engineer","Marketing","Marketing Director","Marketing Manager","Mechanical Engineer","Network Engineer","Nurse","Occupational Therapist","Occupational Therapist Occupation","Payroll Clerk","Payroll Specialist","Pharmacist","Physical Therapist","Physical Therapist Thera","Process Engineer","Product Manager","Product Marketing Manager","Project Engineer","Project Manager","Quality Engineer","Recruiter","Registered Nurse","Senior Accountant","Senior Financial Analyst","Senior Marketing Manager","Senior Product Manager","Senior Software Engineer","Software Engineer","Speech Language Pathologist","Speech Pathologist Assistant","Systems Administrator","Systems Engineer","Tax Manager","Technical Recruiter","Technician","Trainer","Training Specialist","Web Developer","Applications Enginee","Chief Information Office","Chief Technology Office","Computer and Information Systems Manage","Database Administrato","Help Desk Technicia","Information Technology Directo","Information Technology Manage","Management Information Systems Directo","Network Architec","Network Enginee","Network System Administrato","Programme","Programmer Analys","Security Specialis","Senior Applications Enginee","Senior Database Administrato","Senior Network Architec","Senior Network Enginee","Senior Network System Administrato","Senior Programme","Senior Programmer Analys","Senior Security Specialis","Senior Software Enginee","Senior Support Specialis","Senior System Administrato","Senior System Analys","Senior System Architec","Senior System Designe","Senior Systems Analys","Senior Systems Software Enginee","Senior Web Administrato","Senior Web Develope","Software Enginee","Software Quality Assurance Analys","Support Specialis","System Administrato","System Analys","System Architec","System Designe","Systems Analys","Systems Software Enginee","Technical Specialis","Telecommunications Specialis","Web Administrato","Web Develope","Webmaste");
+                                                        for(var i=0; i<skill.length; i++)
+                                                        document.write("<option value=\""+skill[i]+"\"></option>");
+                                                        </script>
+                                                        </datalist>
+                                                </td>
+                                        </tr>
+                                        <tr>
+                                                <td><label>State/City/ZipCode</label></td>
+                                                <td>
+                                                    <input type="text" name="state" AUTOCOMPLETE=ON list="state_list" id="state" style="border:2px solid #A0A0A0; "/>
+                                                    <datalist id="state_list">
+                                                    <script language="javascript">
+                                                    var state=new Array("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina ", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia","Washington","West Virginia","Wisconsin","Wyoming","75462","02115","33122","33125","33126","33127","33129","33130","33131","33132","33133","33136","02116","33137","33138","33139","33140","33142","33143","33145","33150","33156","33161","02138","33166","33169","33172","33173","33175","33176","33178","33179","33181","33184","10001","33186","33301","33304","33305","33306","33308","33309","33312","33315","33316","10019","33334","33431","33441","33442","33458","33510","33548","33549","33566","33570","10021","33594","33601","33602","33603","33604","33605","33606","33607","33609","33610","10022","33611","33612","33613","33614","33615","33616","33618","33619","33624","33625","10036","33626","33629","33634","33635","33637","33647","33755","33756","33762","33765","10065","33901","33904","33907","33908","33912","33914","33950","33952","33980","34102","10502","34103","34104","34108","34109","34110","34113","34114","34119","34134","34145","98104","10506","34242","10533","10583","10701","10704","19147","20005","20036","20850","21201","90210","21740","22201","22314","23185","28092","28262","30004","30005","30013","30022","02871","30067","30075","30083","30084","30096","30097","30144","30303","30305","30308","60607","30309","30313","30318","30324","30328","30329","30339","30342","32118","32207","77304","32216","32218","32256","32301","32303","32401","32408","32541","32601","32608","32780","32801","32808","32809","32812","32817","32819","32821","32822","89052","32826","32836","32837","32901","32926","32931","32952","33004","33009","33012","33013","33016","33019","33020","33021","33030","33040","33060","33062","33069");
+                                                    for(var i=0; i<state.length; i++)
+                                                    document.write("<option value=\""+state[i]+"\"></option>");
+                                                    </script>
+                                                    </datalist>
+                                                </td>
+                                        </tr>
+                                        <tr>
+                                                <td></td>
+                                                <td>
+                                                        <input type="submit"  value="Search" />
+                                                </td>
+
+                                        </tr>
+                                </table>
+                        </form>
+                </div>
+
+</div>
+
+        
+        
+    </div>
+{% endblock %}
+{% block extrajavascript %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui.js"></script>
+    <!--<script type="text/javascript" src="{{ STATIC_URL }}js/validation.js"></script>-->
+
+    <script type="text/javascript">
+    function validateForm()
+          {
+          //alert("a");
+          var x=document.forms['CandiateSearchForm']['skills'].value;
+          var y=document.forms['CandiateSearchForm']['state'].value;
+          if ((x==""||x==null) && (y==""||y==null))
+            {
+            document.CandiateSearchForm.skills.style.borderColor = "#FF0000";
+            document.CandiateSearchForm.state.style.borderColor = "#FF0000";
+            return false;
+            }
+          }
+
+    </script>
+{% endblock %}
+

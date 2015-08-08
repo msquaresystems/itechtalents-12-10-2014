@@ -1,0 +1,191 @@
+{% extends "registration/base/jobseekerbase.html" %}
+{% block extrahead %}
+<style type="text/css">
+	.timeline {
+  list-style: none;
+  padding: 20px 0 20px;
+  position: relative;
+}
+.timeline:before {
+  top: 0;
+  bottom: 0;
+  position: absolute;
+  content: " ";
+  width: 3px;
+  background-color: #eeeeee;
+  left: 50%;
+  margin-left: -1.5px;
+}
+.timeline > li {
+  margin-bottom: 20px;
+  position: relative;
+}
+.timeline > li:before,
+.timeline > li:after {
+  content: " ";
+  display: table;
+}
+.timeline > li:after {
+  clear: both;
+}
+.timeline > li:before,
+.timeline > li:after {
+  content: " ";
+  display: table;
+}
+.timeline > li:after {
+  clear: both;
+}
+.timeline > li > .timeline-panel {
+  width: 46%;
+  float: left;
+  border: 1px solid #d4d4d4;
+  border-radius: 2px;
+  /*padding: 20px;*/
+  position: relative;
+  -webkit-box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175);
+}
+.timeline > li > .timeline-panel:before {
+  position: absolute;
+  top: 26px;
+  right: -15px;
+  display: inline-block;
+  border-top: 15px solid transparent;
+  border-left: 15px solid #ccc;
+  border-right: 0 solid #ccc;
+  border-bottom: 15px solid transparent;
+  content: " ";
+}
+.timeline > li > .timeline-panel:after {
+  position: absolute;
+  top: 27px;
+  right: -14px;
+  display: inline-block;
+  border-top: 14px solid transparent;
+  border-left: 14px solid #fff;
+  border-right: 0 solid #fff;
+  border-bottom: 14px solid transparent;
+  content: " ";
+}
+.timeline > li > .timeline-badge {
+  color: #fff;
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  font-size: 1.4em;
+  text-align: center;
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  margin-left: -25px;
+  background-color: #999999;
+  z-index: 100;
+  border-top-right-radius: 50%;
+  border-top-left-radius: 50%;
+  border-bottom-right-radius: 50%;
+  border-bottom-left-radius: 50%;
+}
+.timeline > li.timeline-inverted > .timeline-panel {
+  float: right;
+}
+.timeline > li.timeline-inverted > .timeline-panel:before {
+  border-left-width: 0;
+  border-right-width: 15px;
+  left: -15px;
+  right: auto;
+}
+.timeline > li.timeline-inverted > .timeline-panel:after {
+  border-left-width: 0;
+  border-right-width: 14px;
+  left: -14px;
+  right: auto;
+}
+.timeline-badge.primary {
+  background-color: #2e6da4 !important;
+}
+.timeline-badge.success {
+  background-color: #3f903f !important;
+}
+.timeline-badge.warning {
+  background-color: #f0ad4e !important;
+}
+.timeline-badge.danger {
+  background-color: #d9534f !important;
+}
+.timeline-badge.info {
+  background-color: #5bc0de !important;
+}
+.timeline-title {
+  margin-top: 0;
+  color: inherit;
+}
+.timeline-body > p,
+.timeline-body > ul {
+  margin-bottom: 0;
+}
+.timeline-body > p + p {
+  margin-top: 5px;
+}
+.timeline-heading,.timeline-body{
+	padding:20px;
+}
+</style>
+{% endblock %}
+{% block content %}
+<div class="container" style="min-height:580px;">
+  <h3 style="border-bottom:2px solid #FFB812;">Customer Speaks</h3>
+  <div>
+  	<ul class="timeline">
+        <li>
+          <div class="timeline-badge info"><i class="icon-check"></i></div>
+          <div class="timeline-panel">
+            <div class="timeline-heading">
+              <h4 class="timeline-title text-warning">Tata Consultancy Services</h4>
+            </div>
+            <div class="timeline-body">
+              <p style="text-align:justify;">The Itechtalents database has been one of our reliable sources for recruitment, backed by a very efficient team who would go out of their way to make sure that requests are taken ahead with immediate and complete closure. Also, their services are any day more economical than print. This kind of prompt, valuable and value for money service is appreciated!</p>
+              <p class="text-info"><big class='text-warning'>Natasha Vaz,</big><small> Corporate Talent Acquisition Group</small></p>
+            </div>
+          </div>
+        </li>
+        <li class="timeline-inverted">
+          <div class="timeline-badge warning"><i class="icon-thumbs-up"></i></div>
+          <div class="timeline-panel">
+            <div class="timeline-heading">
+              <h4 class="timeline-title">Paul Wurth</h4>
+            </div>
+            <div class="timeline-body">
+              <p style="text-align:justify;">The portal is very user friendly in terms of searching resumes and job postings. Also, they have a good database to search resumes. As far as services are concerned it's excellent! Their turnaround time for resolving any issue is just a few minutes and that is really appreciable. Their Business Development Team is always there to help at any point of time. Thank you so much for all your effort.</p>
+              <p class="text-info"><big class='text-warning'>Shweta Ranjan,</big><small> Paul Wurth India Pvt Ltd</small></p>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="timeline-badge danger"><i class="icon-ok"></i></div>
+          <div class="timeline-panel">
+            <div class="timeline-heading">
+              <h4 class="timeline-title">Ananth Technologies Ltd</h4>
+            </div>
+            <div class="timeline-body">
+              <p style="text-align:justify;">Itechtalents.com has helped us tremendously to build and plan according to the recruitment challenges.  Especially the Client Relations Personnel who have always facilitated and guided us through tough times.  If you are someone who wishes to attain your business goals by hiring expert resources, then Itechtalents is an apt and compelling partner to start with!</p>
+              <p class="text-info"><big class='text-warning'>Ashwin Hastapuram,</big><small> Ananth Technologies Ltd</small></p>
+            </div>
+          </div>
+        </li>
+        <li class="timeline-inverted">
+          <div class="timeline-badge success"><i class="icon-comments-alt"></i></div>
+          <div class="timeline-panel">
+            <div class="timeline-heading">
+              <h4 class="timeline-title">Ybrant Digital</h4>
+            </div>
+            <div class="timeline-body">
+              <p style="text-align:justify;">Itechtalents is an excellent job portal, we value the resumes received through this channel. It provides relevant and accurate matches as per the job openings. Magic Search and Power search are extremely useful tools. We are very satisfied with their service. We thank Itechtalents for providing quality search and service over the years.</p>
+              <p class="text-info"><big class='text-warning'>Sowmya B,</big><small> Ybrant Digital</small></p>
+            </div>
+          </div>
+        </li>
+    </ul>
+  </div>
+</div> 
+{% endblock %}

@@ -1,0 +1,359 @@
+    {% extends "jsprofile/base.html" %}
+    {% block extrahead %} 
+<link rel="stylesheet" href="{{ STATIC_URL }}js/datepicker/datepicker.css" />
+<link href="{{STATIC_URL}}jsprofile_static/xeditable/bootstrap-editable.css" rel="stylesheet"/>  
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-wysihtml5.css"></link>
+<style>
+.editable form{
+    background-color: #F8F8F8;
+    border: 1px solid #EAD9CE;
+    ursor: default;
+    margin: 0;
+    padding: 13px;
+}
+hr{
+margin: 5px;
+}
+.item_tittle h1 span{
+    background: none repeat scroll 0 0 #74767A;
+    border-radius: 3px 3px 3px 3px;
+    color: #ffffff;
+    float: right;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 7px 0 0;
+    padding: 0 5px;
+    margin-right: 0;
+}
+.item_tittle h2 {
+    font-size: 18px;
+    font-weight:normal;
+    text-align: left;
+    color:#000;
+}
+.item_tittle h3{
+    font-size: 14px;
+    font-weight:normal;
+    text-align: right;
+    color:#000;
+}
+.bs-sidebar.affix {
+    position: static;
+}
+.sideheading{
+    background-color: #e0e0e0;
+    background-image: -moz-linear-gradient(#fafafa, #e0e0e0);
+    background-image: -webkit-linear-gradient(#fafafa, #e0e0e0);
+    background-image: linear-gradient(#fafafa, #e0e0e0);
+    background-repeat: repeat-x;
+    display: block;
+    padding: 10px 10px;
+    border-bottom: 1px solid #ccc;
+    color: #222;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 20px;
+    border-left: 0 none;
+}
+.bs-sidenav {
+    padding-top:    10px;
+    padding-bottom: 10px;
+    background-color: #fafafa;
+    border-radius: 5px;
+    border:1px solid #CCC;
+}
+.bs-sidebar .nav > li > a {
+    font-size: 1.2em;
+    display: block;
+    color: #716b7a;
+    padding: 10px 20px;
+    border-right: 4px solid transparent;
+}
+.bs-sidebar .nav > li > a:hover,.bs-sidebar .nav > li > a:focus{
+    text-decoration: none;
+    background-color: #fff;
+    border-right: 4px solid #dbd8e0;
+}
+.bs-sidebar .nav > .active > a,.bs-sidebar .nav > .active:hover > a,.bs-sidebar .nav > .active:focus > a {
+    font-weight: bold;
+    color: #418cd1;
+    background-color: #fff;
+    border-right: 4px solid #418cd1;
+}
+.editable form {
+	    background-color: #F8F8F8;
+	    border: 1px solid #EAD9CE;
+	    cursor: default;
+	    margin: 0;
+	    padding: 13px;
+	}
+	hr {
+	  margin: 5px;
+	}
+	.item_tittle h1 span {
+	    background: none repeat scroll 0 0 #74767A;
+	    border-radius: 3px 3px 3px 3px;
+	    color: #ffffff;
+	    float: right;
+	    font-size: 16px;
+	    font-weight: bold;
+	    margin: 7px 0 0;
+	    padding: 0 5px;
+	  	margin-right: 0;	 
+	}
+	.item_tittle h2 {
+	  font-size: 18px;
+	  font-weight:normal;
+	  text-align: left;
+	  color:#000;
+	}
+	.item_tittle h3{
+	  font-size: 14px;
+	  font-weight:normal;
+	  text-align: right;
+	  color:#000;
+	}
+</style>
+{% endblock %}
+{% block content %}
+{% load mytaghelper %}
+{% load jsprofile_extras %}
+<div class="container-fluid" style="min-height:580px;">
+    <div class="row-fluid">
+        <div class="span3">
+            <div class="bs-sidebar">
+                <ul class="nav bs-sidenav">
+                    <li class='sideheading'>{{ request.user.username }}</li>
+                    <li class="active"><a href="/js/Dashboard/">Dashboard</a></li>
+		    {% for nav in navs %}
+			<li{% if nav == "Educational Details"  %} class="active"{% endif %}>
+			    <a class="ajaxLoad" href="/js/{% sidebar nav %}/" data-ajxurl="{{ forloop.counter }}">{{nav}}</a></li>{% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="span9">
+            <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+                <div class="modal-body"><i class="icon-spinner icon-spin icon-large" style="font-size:3em;"></i><span style="font-size:2em;"> Loading..........</span></div>
+            </div>
+
+	<div id="edus" class="xgap">
+	<h4 style="border-bottom:2px solid #FFB812;">Educational Details</h4>
+	<br>
+	<div id="edusview">				
+		{% if edus %}
+		<table class="table table-striped" id="EduTable">
+			<tr class="info"><th>Degree</th><th>Specialization</th><th>University/Board</th><th>City/State</th><th>Country</th><th>Year of Passing</th><th></th></tr>
+			{% for l in edus %}
+			<tr id="edu{{l.pk}}"><td><a href="#" class="editdegree" data-type="select" data-source="/fillcombo/degree/" data-title="Enter degree" data-pk="{{l.pk}}" data-url="/updateedu/" data-name="degree" data-params="{curtable:'edutable'}">{{ l.degree }}</a></td>
+
+			<td><a href="#" data-type="text" data-pk="{{l.pk}}" data-title="Specialization" class="editdegree editable editable-click" data-url="/updateedu/" data-name="special" data-params="{curtable:'edutable'}">{{l.special}}</a></td>
+
+			<td><a href="#" data-type="text" data-pk="{{l.pk}}" data-title="University/Board" class="editdegree editable editable-click" data-url="/updateedu/" data-name="institution" data-params="{curtable:'edutable'}">{{l.institution}}</a></td>
+
+			<td><a href="#" data-type="text" data-pk="{{l.pk}}" data-title="City/State" class="editdegree editable editable-click" data-url="/updateedu/" data-name="location" data-params="{curtable:'edutable'}">{{l.location}}</a></td>
+
+			<td><a href="#" class="editdegree editable editable-click" data-type="select" data-source="/fillcombo/country/" data-title="Enter Country" data-pk="{{l.pk}}" data-url="/updateedu/" data-name="country" data-params="{curtable:'edutable'}">{{ l.country }}</a></td>
+			<!--
+<a href="#" id="vacation" data-type="date" data-viewformat="dd.mm.yyyy" data-pk="1" data-placement="right" data-title="When you want vacation to start?" class="editable editable-click" data-original-title="" title="">25.02.2013</a>-->
+
+			<td><a href="#" data-type="date" data-pk="{{l.pk}}" data-viewformat="mm-yyyy" data-format="mm-yyyy" data-title="Year of Passing" class="monthview editable editable-click" data-url="/updateedu/" data-name="year" data-params="{curtable:'edutable'}">{{l.year}}</a></td>
+
+			<td><a class="btn btn-mini btn-danger deleteedu" data-eduid="{{ l.pk }}" href="#">delete</a></td></tr>
+			{% endfor %}
+		</table>
+		{% else %}
+		<div style="background-color:#ffa; padding:20px">
+			<strong>Please Add Your Educational Details.</strong>
+		</div>
+		{% endif %}
+	</div>
+	<div class="toggleview"> 
+		<a class="btn btn-success toggle-button" href="javascript:void(0);" rel="edus">add education</a>			    
+	</div>
+	<div class="editable toggleform" style="display:none;">
+		<form action="" class="form-horizontal" id="eduForm">	{% csrf_token %}
+		<!-- curform value can be used to check which form is ajaxpost in a python view -->
+			<input type="hidden" name="curform" value="eduform">
+			<div class="control-group">
+				<label class="control-label">Degree</label>
+				<div class="controls">
+				{% create_select 'degree' %}					
+					<span>Specialization</span>
+					<input maxlength="100" name="special" type="text" required/>
+				</div>
+				
+			</div>
+			<div class="control-group">
+				<label class="control-label">University/Board</label>
+				<div class="controls">
+					<input maxlength="100" name="institution" type="text" required/>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">City/State </label>
+				<div class="controls">
+					<input maxlength="50" name="location" type="text" required/>
+					<span>Country</span>
+					{% create_select %}
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Year of Passing </label>
+				<div class="controls">
+					<input type="text" id='dateYear' name="year" required>					
+				</div>
+			</div>			
+			<br>
+		    <input class="btn btn-success" type="submit" value="save" />&emsp;<input type="reset" class="btn btn-warning toggle-button" href="javascript:void(0);" value="Cancel">
+	  </form>
+ 	</div><!-- .editable toggle form-->
+</div></div></div></div>
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/datepicker/bootstrap-datepicker.js"></script>
+<script src="{{STATIC_URL}}js/bootbox.min.js" ></script> 
+<script>
+/*function CreateRow(jdata) { 
+	if($("#EduTable").length == 0) {
+		$("#edusview").html('<table class="table table-striped" id="EduTable"><tr class="info"><th>Degree</th><th>Specialization</th><th>University/Board</th><th>City/State</th><th>Country</th><th>Year of Passing</th><th></th></tr></table>');
+	}	
+	$('#EduTable tr:last').after(jdata);	 
+    //$('#edusview').fadeIn(1500);        
+	$('#edus .toggleview').toggle();
+	$('#edus .toggleform').toggle();	
+	$('.editdegree').editable();
+	$('.monthview').editable({
+    	datepicker: {
+    		minViewMode:1
+        }
+    });
+} 
+*/
+$(document).ready(function(){
+   // $('.bs-sidenav li').removeClass('active');
+   $(".bs-sidenav li:nth-child(6)" ).addClass("active");
+	$('.toggle-button').click(function() {
+        $('.toggleview').toggle();
+        $('.toggleform').toggle();
+        if ($(this).hasClass('btn-success')) {
+
+            $('.toggleform').find("input[type=text], select, file").val("");
+        }
+    });
+    var currentYear = (new Date).getFullYear();
+    var ed='12-'+ (currentYear+5);
+    $('#dateYear').datepicker({
+        startView: "decade",
+	    format: "mm-yyyy",
+        endDate: ed,
+	    minViewMode: 1,
+	    autoclose:true,
+	});
+
+	$('body').on("submit", "#eduForm", function(event){
+        event.preventDefault();
+        $.ajax({
+            url:'/editedu/',
+            type:"POST",
+            data:$(this).serialize(),
+            success:function(data){             
+                window.location='/js/Educational_Details/';
+            }
+        })
+    });
+    /*$('body').on("click",".deleteedu", function(e){   	
+   		e.preventDefault();
+   		//alert('dele'); 
+   		var answer = confirm ("Are you sure you want to delete from the database?");
+   		if (answer)  		
+   			$.ajax({
+		 		type: "GET",
+				url: "/ajax/del/",
+				data: { eduid: $(this).data('eduid')}
+			}).done(function(msg) {
+				var tdname='#edu'+msg;
+				$('#edu'+msg).remove();
+				//i want to set the table hidden if there is no edus
+				if ($('#EduTable tr').length == 1){
+				$("#edusview").html('<div style="background-color:#ffa; padding:20px"><strong>Please Add Your Educational Details.</strong></div>');
+				     window.location='/js/Educational_Details/';
+
+			}
+ 		});
+	});*/
+	$('body').on('click','.deleteedu',function(e){
+        var ids= $(this).data('eduid'); 
+        bootbox.dialog({
+            message: "Are you sure want to delete this educational details ?",
+            title: "Delete Educational Details",
+            buttons: {
+                success: {
+                    label: "Yes",
+                    className: "btn-success",
+                    callback: function() {                        
+                        $.ajax({
+                            url:'/deleteEducation/',
+                            type:'GET',
+                            data:{eduid:ids},
+                            success : function(data){
+                                window.location='/js/Educational_Details/';
+                            }
+                        })
+                    }
+                },
+                danger: {
+                    label: "No",
+                    className: "btn-danger",
+                    callback: function() {
+                    }
+                },
+            }
+        });
+        e.preventDefault()
+            
+    });
+	 //toggle `popup` / `inline` mode
+    $.fn.editable.defaults.mode = 'popup';
+   $.fn.editable.defaults.ajaxOptions = {type: "GET"};
+    $('.editdegree').editable();
+    $('.monthview').editable({
+    	datepicker: {
+    		minViewMode:1
+        }
+    });
+   
+
+    /*
+    $('#address').editable({
+        url: '/post',
+        title: 'Enter city, street and building #',
+        value: {
+            city: "Moscow", 
+            street: "Lenina", 
+            building: "15"
+        }
+    });*/
+
+	/*$('body').on("click", '.toggle-button', function () {
+		alert("dfgfdg");
+    	var section=$(this).attr('rel');
+        $('#'+section+' .toggleview').toggle();
+        $('#'+section+' .toggleform').toggle();
+        if ($(this).hasClass('btn-success')){	        	
+        	$('#'+section+' .toggleform').find("input[type=text], select").val("");
+        }	        
+    });*/
+	
+	/*$("body").on("submit",'#eduForm', function(event){	
+		//alert('clcik butto');
+		$.post('/ajax/views/', $(this).serialize(),	function(data){
+			//alert(data);
+			CreateRow(data);
+			 window.location='/js/Educational_Details/';
+		});	
+		event.preventDefault();		
+	});*/
+
+}); 
+</script>  
+{% endblock %} 
