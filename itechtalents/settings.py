@@ -316,7 +316,7 @@ LOGGING = {
         # Log to a text file that can be rotated by logrotate
         'logfile': {
             'class': 'logging.handlers.WatchedFileHandler',
-            'filename': CURRENT_DIR+'/myapp.log'
+            'filename': CURRENT_DIR + '/log/itechtalents.log'
         },
     },
     'loggers': {
@@ -333,7 +333,7 @@ LOGGING = {
             'propagate': False,
         },
         # Your own app - this assumes all your logger names start with "myapp."
-        'myapp': {
+        'itechtalents': {
            'handlers': ['logfile'],
            'level': 'WARNING',  # Or maybe INFO or DEBUG
            'propagate': False
