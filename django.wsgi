@@ -18,5 +18,5 @@ sys.path.append(current_directory)
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'itechtalents.settings'
 
-import django.core.handlers.wsgi
-application = django.core.handlers.wsgi.WSGIHandler()
+from django.core.wsgi import get_wsgi_application
+application = get_wsgi_application()
