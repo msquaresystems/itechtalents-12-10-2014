@@ -14,12 +14,18 @@ import re
 from django.utils.html import strip_tags
 from video_resume.models import VideoResume
 
+
 def is_jobseeker(user):
-  try:
-    user.usertype
-    if user.usertype=='jobseeker':return True
-    else:return False
-  except:return False
+    try:
+        from registration import EmployerReg_Form
+        EmployerReg_Form.objects.get(user=user)
+        # user.usertype
+        # if user.usertype=='jobseeker':return True
+        # else:return False
+        return False
+    except:
+        return True
+
 def deleteuserdetails(request):
   if 'resid' in request.GET:
     v=JSResume.objects.get(id=request.GET['resid'])
@@ -44,9 +50,9 @@ def deleteuserdetails(request):
   elif 'languageid' in request.GET:
     JSLanguage.objects.get(id=request.GET['languageid']).delete()
     return HttpResponse()
-@user_passes_test(is_jobseeker,login_url='/accounts/login/')
 
 
+@user_passes_test(is_jobseeker, login_url='/accounts/login/')
 def home(request,link):
   menus=['Resume', 'VideoResume', 'Personal Details','Educational Details',
   'Technical Skill Set','Profile Summary','Employment Details',
@@ -74,13 +80,13 @@ def home(request,link):
       profilesummary=JSProfileSummary.objects.filter(user_id=request.user.id)
       tresume=JSTextResume.objects.filter(user_id=request.user.id)
       if tresume:
-        if tresume[0].activetext_resume:progress=progress+15      
+        if tresume[0].activetext_resume:progress=progress+15
       resume=""
       if JSResumeActive.objects.filter(user_id=request.user.id):
         res=JSResumeActive.objects.get(user_id=request.user.id)
         resactid=res.resumeActive.id
         resume=JSResume.objects.filter(id=resactid)
-        progress=progress+15      
+        progress=progress+15
       if education:
         for a in education:
           if a.degree:progress=progress+5
@@ -127,14 +133,14 @@ def home(request,link):
     txtres=JSTextResume.objects.filter(user=request.user)
     d=dict(resumes=res,textresume=txtres,navs=menus)
     return render(request,'jsprofile/ajaxhtmls/1_resumes.html',d)
-  
+
   elif link == 'VideoResume':
     resumes = VideoResume.objects.filter(user=request.user)
     data = {
       "navs": menus,
       "resumes": resumes
     }
-    return render(request,'jsprofile/ajaxhtmls/1a_video_resumes.html', data)    
+    return render(request,'jsprofile/ajaxhtmls/1a_video_resumes.html', data)
 
   elif link == 'Personal_Details':
     pers=JSPersonal.objects.filter(user=request.user)
@@ -142,7 +148,7 @@ def home(request,link):
     d=dict(personal=pers,navs=menus)
     print d
     return render(request,'jsprofile/ajaxhtmls/2_personalinfo.html',d)
-  
+
   elif link == 'Educational_Details':
     edus=JSQualification.objects.filter(user=request.user)
     d=dict(edus=edus,navs=menus)
@@ -158,30 +164,30 @@ def home(request,link):
     print d
     print "in profile summary"
     return render(request,'jsprofile/ajaxhtmls/5_summary.html',d)
-  
-  
+
+
   elif link == 'Employment_Details':
     emp=JSEmployerDetails.objects.filter(user=request.user)
     is_currentjob=0
     for e in emp:
       if e.empstatus=='Current Employer':is_currentjob=1
     d=dict(emp=emp,navs=menus,curjob=is_currentjob)
-    return render(request,'jsprofile/ajaxhtmls/6_empdetails.html',d)  
+    return render(request,'jsprofile/ajaxhtmls/6_empdetails.html',d)
   elif link == 'Project_Details':
     project=JSProjectDetails.objects.filter(user=request.user)
     d=dict(project=project,navs=menus)
-    return render(request,'jsprofile/ajaxhtmls/7_projectdetails.html',d) 
+    return render(request,'jsprofile/ajaxhtmls/7_projectdetails.html',d)
   elif link == 'Secret_Clearance_Section':
     secretclr=JSsecurity.objects.filter(user=request.user)
     d=dict(secretclr=secretclr,navs=menus)
-    return render(request,'jsprofile/ajaxhtmls/8_secretclearence.html',d) 
+    return render(request,'jsprofile/ajaxhtmls/8_secretclearence.html',d)
   elif link == 'Other_Details':
     lang=JSLanguage.objects.filter(user=request.user)
     otherdetails=JSDetailOther.objects.filter(user=request.user)
     d=dict(lang=lang,otherdetails=otherdetails,navs=menus)
     return render(request,'jsprofile/ajaxhtmls/9.otherdetails.html',d)
-def Update_education_after_add(md): 
-  str_html='''    
+def Update_education_after_add(md):
+  str_html='''
     <tr id="edu{{l.pk}}"><td><a href="#" class="editdegree" data-type="select" data-source="/fillcombo/degree/" data-title="Enter degree" data-pk="{{l.pk}}" data-url="/updateedu/" data-name="degree" data-params="{curtable:'edutable'}">{{ l.degree }}</a></td>
       <td><a href="#" data-type="text" data-pk="{{l.pk}}" data-title="Specialization" class="editdegree editable editable-click" data-url="/updateedu/" data-name="special" data-params="{curtable:'edutable'}">{{l.special}}</a></td>
       <td><a href="#" data-type="text" data-pk="{{l.pk}}" data-title="University/Board" class="editdegree editable editable-click" data-url="/updateedu/" data-name="institution" data-params="{curtable:'edutable'}">{{l.institution}}</a></td>
@@ -191,7 +197,7 @@ def Update_education_after_add(md):
       <td><a class="btn btn-mini btn-danger deleteedu" data-eduid="{{ l.pk }}" href="#">delete</a></td>
     </tr>
   '''
-  t = Template(str_html)  
+  t = Template(str_html)
   return HttpResponse(t.render(Context({'l': md})))
 def Update_skills_after_add(md):
   str_html='''
@@ -207,7 +213,7 @@ def Update_skills_after_add(md):
   t = Template(str_html)
   return HttpResponse(t.render(Context({'l':md})))
 def Update_emp_after_add(md):
-  str_html='''    
+  str_html='''
     <table  class="table table-striped info" id="emp{{l.pk}}" >
     <tr><th  colspan="4"><a href="#" class="editemp" data-type="text" data-title="Enter Company name" data-pk="{{l.pk}}" data-url="/updateemp/" data-name="employer_name" data-params="{curtable:'emptable'}">{{ l.employer_name }}</a> -  <a href="#" class="editemp" data-type="text" data-title="Enter Company status" data-pk="{{l.pk}}" data-url="/updateemp/" data-name="empstatus" data-params="{curtable:'emptable'}">{{ l.empstatus }}</a></th></tr>
       <tr><th style="width:25%">Duration</th><td style="width:25%"><a href="#" data-type="date" data-pk="{{l.pk}}" data-viewformat="mm-yyyy" data-format="mm-yyyy" data-title="Start date" class="editemp" data-url="/updateemp/" data-name="empstartdate" data-params="{curtable:'emptable'}">{{l.empstartdate}}</a> to {% ifequal l.empstatus 'currentemployer' %}Today{% else %}<a href="#" data-type="date" data-pk="{{l.pk}}" data-viewformat="mm-yyyy" data-format="mm-yyyy" data-title="Start date" class="editemp" data-url="/updateemp/" data-name="emptodate" data-params="{curtable:'emptable'}">{{l.emptodate}}</a>{% endifequal %}</td>
@@ -287,7 +293,7 @@ def Update_otherdetails_after_add(md):
   t = Template(str_html)
   return HttpResponse(t.render(Context({'otherdetails':md})))
 def Update_language_after_add(md):
-  str_html=''' 
+  str_html='''
     <tr id="language{{l.pk}}">
         <td>
     <a href="#" class="editlanguage" data-type="text" data-title="Language" data-pk="{{l.pk}}" data-url="/updatelanguage/" data-name="language" data-params="{curtable:'languagetable'}">{{ l.language }}</a>
@@ -302,7 +308,7 @@ def Update_language_after_add(md):
         <td>
     <a href="#" class="editlanguage" data-type="select" data-source="/fillcombo/read/" data-title="Speak" data-pk="{{l.pk}}" data-url="/updatelanguage/" data-name="speak" data-params="{curtable:'languagetable'}">{{l.speak}}</a></td>
 
-        <td><a class="btn btn-mini btn-danger deletelanguage" data-languageid="{{ l.pk }}" href="#">delete</a> 
+        <td><a class="btn btn-mini btn-danger deletelanguage" data-languageid="{{ l.pk }}" href="#">delete</a>
   '''
   t = Template(str_html)
   return HttpResponse(t.render(Context({'l':md})))
@@ -339,12 +345,12 @@ class UserProfileAjax(View):
       return render(request,tfolder+'2_personalinfo.html',d)
     elif request.GET['menu']=='3':
       edus = JSQualification.objects.filter(user_id=userpk)
-      cert = JSCertificate.objects.filter(user_id=userpk)      
+      cert = JSCertificate.objects.filter(user_id=userpk)
       d={'edus':edus,'certificate':cert}
       return render(request,tfolder+'3_education.html',d)
     elif request.GET['menu']=='4':
       d=dict(skills= JSSkills.objects.filter(user_id=userpk))
-      return render(request,tfolder+'4_skills.html',d) 
+      return render(request,tfolder+'4_skills.html',d)
     elif request.GET['menu']=='5':
       try:d=dict(summary=JSProfileSummary.objects.get(user_id=userpk))
       except:d=dict(summary='')
@@ -355,13 +361,13 @@ class UserProfileAjax(View):
     elif request.GET['menu']=='7':
       d=dict(project=JSProjectDetails.objects.filter(user_id=userpk))
       return render(request,tfolder+'7_projectdetails.html',d)
-    elif request.GET['menu']=='8':  
+    elif request.GET['menu']=='8':
       try:d=dict(secretclr=JSsecurity.objects.get(user_id=userpk))
       except:d=dict(secretclr='')
       return render(request,tfolder+'8_secretclearence.html',d)
     elif request.GET['menu']=='9':
       otherdetails = JSDetailOther.objects.filter(user_id=userpk)
-      language = JSLanguage.objects.filter(user_id=userpk)     
+      language = JSLanguage.objects.filter(user_id=userpk)
       d={'otherdetails':otherdetails,'lang':language}
       return render(request,tfolder+'9.otherdetails.html',d)
   def post_save_curform(self,req,md):
@@ -398,8 +404,8 @@ class UserProfileAjax(View):
       setattr(md,i,req.POST[i])
       d[i]=req.POST[i]
     md.save()
-    if req.POST['curform']=='eduform':      
-      return Update_education_after_add(md)      
+    if req.POST['curform']=='eduform':
+      return Update_education_after_add(md)
     elif req.POST['curform']=='skillform':
       return Update_skills_after_add(md)
     elif req.POST['curform']=='empform':
@@ -411,7 +417,7 @@ class UserProfileAjax(View):
     elif req.POST['curform']=='otherdetailsform':
       return Update_otherdetails_after_add(md)
     elif req.POST['curform']=='languageform':
-      return Update_language_after_add(md)    
+      return Update_language_after_add(md)
     d['pk']=md.pk
     return HttpResponse(json.dumps(d), mimetype="application/json")
   def post(self,request):
@@ -423,7 +429,7 @@ class UserProfileAjax(View):
     print v.resumeFile
     if not JSDetails.objects.filter(user=request.user):JSDetails(user_id=request.user.id,post_date=datetime.now(),update_date=datetime.now()).save()
     if curform=='skillform':
-      tb=JSSkills(user=usr,JS=usr.jsdetails)    
+      tb=JSSkills(user=usr,JS=usr.jsdetails)
     elif curform=='eduform':
       tb=JSQualification(user=usr,JS=usr.jsdetails)
     elif curform=='profform':
@@ -432,12 +438,12 @@ class UserProfileAjax(View):
       tb,created=JSProfileSummary.objects.get_or_create(user=usr,JS=usr.jsdetails)
     elif curform=='empform':
       tb=JSEmployerDetails(user=usr,JS=usr.jsdetails)
-      
+
     elif curform=='projectform':
       print "place"
       tb=JSProjectDetails(user=usr,JS=usr.jsdetails)
-    
-    
+
+
     elif curform=='secretform':
       tb,created=JSsecurity.objects.get_or_create(user=usr,JS=usr.jsdetails)
     elif curform=='otherdetailsform':
@@ -449,7 +455,7 @@ class UserProfileAjax(View):
     return self.post_save_curform(request,tb)
 def delete(request):
   if 'skillid' in request.GET:
-    JSSkills.objects.get(pk=request.GET['skillid']).delete()    
+    JSSkills.objects.get(pk=request.GET['skillid']).delete()
   elif 'eduid' in request.GET:
     JSQualification.objects.get(pk=request.GET['eduid']).delete()
   elif 'empid' in request.GET:
@@ -464,10 +470,10 @@ def delete(request):
     if JSResumeActive.objects.filter(resumeActive_id=request.GET['resumeid']):
       striped_file=str(file_todelete).replace('documents','').replace('/','').replace('.odt','').replace('.ODT','').replace('.docx','').replace('.DOCX','').replace('.doc','').replace('.DOC','').replace('.pdf','').replace('.PDF','').replace('.rtf','').replace('.RTF','').replace('.txt','').replace('.TXT','')
       os.remove(settings.CURRENT_DIR+"/tagging/templates/documents/"+str(striped_file)+".html")
-    JSResume.objects.get(pk=request.GET['resumeid']).delete()   
+    JSResume.objects.get(pk=request.GET['resumeid']).delete()
   return HttpResponse(request.GET.items()[0][1])
 
-def update(request):  
+def update(request):
   curtable=request.GET['curtable']
   curpk=request.GET['pk']
   itemname=request.GET['name']
@@ -516,7 +522,7 @@ def filesave(request):
         os.remove(settings.CURRENT_DIR+"/tagging/templates/documents/"+str(striped_file)+".html")
         os.remove(settings.CURRENT_DIR+"/media/"+str(res.resumeFile))
         res.resumeFile=request.FILES.get('jsResumeFile')
-      if 'jsResumeTitle' in request.POST:res.resumeTitle=request.POST.get('jsResumeTitle')       
+      if 'jsResumeTitle' in request.POST:res.resumeTitle=request.POST.get('jsResumeTitle')
       res.save()
       if 'jsResumeFile' in request.FILES:call(["unoconv","-f","html","-o",settings.CURRENT_DIR+"/tagging/templates/documents/",settings.CURRENT_DIR+"/media/"+str(res.resumeFile)])
     else:
@@ -582,9 +588,9 @@ def edit_profilepic_info(request):
     profilepic.save()
     edit1 = JSDetails.objects.get(user=request.user)
     edit1.update_date=datetime.now()
-    edit1.save()    
+    edit1.save()
     messages.success(request, 'Your profile has been updated successfully')
-    return HttpResponseRedirect('/js/Dashboard/')    
+    return HttpResponseRedirect('/js/Dashboard/')
   else:
     menus=['Resume','Personal Details','Educational Details','Technical Skill Set','Profile Summary','Employment Details','Project Details','Secret Clearance Section','Other Details']
     details = User.objects.filter(id=request.user.id)
@@ -620,13 +626,13 @@ def editresume(request):
     return HttpResponse()
 
 def editpersonal(request):
-  
+
   if request.POST['curform']=='profform':
     print "checked"
     u=User.objects.get(id=request.user.id)
     u.first_name=request.POST['first_name']
     u.save()
-    
+
     if not JSDetails.objects.filter(user=request.user):JSDetails(user=request.user).save()
     tb,created=JSPersonal.objects.get_or_create(user=request.user,JS=request.user.jsdetails)
     tb.sec_email=request.POST['sec_email']
@@ -659,8 +665,8 @@ def editpersonal(request):
       else:
         v = p.split("/")[-1]
       if v:tb.profileurl='http://www.linkedin.com/'+v
-      else:tb.profileurl=''     
-      
+      else:tb.profileurl=''
+
       #v=re.sub(r'linkedin.com/','',request.POST['profileurl'])
       # v=request.POST['profileurl'].replace('http://www.linkedin.com/','')
       # v=request.POST['profileurl'].replace('www.linkedin.com/','')
@@ -671,7 +677,7 @@ def editpersonal(request):
       # v=request.POST['profileurl'].replace('http://linkedin.com','')
       # v=request.POST['profileurl'].replace('linkedin.com','')
       # if v:tb.profileurl='http://www.linked.com/'+v
-      # else:tb.profileurl=''      
+      # else:tb.profileurl=''
     tb.save()
     return HttpResponse()
 def check_SecEmail(request):
@@ -689,7 +695,7 @@ def check_SecEmail(request):
       msg='This email ID already exists'
     n=dict(tag=tag,msg=msg)
     return HttpResponse(json.dumps(n), mimetype="application/json")
-  
+
 def editsummary(request):
   if request.POST['curform']=='summaryform':
     if not JSDetails.objects.filter(user=request.user):JSDetails(user=request.user).save()
@@ -728,19 +734,19 @@ def editemp(request):
 def editproject(request):
   print request.POST, "dfdfg"
   if request.POST['curform']=='projectform':
-    
+
     if not JSDetails.objects.filter(user=request.user):
       js = JSDetails(user=request.user).save()
     else :
       js = JSDetails.objects.filter(user=request.user)[0]
-    
+
     sod = request.POST['projstartdate']
     tod = request.POST['projtodate']
     #JSProjectDetails(user=request.user,JSid=request.user.jsde = tails.id,client=request.POST['client'],project_title=request.POST['project_title'],projstartdate=a[0],projtodate=a[1],project_loc=request.POST['project_loc'],on_offsite=request.POST['on_offsite'],emp_type=request.POST['emp_type'],project_details=request.POST['project_details'],role_desc=request.POST['role_desc'],skill_used=request.POST['skill_used'],role=request.POST['role'],teamsize=request.POST['teamsize']).save()
     try : tval = JSProjectDetails(user=request.user,JS=js,client=request.POST['client'],project_title=request.POST['project_title'],projstartdate=sod,projtodate=tod,project_loc=request.POST['project_loc'],on_offsite=request.POST['on_offsite'],emp_type=request.POST['emp_type'],project_details=request.POST['project_details'],role_desc=request.POST['role_desc'],skill_used=request.POST['skill_used'],role=request.POST['role'],teamsize=request.POST['teamsize']).save()
     except Exception as e :
       print str(e)
-    print tval, "prabha" 
+    print tval, "prabha"
   return HttpResponse()
 def editlanguage(request):
   if request.POST['curform']=='languageform':

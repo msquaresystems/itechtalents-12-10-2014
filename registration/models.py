@@ -11,7 +11,9 @@ Also, be sure to see the note on RegistrationProfile about use of the
 
 """
 
-import random, re, sha
+import random
+import re
+import sha
 from datetime import datetime, timedelta
 from django.db import models
 from django.template import Context, loader
@@ -26,26 +28,26 @@ from django.db.models import Q
 from django.core.validators import URLValidator
 from email.mime.image import MIMEImage
 from django.http import HttpResponse
+# from registration.models import EmployerReg_Form
 
-#from registration.models import EmployerReg_Form
 
 class RegistrationManager(models.Manager):
     """
     Custom manager for the RegistrationProfile model.
-    
+
     The methods defined here provide shortcuts for account creation
     and activation (including generation and emailing of activation
     keys), and for cleaning out expired inactive accounts.
-    
+
     """
     def activate_user(self, activation_key):
         """
         Given the activation key, makes a User's account active if the
         activation key is valid and has not expired.
-        
+
         Returns the User if successful, or False if the account was
         not found or the key had expired.
-        
+
         """
         # Make sure the key we're trying conforms to the pattern of a
         # SHA1 hash; if it doesn't, no point even trying to look it up
@@ -58,15 +60,15 @@ class RegistrationManager(models.Manager):
             if not user_profile.activation_key_expired():
                 # Account exists and has a non-expired key. Activate it.
                 user = user_profile.user
-                if user.usertype=='employer':
-                    if not emp_subscribed_packs.objects.filter(employer_id=user.id):
-                        pack_activate=datetime.now()
-                        pack_expired=pack_activate + timedelta(days=30)
-                        subscribed=emp_subscribed_packs(employer_id=user.id,pack_id=1,pack_activate=pack_activate,pack_expire=pack_expired)
-                        subscribed.save()
-                        packs=emppacks.objects.get(id=1)
-                        emppack_activation(subscribed_pack_id=subscribed.id,pack_id=1,totaljobpost=packs.no_jobpost,totalresume=packs.no_resume).save()
-                    
+                # if user.usertype=='employer':
+                #     if not emp_subscribed_packs.objects.filter(employer_id=user.id):
+                #         pack_activate=datetime.now()
+                #         pack_expired=pack_activate + timedelta(days=30)
+                #         subscribed=emp_subscribed_packs(employer_id=user.id,pack_id=1,pack_activate=pack_activate,pack_expire=pack_expired)
+                #         subscribed.save()
+                #         packs=emppacks.objects.get(id=1)
+                #         emppack_activation(subscribed_pack_id=subscribed.id,pack_id=1,totaljobpost=packs.no_jobpost,totalresume=packs.no_resume).save()
+
                 user.is_active = True
                 user.save()
                 return user
@@ -77,32 +79,38 @@ class RegistrationManager(models.Manager):
         """
         Creates a new User and a new RegistrationProfile for that
         User, generates an activation key, and mails it.
-        
+
         Pass ``send_email=False`` to disable sending the email.
-        
+
         """
         # Create the user.
         new_user = User.objects.create_user(username, email, password)
-        
+
         new_user.is_active = False
         new_user.save()
-        
+
         # Generate a salted SHA1 hash to use as a key.
         salt = sha.new(str(random.random())).hexdigest()[:5]
         activation_key = sha.new(salt+new_user.email).hexdigest()
-        
+
         # And finally create the profile.
         new_profile = self.create(user=new_user, activation_key=activation_key)
-        
+
         if send_email:
             current_domain = Site.objects.get_current().domain
-            contxt=Context({ 'site_url': 'http://%s/' % current_domain,'activation_key': activation_key,'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS })
-            message_template = loader.get_template('registration/activation_email.html')
-            message=message_template.render(contxt)
-            msg=EmailMultiAlternatives('Activate your account at Itechtalents',message,settings.DEFAULT_FROM_EMAIL,[new_user.email])
-            msg.attach_alternative(message, "text/html")
-            msg.send()
-	return new_user    
+            ct = Context({'site_url': 'http://%s/' % current_domain,
+                          'activation_key': activation_key,
+                          'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS})
+            msg_tpl = loader.get_template('registration/activation_email.html')
+            message = msg_tpl.render(ct)
+            m = EmailMultiAlternatives('Activate your account at Itechtalents',
+                                       message,
+                                       settings.DEFAULT_FROM_EMAIL,
+                                       [new_user.email])
+            m.attach_alternative(message, "text/html")
+            m.send()
+        return new_user
+
     def delete_expired_users(self):
         """
         Removes unused profiles and their associated accounts.
@@ -114,13 +122,13 @@ class RegistrationManager(models.Manager):
         importantly) it won't be possible for anyone to ever come back
         and claim the username. For best results, set this up to run
         regularly as a cron job.
-        
+
         If you have a User whose account you want to keep in the
         database even though it's inactive (say, to prevent a
         troublemaker from accessing or re-creating his account), just
         delete that User's RegistrationProfile and this method will
         leave it alone.
-        
+
         """
         for profile in self.all():
             if profile.activation_key_expired():
@@ -133,7 +141,7 @@ class RegistrationProfile(models.Model):
     """
     Simple profile model for a User, storing a registration date and
     an activation key for the account.
-    
+
     While it is possible to use this model as the value of the
     ``AUTH_PROFILE_MODULE`` setting, it's not recommended that you do
     so. This model is intended solely to store some data needed for
@@ -141,30 +149,30 @@ class RegistrationProfile(models.Model):
     ``AUTH_PROFILE_MODULE``, so if you want to use user profiles in a
     project, it's far better to develop a customized model for that
     purpose and just let this one handle registration.
-    
+
     """
     user = models.ForeignKey(User, unique=True)
     activation_key = models.CharField(max_length=40)
     key_generated = models.DateTimeField()
-    
+
     objects = RegistrationManager()
-    
+
     class Admin:
         pass
-    
+
     def save(self, *args, **kwargs):
         if not self.id:
             self.key_generated = datetime.now()
         super(RegistrationProfile, self).save(*args, **kwargs)
-    
+
     def __str__(self):
         return "User profile for %s" % self.user.username
-    
+
     def activation_key_expired(self):
         """
         Determines whether this Profile's activation key has expired,
         based on the value of the setting ``ACCOUNT_ACTIVATION_DAYS``.
-        
+
         """
         expiration_date = timedelta(days=settings.ACCOUNT_ACTIVATION_DAYS)
         return self.key_generated + expiration_date <= datetime.now()
@@ -189,10 +197,8 @@ class JSDetails(models.Model):
     post_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
 
-
-
 # in model
-#field = models.TextField(validators=[URLValidator()])
+# field = models.TextField(validators=[URLValidator()])
 
 class JSPersonal(models.Model):
     user = models.OneToOneField(User)
@@ -220,7 +226,7 @@ class JSPersonal(models.Model):
     industry = models.CharField(max_length=100, blank=True, null=True)
     functional_area = models.CharField(max_length=100, blank=True, null=True)
     profileurl=models.URLField(max_length=250,blank=True,null=True)
-    
+
 
 class JSQualification(models.Model):
     user = models.ForeignKey(User)
@@ -287,7 +293,7 @@ class JSLanguage(models.Model):
     read = models.CharField(max_length=100,default="No")
     write = models.CharField(max_length=100,default="No")
     speak = models.CharField(max_length=100,default="No")
-    
+
 class empsocialnetworks(models.Model):
     emp=models.OneToOneField(User)
     facebook=models.CharField(max_length=250,blank=True, null=True)
@@ -310,11 +316,11 @@ class JSResume(models.Model):
     resumeTitle = models.CharField(max_length=275, blank=True, null=True)
     resumeFile = models.FileField(upload_to='documents', blank=True, null=True)
     resumeDate=models.DateTimeField(auto_now = True)
-    
+
     def delete(self, *args, **kwargs):
         self.resumeFile.delete(False)
         super(JSResume, self).delete(*args, **kwargs)
-   
+
 class JSTextResume(models.Model):
     user = models.OneToOneField(User)
     JS = models.OneToOneField(JSDetails)
@@ -322,7 +328,7 @@ class JSTextResume(models.Model):
     resumeFile = models.TextField(blank=True, null=True)
     resumeDate = models.DateTimeField(auto_now = True)
     activetext_resume = models.BooleanField(default=False)
-    
+
 class JSVideoResume(models.Model):
     user = models.OneToOneField(User)
     JS = models.OneToOneField(JSDetails)
@@ -334,11 +340,11 @@ class RecordedVideos(models.Model):
     filepath=models.CharField(max_length=100)
     filename=models.CharField(max_length=50)
     uploadon=models.DateTimeField(auto_now=True)
-    
-    
+
+
 class JSResumeActive(models.Model):
     user = models.OneToOneField(User, blank=True, null=True)
-    JS = models.OneToOneField(JSDetails, blank=True, null=True)        
+    JS = models.OneToOneField(JSDetails, blank=True, null=True)
     resumeActive = models.ForeignKey(JSResume,blank=True, null=True)
 
 class JSDetailOther(models.Model):
@@ -351,10 +357,12 @@ class JSDetailOther(models.Model):
     telecommunicate=models.CharField(max_length=200, default='No')
     travel=models.CharField(max_length=200, blank=True, null=True)
     relocatechoice=models.CharField(max_length=500, blank=True, null=True)
+
 class EmpProfileView(models.Model):
     JS=models.ForeignKey(JSDetails, unique=False)
     emp=models.ForeignKey(User, unique=False)
     viewdate=models.DateTimeField(auto_now = True)
+
 class EmployerReg_Form(models.Model):
     user = models.OneToOneField(User)
     companytype = models.CharField(max_length=100)
@@ -368,6 +376,7 @@ PREFERRED_COMPANYTYPE = (
     ('Company', 'Corporate'),
     ('Consultancy', 'Staffing'),
 )
+
 class Emp_Gallery(models.Model):
     emp = models.ForeignKey(User, unique=False)
     galpictitle = models.CharField(max_length=100)
@@ -393,7 +402,7 @@ class jobs(models.Model):
     address3 = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
-    country = models.CharField(max_length=100)    
+    country = models.CharField(max_length=100)
     zipcode = models.CharField(max_length=10)
     lat=models.CharField(max_length=40,blank=True,null=True)
     lng=models.CharField(max_length=40,blank=True,null=True)
@@ -426,11 +435,11 @@ class emppacks(models.Model):
     pack_name = models.CharField(max_length=100)
     pack_description = models.TextField()
     pack_duration = models.IntegerField(default=0)
-    pack_cost = models.DecimalField(max_digits=5, decimal_places=2)    
+    pack_cost = models.DecimalField(max_digits=5, decimal_places=2)
     no_resume = models.IntegerField(default=0)
     no_jobpost = models.IntegerField(default=0)
     def __unicode__(self):
-        return self.pack_name        
+        return self.pack_name
 class emp_subscribed_packs(models.Model):
     employer = models.ForeignKey(User,unique=False)
     pack = models.ForeignKey(emppacks,unique=False)
@@ -449,7 +458,7 @@ class emppack_activation(models.Model):
     is_active=models.BooleanField(default=True)
     def __unicode__(self):
         return self.subscribed_packs.employer.username
-        return self.subscribed_packs.pack.pack_name        
+        return self.subscribed_packs.pack.pack_name
 class profileviews(models.Model):
     employer=models.ForeignKey(User)
     jobseeker=models.IntegerField(max_length=10)
@@ -464,7 +473,7 @@ class RecruiterFolder(models.Model):
     employer=models.ForeignKey(User, unique=False)
     lastupdate= models.CharField(max_length=100)
     #lastupdate=models.DateTimeField(auto_now = True)
-       
+
 class SaveCandidateFolder(models.Model):
     folder=models.ForeignKey(RecruiterFolder,unique=False)
     employer=models.ForeignKey(User, unique=False)
@@ -509,13 +518,13 @@ class Reschedule(models.Model):
     interview=models.OneToOneField(Interview)
     emp=models.ForeignKey(User, unique=False)
     JSId=models.ForeignKey(JSDetails,unique=False)
-    Job=models.ForeignKey(jobs, unique=False)    
+    Job=models.ForeignKey(jobs, unique=False)
     jsschedule_date1=models.CharField(max_length=50, blank=True)
     jsschedule_time1=models.CharField(max_length=50, blank=True)
     jsupdate1=models.CharField(max_length=50)
     jsschedule_date2=models.CharField(max_length=50, blank=True)
     jsschedule_time2=models.CharField(max_length=50, blank=True)
-    jsupdate2=models.CharField(max_length=50)    
+    jsupdate2=models.CharField(max_length=50)
     jsschedule_date3=models.CharField(max_length=50, blank=True)
     jsschedule_time3=models.CharField(max_length=50, blank=True)
     jsupdate3=models.CharField(max_length=50)
@@ -524,7 +533,7 @@ class Reschedule(models.Model):
     empupdate1=models.CharField(max_length=50)
     empschedule_date2=models.CharField(max_length=50, blank=True)
     empschedule_time2=models.CharField(max_length=50, blank=True)
-    empupdate2=models.CharField(max_length=50)    
+    empupdate2=models.CharField(max_length=50)
     empschedule_date3=models.CharField(max_length=50, blank=True)
     empschedule_time3=models.CharField(max_length=50, blank=True)
     empupdate3=models.CharField(max_length=50)
@@ -564,9 +573,9 @@ class JSAppliedJobs(models.Model):
     Job=models.ForeignKey(jobs, unique=False)
     applieddate=models.DateTimeField(auto_now=True)
     jsappdel=models.BooleanField(default=True)
-    empappdel=models.BooleanField(default=True)        
+    empappdel=models.BooleanField(default=True)
 class JSsavesearch(models.Model):
-    user=models.ForeignKey(User, unique=False)    
+    user=models.ForeignKey(User, unique=False)
     searchname=models.CharField(max_length=100)
     searchlinks=models.CharField(max_length=500)
     ip_address=models.CharField(max_length=500)
@@ -594,6 +603,5 @@ class EmpSubscription(models.Model):
 from paypal.standard.ipn.signals import payment_was_successful
 def show_me_the_money(sender, **kwargs):
     ipn_obj = sender
-    EmpSubscription(employer_id=ipn_obj.custom,pack_id=ipn_obj.item_number).save()          
+    EmpSubscription(employer_id=ipn_obj.custom,pack_id=ipn_obj.item_number).save()
 payment_was_successful.connect(show_me_the_money)
-

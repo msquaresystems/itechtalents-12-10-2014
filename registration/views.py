@@ -4,7 +4,11 @@ Views which allow users to create and activate accounts.
 """
 import os
 import socket
-
+import random
+import re
+import sha
+import time
+import json
 from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, render
@@ -13,29 +17,28 @@ from models import RegistrationProfile
 from forms import *
 from django.contrib.auth.decorators import login_required
 from django.template.loader import get_template
-from django.http import HttpResponse,Http404
+from django.http import HttpResponse, Http404
 from django.contrib.auth import logout
 from registration.models import *
 from django.template.loader import get_template
 from django.contrib.auth.models import User
-import random, re, sha,time,json
 from django.contrib.sites.models import Site
 from django.template import Context, loader
-from django.core.mail import send_mail, EmailMessage,EmailMultiAlternatives
+from django.core.mail import send_mail, EmailMessage, EmailMultiAlternatives
 from django.core.context_processors import csrf
 from django.db.models import Q
-from datetime import datetime,timedelta
+from datetime import datetime, timedelta
 from django.db.models import Count
-from django.contrib.auth import authenticate,login
-#------- 1st JUNE -------------
+from django.contrib.auth import authenticate, login
+# ------- 1st JUNE -------------
 import os
 from subprocess import call
-from settings import MEDIA_URL
+# from settings import MEDIA_URL
 from django.contrib import messages
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import user_passes_test
-from urlparse import urlparse,parse_qs
+from urlparse import urlparse, parse_qs
 from pygeocoder import Geocoder
 from math import radians, cos, sin, asin, sqrt
 from email.mime.image import MIMEImage
@@ -99,7 +102,7 @@ def miles(request):
     td=d2.strftime('%m-%d-%Y')
     query=Q(marklive__lte=fd) & Q(todate__gte=fd)
     query1=Q(marklive__gte=td) & Q(marklive__lte=fd)
-    
+
     for i in JSsavesearch.objects.all():
         urls=i.searchlink
         fname=i.user.first_name
@@ -113,10 +116,10 @@ def miles(request):
             for res in jobs.objects.filter(query,query1,Q(employerkeyskills__keyskills__icontains=search) | Q(title__icontains=search) | Q(city__icontains=search) | Q(state__icontains=search) | Q(country__icontains=search) | Q(zipcode__icontains=search) & Q(is_active=True)):
                 if not res in list_result:
                     list_result.append(res)
-        #d=[]       
-        
-        contxt=Context({'d':list_result,'fname':fname,'searchname':searchname,'now':now,'lastupdate':lastupdate})            
-        message_template = loader.get_template('registration/job_alert_mail.html')    
+        #d=[]
+
+        contxt=Context({'d':list_result,'fname':fname,'searchname':searchname,'now':now,'lastupdate':lastupdate})
+        message_template = loader.get_template('registration/job_alert_mail.html')
         message=message_template.render(contxt)
         msg=EmailMultiAlternatives('iTechTalents.com Job Alerts',message,'itechtalentalerts@itechtalents.com',[tomail])
         msg.attach_alternative(message, "text/html")
@@ -148,7 +151,7 @@ def rss201(request,bits):
         description=feedtitle,
         language=u"en")
 
-    for object in object_list:        
+    for object in object_list:
         link = site_link + unicode(object.id)
         desc = u"Job Summary: %s, Key Skills:, City: %s, Salary: %s, Qualification: %s" % (object.jobsummary,  object.city, object.salary_range, object.qualification)
         feed.add_item( title=object.title, link=link,
@@ -192,9 +195,9 @@ def register(request):
             valz= request.GET['param2']
             if param1=='username':
                 already_exist=User.objects.filter(username=valz).exists()
-            
+
             elif param1=='email':already_exist=User.objects.filter(email=valz).exists()
-            
+
             return HttpResponse(json.dumps({'already':already_exist,'fname':param1}), mimetype="application/json")
     #else:
     #    form = RegistrationForm()
@@ -210,7 +213,7 @@ def empreg(request):
             new_user = RegistrationProfile.objects.create_inactive_user(username=form.cleaned_data['username'],password=form.cleaned_data['password1'],email=form.cleaned_data['email'])
             new_user.companyname = form.cleaned_data['companyname']
             new_user.usertype = form.cleaned_data['usertype']
-            new_user.save()           
+            new_user.save()
             e=EmployerReg_Form(user_id=new_user.id, companytype=form.cleaned_data['companytype'],contactno=form.cleaned_data['contactno'],contactperson=form.cleaned_data['contactperson'],companyurl=form.cleaned_data['companyurl'],companylogo="",companyprofile="")
             e.save()
             securityquestions(user_id=new_user.id,question=request.POST['question'],answer=request.POST['answer']).save()
@@ -234,7 +237,7 @@ def home(request):
     now=datetime.now()
     d=datetime(now.year, now.month, now.day)
     d1= d.strftime('%m-%d-%Y')
-    
+
     latest = jobs.objects.filter(marklive__lte=d1,todate__gte=d1).order_by('-marklive')
     trending = jobs.objects.filter(marklive__lte=d1,todate__gte=d1).order_by('-hitcount')
     details2 = User.objects.filter(jobs__isnull=False).annotate(job_count=Count('jobs')).order_by('-job_count')
@@ -288,7 +291,7 @@ def search_result(request):
         query1=Q(marklive__lte=datetime.now().date()) & Q(todate__gte=datetime.now().date())
         query3= Q(is_active=True,is_delete=False)
         cleaned_query=request.GET['keywords'].strip()[:-1] if request.GET['keywords'].strip()[-1] == ',' else request.GET['keywords'].strip()
-        searchresult = cleaned_query.split(',')        
+        searchresult = cleaned_query.split(',')
         #searchresult = request.GET['keywords'].split(',')
         list_result=[]
         query=Q(todate__lte=datetime.now().date())
@@ -339,7 +342,7 @@ def jobfulldescription(request,job_id):
         applied=JSAppliedJobs.objects.filter(JS_id=request.user.jsdetails.id,Job_id=job_id,emp_id=empid)
         description=jobs.objects.filter(id=job_id)
     except:
-        description=jobs.objects.filter(id=job_id)        
+        description=jobs.objects.filter(id=job_id)
     return render(request,'registration/jobs_description.html',{'applied':applied,'description':description,'soc_networks':soc_networks})
 @login_required(login_url='/accounts/EmpReg/')
 def jobfulldescriptionemp(request,job_id):
@@ -360,14 +363,14 @@ def EmployerProfile(request):
 
 @login_required(login_url='/accounts/EmpReg/')
 def JobsEmp(request, **kwargs):
-     
+
     if 'param1' in request.GET:
 	print param1, 'param1'
         param1=request.GET['param1']
 	print param2, 'param1'
         valz= request.GET['param2']
         if param1=='foldername':
-            already_exist=RecruiterFolder.objects.filter(foldername=valz,employer_id=request.user.id).exists()        
+            already_exist=RecruiterFolder.objects.filter(foldername=valz,employer_id=request.user.id).exists()
         return HttpResponse(json.dumps({'already':already_exist,'fname':param1}), mimetype="application/json")
 
 
@@ -377,7 +380,7 @@ def JobsEmp(request, **kwargs):
     msg=""
     msg = "You Have Posted %s Jobs and "% job.count()
     msg1 = "You Have %s Job Posts Remaining"% remaining
-    
+
     query1=Q(emp_id=request.user.id)
     query2=Q(marklive__gt=datetime.now())
     query3=Q(todate__gte=datetime.now())
@@ -385,7 +388,7 @@ def JobsEmp(request, **kwargs):
     query5=Q(marklive__lte=datetime.now())
     query6=Q(is_active=True)
     query7=Q(is_active=False)
-    
+
 
     if kwargs.has_key('Open'):
 	job=jobs.objects.filter(query1,query3,query5,query6)
@@ -397,9 +400,9 @@ def JobsEmp(request, **kwargs):
 	job=jobs.objects.filter	(is_active=True, marklive__lt=datetime.now())
 
 
-    #PendingJobList=jobs.objects.filter(query1,query2,query6)    
+    #PendingJobList=jobs.objects.filter(query1,query2,query6)
     #InactJobList=jobs.objects.filter(query1,query4,query7)
-    
+
     #query = Q(emp_id=request.user.id)
     return render(request,
 		  'registration/jobs_emp.html',
@@ -418,7 +421,7 @@ def OpenJobs(request):
         param1=request.GET['param1']
         valz= request.GET['param2']
         if param1=='foldername':
-            already_exist=RecruiterFolder.objects.filter(foldername=valz,employer_id=request.user.id).exists()        
+            already_exist=RecruiterFolder.objects.filter(foldername=valz,employer_id=request.user.id).exists()
         return HttpResponse(json.dumps({'already':already_exist,'fname':param1}), mimetype="application/json")
     msg=""
     job = jobs.objects.filter(emp_id=request.user.id)
@@ -454,18 +457,18 @@ def UpdateEmployerProfile(request):
         if request.POST['twitter']:
             twitter=request.POST['twitter'].replace('http://','').replace('https://','').replace('www.','').replace('twitter.com/','').replace('twitter.com','')
         if request.POST['linkedin']:
-            linkedin=request.POST['linkedin'].replace('http://','').replace('https://','').replace('www.','').replace('linkedin.com/','').replace('linkedin.com','')        
+            linkedin=request.POST['linkedin'].replace('http://','').replace('https://','').replace('www.','').replace('linkedin.com/','').replace('linkedin.com','')
         soc_networks,created=empsocialnetworks.objects.get_or_create(emp_id=user)
         soc_networks.facebook=facebook
         soc_networks.twitter=twitter
         soc_networks.linkedin=linkedin
-        soc_networks.save()        
+        soc_networks.save()
         try:
             edit = EmployerReg_Form.objects.get(user_id=user)
-            if companylogo:                
+            if companylogo:
                 cmplogo = edit.companylogo
                 if cmplogo:
-                    os.remove(settings.CURRENT_DIR+"/media/"+str(cmplogo))                
+                    os.remove(settings.CURRENT_DIR+"/media/"+str(cmplogo))
                 edit.companylogo=companylogo
             edit = EmployerReg_Form.objects.get(user_id=user)
             edit.companyurl=companyurl
@@ -473,7 +476,7 @@ def UpdateEmployerProfile(request):
             edit.contactperson=contactperson
             edit.contactno=contactno
             edit.companyprofile=companyprofile
-            edit.save()               
+            edit.save()
         except:
             p = EmployerReg_Form(user_id=user,companyurl=companyurl,companytype=companytype,contactperson=contactperson,contactno=contactno,companylogo=companylogo,companyprofile=companyprofile)
             p.save()
@@ -489,11 +492,11 @@ def AddEmpGallery(request):
     if request.method == "POST":
         empid = request.POST.get('user_id')
         galpic = request.FILES.get('galpic')
-        galpictitle = request.POST.get('galpictitle') 
+        galpictitle = request.POST.get('galpictitle')
         p = Emp_Gallery(emp_id=empid,galpic=galpic,galpictitle=galpictitle)
         p.save()
         messages.success(request, 'Gallery updated successfully')
-        return HttpResponseRedirect('/accounts/RecruiterDashboard/')    
+        return HttpResponseRedirect('/accounts/RecruiterDashboard/')
 @login_required(login_url='/accounts/EmpReg/')
 def AddEmpGalleryVideo(request):
     if request.method == "POST":
@@ -572,7 +575,7 @@ def addresume(request):
             addresume.save()
             messages.success(request, '1 resume added successfully')
             return HttpResponseRedirect("/accounts/Profile/")
-        
+
 
     else:
         if not details1:
@@ -585,10 +588,10 @@ def addresume(request):
             if rescount is 1:
                 res=JSResume.objects.get(user_id=request.user.id)
                 if res.resumeFile:
-                    
+
                     msg='You had upload %s resume(s) only %s resume(s) remaining' %(rescount,rem)
                     return render_to_response('registration/add_new_resume.html', {'msg': msg,'counting':rem}, context_instance=RequestContext(request))
-                    
+
                 else:
 
                     counting=rescount
@@ -600,7 +603,7 @@ def addresume(request):
                 msg='You had upload %s resume(s) only %s resume(s) remaining' %(rescount,rem)
                 return render_to_response('registration/add_new_resume.html', {'msg': msg,'counting':rem}, context_instance=RequestContext(request))
             else:
-                
+
                 counting=rescount
                 msg='You had upload %s resume(s) only %s resume(s) remaining' %(rescount,rem)
                 return render_to_response('registration/add_new_resume.html', {'msg': msg,'counting':rem}, context_instance=RequestContext(request))
@@ -609,7 +612,7 @@ def addresume(request):
 
 @login_required(login_url='/accounts/login/')
 def Updateresume(request):
-        
+
         if request.method == "POST":
             user = request.POST.get('user_id')
             textTitle = request.POST.get('textResumeTitle')
@@ -630,7 +633,7 @@ def Updateresume(request):
                 if not jsresid:break
                 resid=JSResume.objects.get(user_id=user,pk=int(jsresid))
                 resid.resumeTitle=request.POST.get('jsResumeTitle'+str(i))
-                
+
                 if request.FILES.get('jsResumeFile'+str(i)):
                     resufile=resid.resumeFile
                     #return HttpResponse(str(resufile))
@@ -658,7 +661,7 @@ def Updateresume(request):
 
             messages.success(request, 'Resume edited successfully')
             return HttpResponseRedirect('/accounts/Profile/')
-           
+
         else:
             details = User.objects.get(id=request.user.id)
             details1 = JSResume.objects.filter(user_id=request.user.id)
@@ -674,7 +677,7 @@ def Updateresume(request):
 
                 msg = "U have not added any resumes To add resume "
                 msg1 ="Click Here"
-                
+
                 return render_to_response('registration/update_resume.html', {'msg': msg, 'msg1':msg1}, context_instance=RequestContext(request))
 
 @login_required(login_url='/accounts/login/')
@@ -752,9 +755,9 @@ def resume_activation(request):
         tresume = request.POST.get('acttext_resume')
         JS=JSDetails.objects.get(user_id=userid)
         JS_id=JS.id
-       
+
         if resume:
-            
+
             query=Q(id=resume) & Q(user_id=userid)
             details = JSResume.objects.get(query)
             resumeid=details.id
@@ -879,12 +882,12 @@ def editresume(request):
     videoresume = JSVideoResume.objects.filter(user_id=request.user.id)
     jssecurity = JSsecurity.objects.filter(user_id=request.user.id)
 
-    
+
     if not detail:
             return HttpResponseRedirect("/accounts/ProfileDetails/")
 
     else:
-        
+
         text=JSTextResume.objects.get(user_id=request.user.id)
         act=text.activetext_resume
         tresume=JSTextResume.objects.filter(user_id=request.user.id)
@@ -892,7 +895,7 @@ def editresume(request):
             res=JSResumeActive.objects.get(user_id=request.user.id)
             resactid=res.resumeActive_id
             resume=JSResume.objects.filter(id=resactid)
-            
+
             if act:
 
                 return render_to_response('registration/profile_edit_view.html', {"users":users,'detail':detail,'personal':personal,'qualification':qualification,'profilesum':profilesum,'skills':skills,'employer':employer,'project':project,'other':other,'resume':tresume,'extra':extra,'videoresume':videoresume,'jssecurity':jssecurity}, context_instance=RequestContext(request))
@@ -909,7 +912,7 @@ def editresume(request):
 
 @login_required(login_url='/accounts/login/')
 def edit_personal_info(request):
-    
+
     if request.method == "POST":
         userid = request.POST.get('user_id')
         jsid = request.POST.get('jsid')
@@ -938,12 +941,12 @@ def edit_personal_info(request):
         industry= request.POST.get('industry')
         functional_area= request.POST.get('functional_area')
         profileurl=request.POST.get('profileurl')
-        
+
         edit1 = User.objects.get(id=userid)
         edit1.first_name =fname
         edit1.last_name = lastname
         edit1.save()
-        
+
         try:
             editper = JSPersonal.objects.get(user_id=userid)
             editper.dob = dob
@@ -974,24 +977,24 @@ def edit_personal_info(request):
             editper.functional_area=functional_area
             editper.profileurl=profileurl
             editper.save()
-            
+
 
             detailedit=JSDetails.objects.get(user_id=userid)
             detailedit.update_date=datetime.now()
-            
+
             detailedit.save()
             messages.success(request, 'Your profile updated successfully')
             return HttpResponseRedirect('/accounts/Profile/')
-            
+
 
         except:
-            
+
             jsdetail=JSDetails(user_id=userid,post_date=datetime.now(),update_date=datetime.now())
             jsdetail.save()
 
             JS=JSDetails.objects.get(user_id=userid)
             JS_id=JS.id
-            
+
             p = JSPersonal(user_id=userid,JS_id=JS_id,dob=dob,sec_email=sec_email,address1=address1,address2=address2,country=country,state=state,city=city,zipcode=zipcode,handno=handno,homeno=homeno,workno=workno,prefertime=prefertime,gender=gender,maritalstatus=maritalstatus,work_expyears=work_expyears,work_expmonths=work_expmonths,salaryrange=salaryrange,industry=industry,functional_area=functional_area,profileurl=profileurl)
             p.save()
 
@@ -1003,7 +1006,7 @@ def edit_personal_info(request):
         return render_to_response('registration/edit_personal_info.html', {"details":details, "details1":details1}, context_instance=RequestContext(request))
 
 
-    
+
 @login_required(login_url='/accounts/login/')
 def edit_education_info(request):
     if request.method == "POST":
@@ -1012,9 +1015,9 @@ def edit_education_info(request):
         js=JSDetails.objects.get(user_id=user)
         JS_id=js.id
         delcer=JSCertificate.objects.filter(user_id=user)
-        delcer.delete()        
+        delcer.delete()
         cert_textboxes=request.POST.get('certificatecounter')
-        for i in range(int(cert_textboxes)):            
+        for i in range(int(cert_textboxes)):
             cert=request.POST.get('certificate%s' %int(i+1))
             JSCertificate(user_id=user,JS_id=JS_id, certificate=cert).save()
         deledu=JSQualification.objects.filter(user_id=user)
@@ -1026,7 +1029,7 @@ def edit_education_info(request):
             institution=request.POST.get('institution%s' %int(i+1))
             location=request.POST.get('location%s' %int(i+1))
             year=request.POST.get('year%s' %int(i+1))
-            country=request.POST.get('country%s' %int(i+1))            
+            country=request.POST.get('country%s' %int(i+1))
             JSQualification(user_id=user,JS_id=JS_id, degree=degree, special=special, institution=institution, location=location, year=year, country=country).save()
         js.update_date=datetime.now()
         js.save()
@@ -1040,7 +1043,7 @@ def edit_education_info(request):
 @login_required(login_url='/accounts/login/')
 def edit_profile_info(request):
     if request.method == "POST":
-        user = request.POST.get('user_id')        
+        user = request.POST.get('user_id')
         profile_summary = request.POST.get('profile_summary')
         try:
             edit = JSProfileSummary.objects.get(user_id=user)
@@ -1055,7 +1058,7 @@ def edit_profile_info(request):
             jsdetail=JSDetails(user_id=user,post_date=datetime.now(),update_date=datetime.now())
             jsdetail.save()
             JS=JSDetails.objects.get(user_id=user)
-            JS_id=JS.id            
+            JS_id=JS.id
             p = JSProfileSummary(user_id=user,JS_id=JS_id,profile_summary=profile_summary,update_date=datetime.now())
             p.save()
             messages.success(request, 'Your profile updated successfully')
@@ -1087,7 +1090,7 @@ def edit_jssecurity(request):
                 edit.jssecretclear=secretclear
                 edit.jsfromdate=fromdate
                 edit.jstodate=todate
-                
+
             elif fromdate:
                 edit.jssecretclear=secretclear
                 edit.jsfromdate=fromdate
@@ -1110,7 +1113,7 @@ def edit_jssecurity(request):
             jsdetail=JSDetails(user_id=user,post_date=datetime.now(),update_date=datetime.now())
             jsdetail.save()
             JS=JSDetails.objects.get(user_id=user)
-            JS_id=JS.id            
+            JS_id=JS.id
             p = JSsecurity(user_id=user,JS_id=JS_id,jssecretclear=jssecretclear,jsfromdate=jsfromdate,jstodate=jstodate)
             p.save()
             messages.success(request, 'Your profile updated successfully')
@@ -1154,7 +1157,7 @@ def edit_project_info(request):
         js=JSDetails.objects.get(user_id=user)
         JS_id=js.id
         proj_textboxes=request.POST.get('projcounter')
-        for i in range(int(proj_textboxes)):            
+        for i in range(int(proj_textboxes)):
             client=request.POST.get('client%s' %int(i+1))
             project_title=request.POST.get('project_title%s' %int(i+1))
             projstartdate=request.POST.get('projstartdate%s' %int(i+1))
@@ -1180,7 +1183,7 @@ def edit_project_info(request):
 @login_required(login_url='/accounts/login/')
 def edit_other_info(request):
     if request.method == "POST":
-        user = request.POST.get('user_id')        
+        user = request.POST.get('user_id')
         emptype = request.POST.get('emptype')
         workpermit = request.POST.get('workpermit')
         datas_qual=''
@@ -1193,7 +1196,7 @@ def edit_other_info(request):
         choice=''
         for i in request.POST.getlist('relocatechoice'):
             choice+=i+', '
-        relocatechoice=choice[:-2]        
+        relocatechoice=choice[:-2]
         #return HttpResponse(relocate)
         if relocate == "None" and telecommunicate == "None":
             edit1=JSDetailOther.objects.get(user_id=user)
@@ -1255,7 +1258,7 @@ def edit_other_info(request):
         messages.success(request, 'Your profile updated successfully')
         return HttpResponseRedirect('/accounts/Profile/')
 
-        
+
     else:
         language = JSLanguage.objects.filter(user_id=request.user.id)
         other = JSDetailOther.objects.filter(user_id=request.user.id)
@@ -1292,7 +1295,7 @@ def edit_resume_info(request):
             return HttpResponseRedirect('/accounts/Profile/')
 
         except:
-           
+
             for i in range(1,6):
                 jsresid= request.POST.get('jsResumeID'+str(i),'')
                 if not jsresid:break
@@ -1304,7 +1307,7 @@ def edit_resume_info(request):
             messages.success(request, 'Your profile updated successfully')
             return HttpResponseRedirect('/accounts/Profile/')
 
-            
+
     else:
         details = User.objects.filter(id=request.user.id)
         rescount = JSResume.objects.filter(user_id=request.user.id).count()
@@ -1365,7 +1368,7 @@ def edit_itskills_info(request):
             lastused=request.POST.get('lastused%s' %int(i+1))
             skillyear=request.POST.get('skillyear%s' %int(i+1))
             skillmon=request.POST.get('skillmon%s' %int(i+1))
-                    
+
             JSSkills(user_id=user,JS_id=JS_id, skill=skill, version=version, lastused=lastused, skillyear=skillyear, skillmon=skillmon).save()
 
         js.update_date=datetime.now()
@@ -1425,13 +1428,13 @@ def newpost(request):
             industry= request.POST.get('industry')
             functional_area= request.POST.get('functional_area')
             profileurl=request.POST.get('profileurl')
-        
-            
+
+
 
             profile_summary = request.POST.get('profile_summary')
             profile_pic = request.FILES.get('profile_pic')
 
-           
+
             jssecretclear = request.POST.get('jssecretclear')
             fdate = request.POST.get('jsfromdate')
             tdate = request.POST.get('jstodate')
@@ -1440,14 +1443,14 @@ def newpost(request):
                 fdate=datetime.strptime(fdate, '%m-%d-%Y')
             if tdate:
                 tdate=datetime.strptime(tdate, '%m-%d-%Y')
-            
+
             emptype = request.POST.get('job_type')
             workpermit = request.POST.get('workpermit')
             datas_qual=''
             for i in request.POST.getlist('workother'):
                 datas_qual+=i+', '
             workother=datas_qual[:-2]
-            
+
             resumeTitle = request.POST.get('resumeTitle')
             resumeFile= request.FILES.get('resumeFile')
             text_resume = request.POST.get('text_resume')
@@ -1476,7 +1479,7 @@ def newpost(request):
             #if 'certificatecounter' in request.POST:
             for i in range(int(cert_textboxes)):
 
-                
+
                 cert=request.POST.get('certificate%s' %int(i+1))
                 JSCertificate(user_id=user_id,JS_id=JS_id, certificate=cert).save()
             #else:JSCertificate(user_id=user_id,JS_id=JS_id, certificate=request.POST['certificate1']).save()
@@ -1492,7 +1495,7 @@ def newpost(request):
                 location=request.POST.get('location%s' %int(i+1))
                 year=request.POST.get('year%s' %int(i+1))
                 country=request.POST.get('country%s' %int(i+1))
-                
+
                 JSQualification(user_id=user_id,JS_id=JS_id, degree=degree, special=special, institution=institution, location=location, year=year, country=country).save()
 
             skill_textboxes=request.POST.get('skillcounter')
@@ -1503,7 +1506,7 @@ def newpost(request):
                 lastused=request.POST.get('lastused%s' %int(i+1))
                 skillyear=request.POST.get('skillyear%s' %int(i+1))
                 skillmon=request.POST.get('skillmon%s' %int(i+1))
-                                
+
                 JSSkills(user_id=user_id,JS_id=JS_id, skill=skill, version=version, lastused=lastused, skillyear=skillyear, skillmon=skillmon).save()
 
             emp_textboxes=request.POST.get('empcounter')
@@ -1522,7 +1525,7 @@ def newpost(request):
             proj_textboxes=request.POST.get('projcounter')
 
             for i in range(int(proj_textboxes)):
-                
+
                 client=request.POST.get('client%s' %int(i+1))
                 project_title=request.POST.get('project_title%s' %int(i+1))
                 projstartdate=request.POST.get('projstartdate%s' %int(i+1))
@@ -1550,7 +1553,7 @@ def newpost(request):
             profile=JSProfileSummary(user_id=user_id,JS_id=JS_id,profile_summary=profile_summary,profile_pic=profile_pic)
             profile.save()
 
-       
+
             lang_textboxes=request.POST.get('langcounter')
 
             for i in range(int(lang_textboxes)):
@@ -1618,7 +1621,7 @@ def newpost(request):
 
                     activateresume=JSResumeActive(user_id=user_id,JS_id=JS_id,resumeActive_id=Resumeid)
                     activateresume.save()
-                    
+
             messages.success(request, 'Your profile updated successfully')
             return HttpResponseRedirect('/accounts/Profile/')
     else:
@@ -1641,7 +1644,7 @@ def emp_activate(request):
 
 def emp_activation(request, activation_key):
 
-    activation_key = activation_key 
+    activation_key = activation_key
     emp=EmployerReg_Form.objects.get(activation_key=activation_key)
     emp.is_active=1
     emp.save()
@@ -1660,23 +1663,23 @@ def emp_login(request):
         if user is not None:
     # the password verified for the user
             if user.is_active:
-                if user.usertype == ut:
+                # if user.usertype == ut:
                     login(request, user)
                     messages.success(request, 'Logged in successfully')
                     return HttpResponseRedirect('/accounts/RecruiterDashboard/')
-                else:
-                    messages.error(request, 'Enter valid username and password')
-                    return HttpResponseRedirect('/accounts/EmpReg/')
+                # else:
+                #    messages.error(request, 'Enter valid username and password')
+                #    return HttpResponseRedirect('/accounts/EmpReg/')
             else:
                 messages.error(request, 'Please Activate your Account')
                 return HttpResponseRedirect('/accounts/EmpReg/')
         else:
             messages.error(request, 'Enter valid username and password')
             return HttpResponseRedirect('/accounts/EmpReg/')
- 
+
 #------------ 1st JUNE ---------------------------------
 
-@login_required(login_url='/accounts/EmpReg/')   
+@login_required(login_url='/accounts/EmpReg/')
 def jobpost(request):
     if 'jobcode' in request.GET:
         if jobs.objects.filter(referencecode=request.GET['jobcode']).exists():n={'tag':0,'msg':'Job code already exists. Try new one !'}
@@ -1756,7 +1759,7 @@ def jobpost(request):
                 return render(request,'registration/Post_Job.html', {'msg': msg,'remaining':remaining,'cmpdetails':cmpdetails})
 
 
-@login_required(login_url='/accounts/EmpReg/')   
+@login_required(login_url='/accounts/EmpReg/')
 def repost(request,job_id):
     '''
     jobid=job_id
@@ -1787,7 +1790,7 @@ def repost(request,job_id):
         handno=request.POST.get('handno')
         fax=request.POST.get('fax')
         email=request.POST.get('email')
-        companyprofile=request.POST.get('companyprofile')        
+        companyprofile=request.POST.get('companyprofile')
         marklive=request.POST.get('marklive')
         todate=request.POST.get('todate')
         if marklive:
@@ -1846,7 +1849,7 @@ def repost(request,job_id):
 
 
 
-@login_required(login_url='/accounts/EmpReg/')   
+@login_required(login_url='/accounts/EmpReg/')
 def edit_jobpost(request,job_id):
     if request.method == "POST":
         jobid=request.POST.get('id')
@@ -1893,7 +1896,7 @@ def edit_jobpost(request,job_id):
         for i in request.POST.getlist('qualification'):
             datas_qual+=i+', '
         qualification=datas_qual[:-2]
-        
+
         edit = jobs.objects.get(id=jobid)
 
         edit.title=title
@@ -1945,7 +1948,7 @@ def edit_jobpost(request,job_id):
 
         messages.success(request, '1 job edited successfully')
         return HttpResponseRedirect('/accounts/JobsEmp/')
-        
+
     else:
         jobid=job_id
         cmpdetails=EmployerReg_Form.objects.filter(user_id=request.user.id)
@@ -1954,7 +1957,7 @@ def edit_jobpost(request,job_id):
         return render(request,'registration/Post_job_edit.html',{'cmpdetails':cmpdetails,'description':description,'keyskills':keyskills})
 
 
-@login_required(login_url='/accounts/EmpReg/')   
+@login_required(login_url='/accounts/EmpReg/')
 def inactive_jobpost(request):
     if request.method == "POST":
         jobid=request.POST.get('jobid')
@@ -1970,14 +1973,14 @@ def inactive_jobpost(request):
         return render(request,'registration/RecruiterDashboardjobs.html',{'description':description,'keyskills':keyskills})
 
 
-@login_required(login_url='/accounts/EmpReg/')   
+@login_required(login_url='/accounts/EmpReg/')
 def active_jobpost(request):
     if request.method == "POST":
         jobid=request.POST.get('jobid')
         empid=request.POST.get('user_id')
         todate=request.POST.get('todate')
         fromdate=request.POST.get('marklive')
-      
+
         edit = jobs.objects.get(id=jobid)
         edit.marklive=fromdate
         edit.todate=todate
@@ -1991,7 +1994,7 @@ def active_jobpost(request):
         return render_to_response('registration/RecruiterDashboardjobs.html',{'description':description,'keyskills':keyskills},context_instance=RequestContext(request))
 
 
-@login_required(login_url='/accounts/EmpReg/')   
+@login_required(login_url='/accounts/EmpReg/')
 def activatetoday_jobpost(request):
     if request.method == "POST":
         jobid=request.POST.get('jobid')
@@ -2009,7 +2012,7 @@ def activatetoday_jobpost(request):
         keyskills=employerkeyskills.objects.filter(job_id=jobid)
         return render(request,'registration/RecruiterDashboardjobs.html',{'description':description,'keyskills':keyskills})
 
-@login_required(login_url='/accounts/EmpReg/')   
+@login_required(login_url='/accounts/EmpReg/')
 def delete_searchagent(request):
     if request.method=='POST':
         empid=request.POST.get('empid')
@@ -2020,7 +2023,7 @@ def delete_searchagent(request):
         return HttpResponseRedirect('/accounts/JobsEmp/')
 
 
-@login_required(login_url='/accounts/EmpReg/')   
+@login_required(login_url='/accounts/EmpReg/')
 def delete_jobpost(request):
     if request.method == "POST":
         jobid=request.POST.get('jobid')
@@ -2037,9 +2040,10 @@ def delete_jobpost(request):
 
 def js_login(request):
     if request.user.is_authenticated():
-        if request.user.usertype=='jobseeker':return HttpResponseRedirect('/js/Dashboard/')
-        if request.user.usertype=='employer':return HttpResponseRedirect('/accounts/RecruiterDashboard/')
-    
+        return HttpResponseRedirect('/js/Dashboard/')
+        #if request.user.usertype=='jobseeker':return HttpResponseRedirect('/js/Dashboard/')
+        #if request.user.usertype=='employer':return HttpResponseRedirect('/accounts/RecruiterDashboard/')
+
     msg=""
     if request.method=='POST':
         un=request.POST.get('username')
@@ -2049,16 +2053,16 @@ def js_login(request):
         if user is not None:
     # the password verified for the user
             if user.is_active:
-                if user.usertype == ut:
+                # if user.usertype == ut:
                     login(request, user)
-                    edt,crt=checksocial_login.objects.get_or_create(user=request.user)
+                    edt, crt = checksocial_login.objects.get_or_create(user=request.user)
                     edt.loginflag=True
                     edt.save()
                     messages.success(request, 'Logged in successfully')
                     return HttpResponseRedirect('/js/Dashboard/')
-                else:
-                    msg="Enter valid username and password"
-                    #return render_to_response('registration/login.html', {'msg':msg}, context_instance=RequestContext(request))
+                # else:
+                #    msg="Enter valid username and password"
+                #    eturn render_to_response('registration/login.html', {'msg':msg}, context_instance=RequestContext(request))
             else:
                 msg="Please Activate your Account"
                 #return render_to_response('registration/login.html', {'msg':msg}, context_instance=RequestContext(request))
@@ -2098,7 +2102,7 @@ def RecruiterHome(request):
             msg1="In Trial Pack You can post upto 5 Jobs."
             empsavesearch=RecSaveSearch.objects.filter(employer_id=request.user.id)
             sacount=RecSaveSearch.objects.filter(employer_id=request.user.id).count()
-            msg = 5-sacount 
+            msg = 5-sacount
             job = jobs.objects.filter(emp_id=request.user.id).count()
             folder=RecruiterFolder.objects.filter(employer_id=request.user.id)
             for i in folder:
@@ -2121,7 +2125,7 @@ def RecruiterHome(request):
             sacount=RecSaveSearch.objects.filter(employer_id=request.user.id).count()
             msg = 5-sacount
 
-            
+
             job = jobs.objects.filter(emp_id=request.user.id).count()
             folder=RecruiterFolder.objects.filter(employer_id=request.user.id)
             for i in folder:
@@ -2137,11 +2141,11 @@ def RecruiterDashboard(request):
     d=dict()
     progress=0
     if RegistrationProfile.objects.filter(user_id=request.user.id):
-        progress=progress+10 
+        progress=progress+10
     if jobs.objects.filter(emp_id=request.user.id):
-        progress=progress+5 
+        progress=progress+5
     if EmployerReg_Form.objects.filter(user_id=request.user.id):
-        progress=progress+5 
+        progress=progress+5
     if RecruiterFolder.objects.filter(employer_id=request.user.id):
         progress = progress+5
     if empsocialnetworks.objects.filter(emp_id=request.user.id):
@@ -2164,7 +2168,7 @@ def RecruiterDashboard(request):
             return HttpResponseRedirect('/accounts/RecruiterFolder/%s/' %folderid)
     else:
         form = RecruiterFolders()
-    activatedpacks=emppack_activation.objects.filter(subscribed_pack__employer_id=request.user.id)        
+    activatedpacks=emppack_activation.objects.filter(subscribed_pack__employer_id=request.user.id)
     empsavesearch=RecSaveSearch.objects.filter(employer_id=request.user.id)
     folder=RecruiterFolder.objects.filter(employer_id=request.user.id)
     for i in folder:
@@ -2179,7 +2183,7 @@ def RecruiterDashboard(request):
     InactJobList=jobs.objects.filter(query,query2,is_active=False,is_delete=False)
     #progress = progress + 5
     d= {'progress':progress,'activatedpacks':activatedpacks,'ActJobList':ActJobList, 'InactJobList':InactJobList, 'PendingJobList':PendingJobList,'folders':folder,'savesearch':empsavesearch,'form':form}
-    return render(request,'registration/RecruiterDashboard.html',d)        
+    return render(request,'registration/RecruiterDashboard.html',d)
 @login_required(login_url='/accounts/EmpReg/')
 def CandidateSearchResult(request):
     now=datetime.now()
@@ -2204,7 +2208,7 @@ def CandidateSearchResult(request):
             for res in User.objects.filter(Q(jsskills__skill__icontains=search) | Q(jspersonal__zipcode__icontains=search) | Q(jspersonal__country__icontains=search) | Q(jspersonal__state__icontains=search) | Q(jspersonal__city__icontains=search) | Q(jsdetailother__relocatechoice__icontains=search),query_visibility):
                 if not res in list_result:
                     list_result.append(res)
-        users = list_result    
+        users = list_result
         empsavesearch=RecSaveSearch.objects.filter(employer_id=request.user.id)
         employers=jobs.objects.filter(emp_id=request.user.id)
         return render(request,'registration/CandidateSearchResult.html', {'empsavesearch':empsavesearch,'details':users,'employers':employers})
@@ -2288,7 +2292,7 @@ def advsearch_result(request):
             for search in searchresult:
                 for res in jobs.objects.filter(Q(employerkeyskills__keyskills__icontains=search) | Q(title__icontains=search),is_active=True,is_delete=False):
                     if not res in list_result:list_result.append(res)
-        
+
         if radius:
             if city:
                 results = Geocoder.geocode(city)
@@ -2336,7 +2340,7 @@ def SearchResumeAdvancedResult(request):
     qdict = {'functional_area': 'jspersonal__functional_area__icontains',
     'emp_type': 'jsdetailother__emptype__icontains','workpermit': 'jsdetailother__workpermit__icontains','work_expmin': 'jspersonal__work_expyears__gte','work_expmax':'jspersonal__work_expyears__lte','telecommute':'jsdetailother__telecommunicate__icontains'
     }
-    q_objs = [Q(**{qdict[k]: request.GET[k]}) for k in qdict.keys() if request.GET.get(k, None)]    
+    q_objs = [Q(**{qdict[k]: request.GET[k]}) for k in qdict.keys() if request.GET.get(k, None)]
     if state:
         for res in User.objects.filter(Q(jspersonal__state__icontains=state) | Q(jspersonal__city__icontains=state) | Q(jspersonal__country__icontains=state) | Q(jspersonal__zipcode__icontains=state) | Q(jsdetailother__relocatechoice__icontains=state),jsdetails__visiblity=True):
             if not res in list_result:list_result.append(res)
@@ -2430,7 +2434,7 @@ def JSDetailsbyIndividual(request,user_id):
         return HttpResponseRedirect('/accounts/EmpPackname/')
 
 
-    
+
 def HotResumes(request):
     hotresumes = User.objects.filter(jsdetails__visiblity=True).order_by('-jsdetails__viewcount')
     return render(request,'registration/HotResumes.html', {'hotresumes':hotresumes})
@@ -2442,7 +2446,7 @@ def SecretClearedResumes(request):
 
     return render(request,'registration/SecretClearedResumes.html',{'scresumes':scresumes})
 @login_required(login_url='/accounts/EmpReg/')
-def saveCandidate(request):    
+def saveCandidate(request):
     if request.method=='POST':
         now=datetime.now()
         d=datetime(now.year, now.month, now.day)
@@ -2450,7 +2454,7 @@ def saveCandidate(request):
         empid=request.POST.get('empid')
         folderid=request.POST.get('folderid')
         jsid=request.POST.get('jsid')
-        userid=request.POST.get('userid')        
+        userid=request.POST.get('userid')
         if SaveCandidateFolder.objects.filter(folder_id=folderid,employer_id=empid,jobseeker_id=jsid):
             messages.error(request, 'Saved Candidate already exist')
             return HttpResponseRedirect('/accounts/JSDetails/%s/' %userid)
@@ -2494,7 +2498,7 @@ def ScheduleInterviewEmp(request):
             scheduledate=request.POST.get('scheduledate')
             scheduletime=request.POST.get('scheduletime')
             totalrounds=request.POST.get('totalrounds')
-            interviewLocation=request.POST.get('location')            
+            interviewLocation=request.POST.get('location')
             inter=Interview(emp_id=empid,JSId_id=int(jsid),Job_id=jobid,rounds=totalrounds,interviewLocation=interviewLocation,Denied=False)
             inter.save()
             interview_id=inter.id
@@ -2550,7 +2554,7 @@ def ScheduleInterviewEmp1(request):
                 subject="Interview sechduled for %s " %jobtitle
                 current_domain = Site.objects.get_current().domain
                 contxt=Context({'company': company,'jobtitle':jobtitle,'jrcode':jrcode,'first_name':first_name,'last_name':last_name,'username':username,'current_domain':current_domain})
-                message_template = loader.get_template('registration/interviewschedulemail.html')    
+                message_template = loader.get_template('registration/interviewschedulemail.html')
                 message=message_template.render(contxt)
                 msg=EmailMultiAlternatives(subject,message,frommail,[pritoem,sectoem])
                 msg.attach_alternative(message, "text/html")
@@ -2560,7 +2564,7 @@ def ScheduleInterviewEmp1(request):
                 interview_id=inter.id
                 res=Reschedule(interview_id=interview_id,emp_id=empid,JSId_id=jsid,Job_id=jobid,empschedule_date1=scheduledate,empschedule_time1=scheduletime,empupdate1=d1,Empconfirmation=True,JSconfirmation=False)
                 res.save()
-        else:           
+        else:
             for jsid in request.POST.get('jsid').split(','):
                 if Interview.objects.filter(emp_id=request.POST['empid'],JSId_id=int(jsid),Job_id=request.POST['jobid']):
                     usr=User.objects.get(jsdetails__id=int(jsid))
@@ -2589,7 +2593,7 @@ def ScheduleInterviewEmp1(request):
                 subject="Interview sechduled for %s " %jobtitle
                 current_domain = Site.objects.get_current().domain
                 contxt=Context({'company': company,'jobtitle':jobtitle,'jrcode':jrcode,'first_name':first_name,'last_name':last_name,'username':username,'current_domain':current_domain})
-                message_template = loader.get_template('registration/interviewschedulemail.html')    
+                message_template = loader.get_template('registration/interviewschedulemail.html')
                 message=message_template.render(contxt)
                 msg=EmailMultiAlternatives(subject,message,frommail,[pritoem,sectoem])
                 msg.attach_alternative(message, "text/html")
@@ -2642,7 +2646,7 @@ def ScheduleInterviewEmp2(request):
                 subject="Interview sechduled for %s " %jobtitle
                 current_domain = Site.objects.get_current().domain
                 contxt=Context({'company': company,'jobtitle':jobtitle,'jrcode':jrcode,'first_name':first_name,'last_name':last_name,'username':username,'current_domain':current_domain})
-                message_template = loader.get_template('registration/interviewschedulemail.html')    
+                message_template = loader.get_template('registration/interviewschedulemail.html')
                 message=message_template.render(contxt)
                 msg=EmailMultiAlternatives(subject,message,frommail,[pritoem,sectoem])
                 msg.attach_alternative(message, "text/html")
@@ -2652,7 +2656,7 @@ def ScheduleInterviewEmp2(request):
                 interview_id=inter.id
                 res=Reschedule(interview_id=interview_id,emp_id=empid,JSId_id=js.JS.id,Job_id=jobid,empschedule_date1=scheduledate,empschedule_time1=scheduletime,empupdate1=d1,Empconfirmation=True,JSconfirmation=False)
                 res.save()
-        else:           
+        else:
             for jsid in request.POST.get('jsid').split(','):
                 if Interview.objects.filter(emp_id=request.POST['empid'],JSId_id=int(jsid),Job_id=request.POST['jobid']):
                     usr=User.objects.get(jsdetails__id=int(jsid))
@@ -2681,7 +2685,7 @@ def ScheduleInterviewEmp2(request):
                 subject="Interview sechduled for %s " %jobtitle
                 current_domain = Site.objects.get_current().domain
                 contxt=Context({'company': company,'jobtitle':jobtitle,'jrcode':jrcode,'first_name':first_name,'last_name':last_name,'username':username,'current_domain':current_domain})
-                message_template = loader.get_template('registration/interviewschedulemail.html')    
+                message_template = loader.get_template('registration/interviewschedulemail.html')
                 message=message_template.render(contxt)
                 msg=EmailMultiAlternatives(subject,message,frommail,[pritoem,sectoem])
                 msg.attach_alternative(message, "text/html")
@@ -2724,7 +2728,7 @@ def JSChangePassword(request):
             usr.save()
             messages.success(request, 'Your password has been changed successfully')
             return HttpResponseRedirect('/js/Dashboard/')
-            
+
     else:
         frm_pass=PasswordReset(user=request.user)
     return render(request,'registration/JSChangePassword.html',{'form':frm_pass})
@@ -2737,13 +2741,13 @@ def ApplyJob(request,job_id):
     print company, 'fffffff'
     if JSAppliedJobs.objects.filter(JS_id=request.user.jsdetails.id,emp_id=job.emp.id,Job_id=job.id):
         messages.error(request, 'This job has been applied already !')
-        return HttpResponseRedirect('/accounts/JobApplySuccess/')    
+        return HttpResponseRedirect('/accounts/JobApplySuccess/')
     try:
         details=JSDetails.objects.get(user_id=request.user.id)
         personal=JSPersonal.objects.get(user_id=request.user.id)
         txtres=JSTextResume.objects.get(user_id=request.user.id)
         actres=JSResumeActive.objects.get(user_id=request.user.id)
-        job=jobs.objects.get(id=jobid)        
+        job=jobs.objects.get(id=jobid)
         resid=actres.resumeActive_id
         res=JSResume.objects.get(id=resid)
         semail=personal.sec_email
@@ -2766,7 +2770,7 @@ def ApplyJob(request,job_id):
         subject="Job Applied for the Position of %s [%s]" % (jtitle, jrcode)
         message_template = loader.get_template('registration/message.html')
         message_context = Context({'username':job.emp.username,'companyname':job.emp.companyname,'position':jtitle,'jobcode':jrcode,'current_domain':current_domain, 'semail': semail, 'fname': fname, 'lname':lname, 'pemail':pemail, 'handno':handno,'workno':workno,'homeno':homeno,'wexpyear':wexpyear, 'wexpmon':wexpmon, 'lsalary':lsalary })
-        message = message_template.render(message_context)	
+        message = message_template.render(message_context)
         try:
             msg=EmailMultiAlternatives(subject,message,pemail,[to])
             msg.attach_alternative(message, "text/html")
@@ -2797,7 +2801,7 @@ def ApplyJob(request,job_id):
         message_template = loader.get_template('registration/message.html')
 	print company.companyname, 'wwwwww'
         message_context = Context({'username':job.emp.username,'companyname':company.companyname,'position':jtitle,'jobcode':jrcode,'current_domain':current_domain,'fname': fname,'lname':lname,'pemail':pemail})
-        
+
 	message = message_template.render(message_context)
         msg=EmailMultiAlternatives(subject,message,pemail,[to])
         msg.attach_alternative(message, "text/html")
@@ -2811,7 +2815,7 @@ def ApplyJob(request,job_id):
         return HttpResponseRedirect('/accounts/JobApplySuccess/')
 
 def faq(request):
-    return render(request,'registration/faq.html')    
+    return render(request,'registration/faq.html')
 def faq1(request):
     return render_to_response('registration/faq1.html',context_instance=RequestContext(request))
 def faq2(request):
@@ -2918,7 +2922,7 @@ def SocialPassReset(request):
         usr1.save()
         return HttpResponseRedirect('/accounts/Profile/')
     else:
-        
+
         return render_to_response('registration/socialpassreset.html', context_instance=RequestContext(request))
 
 
@@ -2946,7 +2950,7 @@ def subprofilepages(request,num):
         project = JSProjectDetails.objects.filter(user_id=request.user.id)
         language = JSLanguage.objects.filter(user_id=request.user.id)
         other = JSDetailOther.objects.filter(user_id=request.user.id)
-        
+
         videoresume = RecordedVideos.objects.filter(user=request.user)
         jssecclear = JSsecurity.objects.filter(user_id=request.user.id)
         #extra = JSExtra.objects.filter(user_id=request.user.id)
@@ -2968,12 +2972,12 @@ def subprofilepages(request,num):
             except:
                 return render_to_response('registration/test/'+temp[int(num)-1]+'.html', {"user":users,'detail':detail,'personal':personal,'qualification':qualification,'certificate':certificate,'profilesum':profilesum,'skills':skills,'employer':employer,'project':project,'other':other,'videoresume':videoresume,'jssecclear':jssecclear,'details1':details1,'language':language}, context_instance=RequestContext(request))
 
-        
+
 
 
 @login_required(login_url='/accounts/EmpReg/')
 def EmployerFolder(request,fid):
-    
+
     folderid=fid
     folder=RecruiterFolder.objects.get(id=folderid)
     details=SaveCandidateFolder.objects.filter(folder_id=folderid,employer_id=request.user.id)
@@ -2982,12 +2986,12 @@ def EmployerFolder(request,fid):
 
 
     '''folder=RecruiterFolder.objects.get(id=folderid)
-            
+
                 details=SaveCandidateFolder.objects.filter(folder_id=folderid)
                 folderdetails=[]
                 for i in details:
                     folderdetails.append(JSDetails.objects.get(id=i.jobseeker_id))
-            
+
                 #   return HttpResponse(js.id)
                 return render_to_response('registration/SaveCandidateDetails.html',{'folder':folder, 'fdetails':folderdetails}, context_instance=RequestContext(request))'''
 
@@ -3048,7 +3052,7 @@ def SearchAllJobsResult(request):
     qdict = {'ownername': 'ownername',
       'referencecode': 'referencecode',
       'title': 'title',
-      'jobtype': 'jobtype',      
+      'jobtype': 'jobtype',
     }
     q_objs = [Q(**{qdict[k]: request.GET[k]}) for k in qdict.keys() if request.GET.get(k, None)]
     if after and before:search_results = jobs.objects.select_related().filter(*q_objs,emp=request.user,marklive__gte=datetime.strptime(before,"%m-%d-%Y"),marklive__lte=datetime.strptime(after,"%m-%d-%Y"),is_delete=False)
@@ -3079,12 +3083,12 @@ def Candidatefolder(request):
             valz= request.GET['param2']
             if param1=='foldername':
                 already_exist=RecruiterFolder.objects.filter(foldername=valz,employer_id=request.user.id).exists()
-            
+
             return HttpResponse(json.dumps({'already':already_exist,'fname':param1}), mimetype="application/json")
         """
         form = RecruiterFolders()
-        job = jobs.objects.filter(emp_id=request.user.id).count()       
-        folder=RecruiterFolder.objects.filter(employer_id=request.user.id)        
+        job = jobs.objects.filter(emp_id=request.user.id).count()
+        folder=RecruiterFolder.objects.filter(employer_id=request.user.id)
         for i in folder:
             i.fcount=SaveCandidateFolder.objects.foldercount_fname(request.user.id,i)
 
@@ -3102,7 +3106,7 @@ def BlogTopic(request):
 
 def blog(request,btid):
     btopicid=btid
-    btop=BlogTopics.objects.filter(id=btopicid)    
+    btop=BlogTopics.objects.filter(id=btopicid)
     bass=Blog.objects.filter(btopic_id=btopicid)
     #commentcount=BComments.objects.filter(blog_id=btopicid)
     return render(request,'registration/blog.html', {'bass':bass, 'btop':btop})
@@ -3121,7 +3125,7 @@ def blogArticle(request,baid):
     else:
         articleid=baid
         article=Blog.objects.filter(id=articleid)
-        com=BComments.objects.filter(blog_id=articleid)        
+        com=BComments.objects.filter(blog_id=articleid)
         return render(request,'registration/BlogArticle.html', {'article':article,'com':com})
 
 
@@ -3178,11 +3182,11 @@ def RescheduleInterviewsJS(request,int_id):
         userid=request.user.id
         jsid=JSDetails.objects.get(user_id=userid)
         interview=Reschedule.objects.filter(JSId_id=jsid.id).select_related()
-        
+
 	status=Interview.objects.filter(JSId_id=jsid.id)
 	if status:
 	    company = EmployerReg_Form.objects.get(user=status[0].emp)
-	
+
         return render(request,'registration/MyInterviewZone.html',{'interview':interview,'status':status, 'companyname': company.companyname})
     else:
         interview=Reschedule.objects.filter(interview_id=interview_id).select_related()
@@ -3208,13 +3212,13 @@ def RescheduleInterviewsEmp(request,int_id):
         status=Interview.objects.filter(id=interview_id)
         return render(request,'registration/EmpInterviewZone.html',{'interview':interview,'status':status,'msg':msg})
     else:
-        interview=Reschedule.objects.filter(interview_id=interview_id).select_related()        
+        interview=Reschedule.objects.filter(interview_id=interview_id).select_related()
         return render(request,'registration/RescheduleInterviewsEmp.html',{'interview':interview})
 @login_required(login_url='/accounts/login/')
 def JSScheduleInterview(request):
     now=datetime.now()
     d1= now.strftime('%m-%d-%Y-%H:%M')
-    
+
     if request.method=='POST':
         interviewid=request.POST.get('interviewid')
         redate=request.POST.get('scheduledate')
@@ -3255,7 +3259,7 @@ def JSScheduleInterview(request):
 @login_required(login_url='/accounts/EmpReg/')
 def EmpScheduleInterview(request):
     now=datetime.now()
-    d1= now.strftime('%m-%d-%Y-%H:%M')    
+    d1= now.strftime('%m-%d-%Y-%H:%M')
     if request.method=='POST':
         interviewid=request.POST.get('interviewid')
         redate=request.POST.get('scheduledate')
@@ -3319,7 +3323,7 @@ def CancelInterviewJS(request):
         interviewid=request.POST.get('intid')
         userid=request.POST.get('userid')
         js=JSDetails.objects.get(user_id=userid)
-	
+
         jsid=js.id
         inter=Interview.objects.get(id=interviewid,JSId_id=jsid)
 	company = EmployerReg_Form.objects.get(user=inter.emp)
@@ -3382,7 +3386,7 @@ def EmpInterviewCofirmPage(request):
         jsid=res.JSId_id
         inid=res.id
         for con in Reschedule.objects.filter( Q(id=inid),Q(JSconfirmation=True),Q(Empconfirmation=True)):
-            confirmresult.append(con)        
+            confirmresult.append(con)
         #confirm=confirmresult
     return render(request,'registration/EmpInterviewCofirmPage.html',{'confirm':confirmresult})
 @login_required(login_url='/accounts/EmpReg/')
@@ -3405,7 +3409,7 @@ def EmpInterviewFailPage(request):
 def JSInterviewCofirmPage(request):
     try:
         js=JSDetails.objects.get(user_id=request.user.id)
-        jsid=js.id    
+        jsid=js.id
         result=Interview.objects.filter(Q(JSId_id=jsid) & ~Q(interviewpassed=True) & ~Q(interviewfailed=True) & ~Q(Denied=True))
         confirmresult=[]
         for res in result:
@@ -3495,9 +3499,9 @@ def RoundResult(request):
         interviewdate=request.POST.get('interviewdate')
         description=request.POST.get('description')
         nextround=request.POST.get('nextround')
-        status=request.POST.get('status')        
+        status=request.POST.get('status')
         if status=="False":
-            result =  Interview.objects.get(emp=empid,JSId=jsid,Job=jobid,Denied=False) 
+            result =  Interview.objects.get(emp=empid,JSId=jsid,Job=jobid,Denied=False)
             result.interviewfailed=True;
             result.save()
             result=InterviewRounds(interview_id=interviewid,emp_id=empid,JSId_id=jsid,Job_id=jobid,roundno=roundno,score=score,interviewby=interviewby,interviewdate=interviewdate,tips=description,nextrounddate=nextround,status=False)
@@ -3515,7 +3519,7 @@ def RoundResult(request):
 #------------ 1st JUNE ------------------------
 
 def doc(request):
-  
+
     res=JSResumeActive.objects.get(user_id=request.user.id)
     resid=res.resumeActive_id
     resume=JSResume.objects.get(id=resid)
@@ -3525,7 +3529,7 @@ def doc(request):
 
     name, fileExtension = os.path.splitext(str(resumefile))
     return render(request,'%s.html'%name)
-   
+
 
 @login_required(login_url='/accounts/EmpReg/')
 def ReceivedApplication(request):
@@ -3540,7 +3544,7 @@ def DeleteReceivedApplication(request):
     if request.method=='POST':
         empid=request.POST.get('empid')
         for appid in request.POST.get('recappid').split(','):
-            
+
             recapp=JSAppliedJobs.objects.get(id=appid,emp_id=empid)
             if not recapp.jsappdel:
                 recapp.delete()
@@ -3705,7 +3709,7 @@ def paypal(request):
     context = {"form": form.sandbox()}
     return render_to_response('registration/paypal.html', context)
     # paypal.html
-   
+
 
 
 def emp_packname(request):
@@ -3748,7 +3752,7 @@ def emp_pack_subscription(request,pck_id):
                 emp=emp_selected_packs_add.objects.get(employer_id=request.user.id,pack_id=pack_id)
 
                 jobpost = emp.spack_jobpost+int(spack_jobpost)
-                
+
                 resview = emp.spack_resume+int(spack_resume)
 
                 emp.spack_jobpost=jobpost
@@ -3756,7 +3760,7 @@ def emp_pack_subscription(request,pck_id):
                 emp.pack_activate=pack_activate
                 emp.pack_expire=pack_expire
                 emp.save()
-                
+
             except:
                 ea=emp_selected_packs_add(employer_id=employer_id,pack_id=pack_id,spack_jobpost=spack_jobpost,spack_resume=spack_resume,pack_activate=pack_activate,pack_expire=pack_expire)
                 ea.save()
@@ -3774,7 +3778,7 @@ def emp_pack_subscription(request,pck_id):
 def EmpSubConf(request,pack_id):
     packid=pack_id
     pack= emp_selected_packs.objects.filter(id=packid,employer_id=request.user.id)
-   
+
     paypal_dict = {
     "business": settings.PAYPAL_RECEIVER_EMAIL,
     "amount": "pack.spack_cost",
@@ -3822,7 +3826,7 @@ def emp_selected_pack_add(request):
     query = Q(employer_id=request.user.id) & Q(pack_expire__gte=d1)
 
     msgtime=emp_selected_packs.objects.filter(query).count()
-    
+
 
     msg1="Totally You have allow to Post 5 Jobs."
     empsavesearch=RecSaveSearch.objects.filter(employer_id=request.user.id)
@@ -3970,7 +3974,7 @@ def emp_pack_subscription(request,pck_id):
                 emp=emp_selected_packs_add.objects.get(employer_id=request.user.id,pack_id=pack_id)
 
                 jobpost = emp.spack_jobpost+int(spack_jobpost)
-                
+
                 resview = emp.spack_resume+int(spack_resume)
 
                 emp.spack_jobpost=jobpost
@@ -3978,7 +3982,7 @@ def emp_pack_subscription(request,pck_id):
                 emp.pack_activate=pack_activate
                 emp.pack_expire=pack_expire
                 emp.save()
-                
+
             except:
                 ea=emp_selected_packs_add(employer_id=employer_id,pack_id=pack_id,spack_jobpost=spack_jobpost,spack_resume=spack_resume,pack_activate=pack_activate,pack_expire=pack_expire)
                 ea.save()
@@ -3999,12 +4003,12 @@ def passsecurityques(request):
             if email in i.email:
                 id_email=i.id
                 que=securityquestions.objects.get(user_id=i.id)
-                question+=que.question   
+                question+=que.question
         q={'question':question}
         return HttpResponse(json.dumps(q),mimetype='application/json')
-        
+
     else:
-        return render(request,'registration/ForgotPassword.html')    
+        return render(request,'registration/ForgotPassword.html')
 
 def ForgotPassword(request):
     if request.method=="POST":
@@ -4050,7 +4054,7 @@ def PasswordResetActivate(request, activation_key):
         else:
             return render(request,'registration/SetNewPassword.html',{'userid':userid})
 
-        
+
     else:
         return HttpResponse("<html><body onload='error()'><script type='text/javascript'>function error(){alert('Your Password activation key is invalid / expired / already used. Please submit the details again.');window.location='http://%s';}</script></body></html>"%current_domain)
 
@@ -4084,12 +4088,12 @@ def securityques(request):
             if email in i.email:
                 id_email=i.id
                 que=securityquestions.objects.get(user_id=i.id)
-                question+=que.question   
+                question+=que.question
         q={'question':question}
         return HttpResponse(json.dumps(q),mimetype='application/json')
-        
+
     else:
-        return render(request,'registration/ForgotPassword.html')    
+        return render(request,'registration/ForgotPassword.html')
 def ForgotUsername(request):
     if request.method=="POST":
         ut=request.POST.get('usertype')
@@ -4259,8 +4263,8 @@ def profile(request):
         return render(request,'registration/profile.html', {'msg':msg,'progress':progress})
 @login_required(login_url='/accounts/EmpReg/')
 def emprescomp(request):
-    try:        
-        resumes=[]        
+    try:
+        resumes=[]
         for i in range(1,4):
             istxt=0
             sel_resume=request.GET['r'+str(i)]
@@ -4338,7 +4342,7 @@ def emprescomp(request):
                 return render(request,'registration/emp_resume_comp.html', {'res':res,'resumes':resumes})
             except:
                 msgrc ="Select atleast one resume"
-                return render(request,'registration/emp_resume_comp.html', {'msgrc':msgrc})           
+                return render(request,'registration/emp_resume_comp.html', {'msgrc':msgrc})
 @login_required(login_url='/accounts/EmpReg/')
 def emprescompdoc(request,res_id):
     resuid=res_id

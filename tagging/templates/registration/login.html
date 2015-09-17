@@ -45,7 +45,7 @@ sup{
                 <li>Here is the Excellence to do a common thing in an uncommon way.</li>
                 <li>It's easy to search for jobs and apply.</li>
                 <li>You can also save relevant job alerts and get instant updates.</li>
-                <li>Enhance your knowledge of available jobs and improve your career with iTechTalents.</li>                
+                <li>Enhance your knowledge of available jobs and improve your career with iTechTalents.</li>
             </ul>
             <br>
         </div>
@@ -101,10 +101,10 @@ sup{
                             <h5 class="text text-info">Login Using</h5>
                             <a href="/socialauth/login/facebook/"><button class="btn btn-mini btn-facebook"><i class="icon-facebook"></i> | Connect with Facebook</button></a>
                             <!--<a href="/socialauth/login/twitter/"><button class="btn btn-mini btn-twitter"><i class="icon-twitter"></i>| Connect with Twitter</button></a>-->
-                            <a href="/socialauth/login/linkedin/"><button class="btn btn-mini btn-linkedin"><i class="icon-linkedin"></i>| Connect with LinkedIn</button></a>                                    
+                            <a href="/socialauth/login/linkedin/"><button class="btn btn-mini btn-linkedin"><i class="icon-linkedin"></i>| Connect with LinkedIn</button></a>
                             <a href="/socialauth/login/google/"><button class="btn btn-mini btn-google-plus"><i class="icon-google-plus"></i>| Connect with Google Plus</button></a>
                         </div>
-                        
+
 
                     </div>
                     <div class="tab-pane fade" id="create">
@@ -165,7 +165,7 @@ sup{
                             </fieldset>
                             <br>
                             <button type="submit" id="sub" class="btn btn-primary">Create an Account</button>
-                            <div id="validatealert"></div><input type="hidden" id="vusername" value="0"><input type="hidden" id="vemail" value="0">
+                            <div id="validatealert"></div><!--<input type="hidden" id="vusername" value="0"><input type="hidden" id="vemail" value="0"> -->
                         </form>
                     </div>
                 </div>
@@ -321,7 +321,7 @@ $(document).ready(function()
             else if(str==4){$("#question").hide().val("What is your grand father's last name?");}
             else if(str==5){$("#question").show().val("");}
             else{$( "#question" ).hide().val("");}
-            
+
         }).change();
         function capitalizeFirst(string){
             return string.charAt(0).toUpperCase()+string.slice(1);
@@ -364,7 +364,7 @@ $(document).ready(function()
                 }
         }
 
-       
+
 
         function validate()
         {
@@ -405,7 +405,7 @@ $(document).ready(function()
                     return false;
                 }
         }
-    
+
         $("form#tab").submit(function()
             {
                 var un = $("#username").val();
@@ -493,7 +493,7 @@ $(document).ready(function()
                     $("#validatetc").html('&emsp;<span class="label label-important">This Field is Required</span>');
                     return false;
                 }
-                if ((un=='') || (!tst.test(un)) || (ps1=='') || (!tst1.test(ps1)) || (ps2=='') || (ps1!=ps2) || (fn=='') || (ln=='') || (em=='') || (!emailReg.test(em)) || (tc=='')||(question=='') || (answer=='') || (vus==0) || (vem==0) || (tc=='')){ return false;                    
+                if ((un=='') || (!tst.test(un)) || (ps1=='') || (!tst1.test(ps1)) || (ps2=='') || (ps1!=ps2) || (fn=='') || (ln=='') || (em=='') || (!emailReg.test(em)) || (tc=='')||(question=='') || (answer=='') || (vus==0) || (vem==0) || (tc=='')){ return false;
                 };
         });
 
@@ -516,7 +516,7 @@ $(document).ready(function()
                     v=1
                     $('#sub').removeAttr("disabled");
                 }
-        
+
             $("#validate"+x.fname).html(msg);
             $('#v'+x.fname).val(v);
         }
@@ -575,7 +575,7 @@ $(document).ready(function()
                     {
                         var ps2 = $("#password2").val();
                         var ps1 = $("#password1").val();
-                        
+
                         if(ps2=='')
                             {
                                 $("#validatepass2").html('&emsp;<span class="label label-important">This Field is Required</span>');
@@ -594,7 +594,7 @@ $(document).ready(function()
                 if ($(this).attr('id')=='first_name')
                     {
                         var fn = $("#first_name").val();
-                        
+
                         if(fn=='')
                             {
                                 $("#validatefirstname").html('&emsp;<span class="label label-important">This Field is Required</span>');
@@ -610,7 +610,7 @@ $(document).ready(function()
                 if ($(this).attr('id')=='last_name')
                     {
                         var ln = $("#last_name").val();
-                        
+
                         if(ln=='')
                             {
                                 $("#validatelastname").html('&emsp;<span class="label label-important">This Field is Required</span>');
@@ -627,7 +627,7 @@ $(document).ready(function()
                     {
                         var em = $("#email").val();
                         var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
-                        
+
                         if(em=='')
                             {
                                 $("#validateemail").html('&emsp;<span class="label label-important">This Field is Required</span>');
@@ -699,4 +699,4 @@ $(document).ready(function()
 
 {% endblock %}
 
-)"" 
+)""
