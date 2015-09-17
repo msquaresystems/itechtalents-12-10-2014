@@ -66,7 +66,7 @@ LANGUAGE_CODE = 'en-us'
 
 SITE_ID = 1
 
-SITE_NAME = 'localhost:9000'
+SITE_NAME = 'www.itechtalents.com'
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
