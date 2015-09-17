@@ -41,7 +41,7 @@ DATABASES = {
           'ENGINE': 'django.db.backends.mysql',
           'NAME': 'itechtalents',
           'USER': 'root',
-          'PASSWORD': 'gTk*-45164',
+          'PASSWORD': 'DB-4c3s5',
           'HOST': '127.0.0.1',
           'PORT': '3306'
           # 'TEST_CHARSET': 'utf8',
