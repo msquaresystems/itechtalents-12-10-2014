@@ -9,7 +9,14 @@ site.addsitedir(os.path.join(homedir,
                              '.virtualenvs/itechtalents/local/'
                              'lib/python2.7/site-packages'))
 
+sys.path.append(homedir)
+sys.path.append(current_directory)
+
 os.environ['DJANGO_SETTINGS_MODULE'] = 'itechtalents.settings'
+
+activate_env = os.path.join(homedir,
+                            '.virtualenvs/itechtalents/bin/activate_this.py')
+execfile(activate_env, dict(__file__=activate_env))
 
 import django.core.handlers.wsgi
 application = django.core.handlers.wsgi.WSGIHandler()
