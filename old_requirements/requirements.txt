@@ -1,0 +1,22 @@
+#Django==1.4
+#django-celery
+#django-tinymce
+#django-followit
+#django-kombu
+#django-countries==1.5
+#django-robots
+#django-keyedcache
+#django-compressor
+#longerusername
+#South
+-r askbot.egg-info/requires.txt
+# Install PIL http://www.pythonware.com/products/pil/
+pygeocoder
+geopy
+
+
+Coffin==0.3.8
+
+Jinja2==2.7.1
+MarkupSafe==0.18
+
